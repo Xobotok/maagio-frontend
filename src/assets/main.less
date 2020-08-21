@@ -1,0 +1,157 @@
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url('./fonts/roboto/Roboto-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'RobotoMedium';
+  src: url('./fonts/roboto/Roboto-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'RobotoBold';
+  src: url('./fonts/roboto/Roboto-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'RobotoBlack';
+  src: url('./fonts/roboto/Roboto-Black.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'RighteousRegular';
+  src: url('./fonts/righteous/Righteous-Regular.ttf') format('truetype');
+}
+body {
+  font-family: 'RobotoRegular', sans-serif;
+  color: #333333;
+  background: #fafafa;
+}
+a {
+  text-decoration: none;
+}
+html {
+  min-height: 100vh;
+}
+.app-constructor-layout .navbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 3%;
+  padding-right: 3%;
+  background-color: #fff;
+  & .logo {
+    color: #333333;
+    font-size: 30px;
+    text-decoration: none;
+    font-family: 'RighteousRegular', sans-serif;
+  }
+  & .active-link:hover {
+    color: #636363;
+  }
+  &__left {
+    padding-right: 3%;
+    border-right: 1px solid #828282;
+  }
+  &__middle {
+    width: 100%;
+    display: flex;
+    & .active-link {
+      color: #4F4F4F;
+      font-family: 'RobotoBlack', sans-serif;
+      -webkit-transition: color .3s;
+      -moz-transition: color .3s;
+      -ms-transition: color .3s;
+      -o-transition: color .3s;
+      transition: color .3s;
+      margin-left: 20px;
+      white-space: nowrap;
+    }
+    & .inactive-nav .small-top {
+      font-size: 10px;
+      margin-left: 6px;
+    }
+    & .inactive-nav {
+      display: flex;
+      align-items: flex-start;
+      color: #828282;
+      margin-left: 20px;
+    }
+  }
+  &__right {
+    margin: 0 0 0 auto;
+    display: flex;
+    & .new-project {
+      display: flex;
+      & .profile {
+        display: flex;
+        &-icon {
+          background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M10.5%2014.625C9.465%2014.625%208.625%2015.465%208.625%2016.5C8.625%2017.535%209.465%2018.375%2010.5%2018.375C11.535%2018.375%2012.375%2017.535%2012.375%2016.5C12.375%2015.465%2011.535%2014.625%2010.5%2014.625ZM19.5%2014.625C18.465%2014.625%2017.625%2015.465%2017.625%2016.5C17.625%2017.535%2018.465%2018.375%2019.5%2018.375C20.535%2018.375%2021.375%2017.535%2021.375%2016.5C21.375%2015.465%2020.535%2014.625%2019.5%2014.625ZM15%200C6.72%200%200%206.72%200%2015C0%2023.28%206.72%2030%2015%2030C23.28%2030%2030%2023.28%2030%2015C30%206.72%2023.28%200%2015%200ZM15%2027C8.385%2027%203%2021.615%203%2015C3%2014.565%203.03%2014.13%203.075%2013.71C6.615%2012.135%209.42%209.24%2010.89%205.655C13.605%209.495%2018.075%2012%2023.13%2012C24.3%2012%2025.425%2011.865%2026.505%2011.61C26.82%2012.675%2027%2013.815%2027%2015C27%2021.615%2021.615%2027%2015%2027Z%22%20fill%3D%22%23333333%22/%3E%0A%3C/svg%3E%0A');
+          background-repeat: no-repeat;
+          background-size: contain;
+          width: 18px;
+          height: 18px;
+          display: inline-block;
+          flex: none;
+          margin-left: 20px;
+        }
+        &-name {
+          white-space: nowrap;
+          font-family: RobotoBold, sans-serif;
+          color: #333333;
+          margin-left: 10px;
+        }
+      }
+      & .new-project-icon {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2242%22%20height%3D%2230%22%20viewBox%3D%220%200%2042%2030%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M38.1818%200H3.81818C1.69909%200%200%201.66875%200%203.75V26.25C0%2028.3125%201.69909%2030%203.81818%2030H38.1818C40.2818%2030%2041.9809%2028.3125%2041.9809%2026.25L42%203.75C42%201.66875%2040.2818%200%2038.1818%200ZM38.1818%2026.25H3.81818V3.75H38.1818V26.25ZM28.6364%2013.125V16.875H22.9091V22.5H19.0909V16.875H13.3636V13.125H19.0909V7.5H22.9091V13.125H28.6364Z%22%20fill%3D%22%232F80ED%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 26px;
+        height: 18px;
+        display: inline-block;
+        margin-right: 10px;
+      }
+      & .new-project-text {
+        color: #2f80ed;
+        font-family: RobotoBold, sans-serif;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+.app-constructor-layout {
+  & main {
+
+  }
+}
+.app-constructor-layout .app-content .projects {
+  padding-left: 3%;
+  padding-right: 3%;
+  padding-top: 50px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  & .project-card {
+    margin: 20px;
+    height: 240px;
+    width: 300px;
+  }
+  & .project-empty-card {
+    display: flex;
+    margin: 20px;
+    height: 240px;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    border: 3px dashed #BDBDBD;
+    color: #BDBDBD;
+    & .project-empty-content {
+
+    }
+    & .project-empty-plus {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 90px;
+      line-height: 67px;
+    }
+    & .project-empty-text {
+      text-align: center;
+    }
+  }
+}
