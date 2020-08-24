@@ -22,6 +22,14 @@ body {
   font-family: 'RobotoRegular', sans-serif;
   color: #333333;
   background: #fafafa;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+div {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 a {
   text-decoration: none;
@@ -127,23 +135,15 @@ html {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  & .project-card {
-    margin: 20px;
-    height: 240px;
-    width: 300px;
-  }
   & .project-empty-card {
     display: flex;
     margin: 20px;
-    height: 240px;
+    height: 274px;
     align-items: center;
     justify-content: center;
-    width: 300px;
+    width: 340px;
     border: 3px dashed #BDBDBD;
     color: #BDBDBD;
-    & .project-empty-content {
-
-    }
     & .project-empty-plus {
       text-align: center;
       margin-bottom: 30px;
@@ -152,6 +152,102 @@ html {
     }
     & .project-empty-text {
       text-align: center;
+    }
+  }
+}
+
+.project-card:hover {
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.15);
+}
+.project-card {
+  -webkit-transition: box-shadow .3s;
+  -moz-transition: box-shadow .3s;
+  -ms-transition: box-shadow .3s;
+  -o-transition: box-shadow .3s;
+  transition: box-shadow .3s;
+  padding: 30px 30px;
+  margin: 20px;
+  height: 282px;
+  width: 340px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  & .project-content {
+    & .image-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & .project-image{
+        width: 90%;
+        height: 110px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+    & .project-name {
+      color: #4F4F4F;
+      font-size: 22px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #828282;
+    }
+    & .project-menu {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 20px;
+      & .project-menu-text:hover {
+        background-color: #E0E0E0;
+      }
+      & .project-menu-text {
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 6px;
+      }
+      & .menu-delimiter {
+        width: 1px;
+        height: 20px;
+        background-color: #828282;
+      }
+      & .menu-link {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2223%22%20height%3D%2223%22%20viewBox%3D%220%200%2023%2023%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M20%2020H2.5V2.5H11.25V0H2.5C1.1125%200%200%201.125%200%202.5V20C0%2021.375%201.1125%2022.5%202.5%2022.5H20C21.375%2022.5%2022.5%2021.375%2022.5%2020V11.25H20V20ZM13.75%200V2.5H18.2375L5.95%2014.7875L7.7125%2016.55L20%204.2625V8.75H22.5V0H13.75Z%22%20fill%3D%22%234F4F4F%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        margin-left: 6px;
+        display: inline-block;
+        background-size: contain;
+        cursor: pointer;
+      }
+      & .project-menu-icons {
+        margin-left: 10px;
+        & .menu-share {
+          background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2223%22%20height%3D%2226%22%20viewBox%3D%220%200%2023%2026%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M18.75%2018.1C17.8%2018.1%2016.95%2018.475%2016.3%2019.0625L7.3875%2013.875C7.45%2013.5875%207.5%2013.3%207.5%2013C7.5%2012.7%207.45%2012.4125%207.3875%2012.125L16.2%206.9875C16.875%207.6125%2017.7625%208%2018.75%208C20.825%208%2022.5%206.325%2022.5%204.25C22.5%202.175%2020.825%200.5%2018.75%200.5C16.675%200.5%2015%202.175%2015%204.25C15%204.55%2015.05%204.8375%2015.1125%205.125L6.3%2010.2625C5.625%209.6375%204.7375%209.25%203.75%209.25C1.675%209.25%200%2010.925%200%2013C0%2015.075%201.675%2016.75%203.75%2016.75C4.7375%2016.75%205.625%2016.3625%206.3%2015.7375L15.2%2020.9375C15.1375%2021.2%2015.1%2021.475%2015.1%2021.75C15.1%2023.7625%2016.7375%2025.4%2018.75%2025.4C20.7625%2025.4%2022.4%2023.7625%2022.4%2021.75C22.4%2019.7375%2020.7625%2018.1%2018.75%2018.1Z%22%20fill%3D%22%23BDBDBD%22/%3E%0A%3C/svg%3E%0A');
+          background-repeat: no-repeat;
+          width: 16px;
+          height: 16px;
+          display: inline-block;
+          background-size: contain;
+          cursor: pointer;
+        }
+        & .menu-delete {
+          background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2218%22%20height%3D%2224%22%20viewBox%3D%220%200%2018%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M1.75%2020.75C1.75%2022.125%202.875%2023.25%204.25%2023.25H14.25C15.625%2023.25%2016.75%2022.125%2016.75%2020.75V5.75H1.75V20.75ZM4.25%208.25H14.25V20.75H4.25V8.25ZM13.625%202L12.375%200.75H6.125L4.875%202H0.5V4.5H18V2H13.625Z%22%20fill%3D%22%23BDBDBD%22/%3E%0A%3C/svg%3E%0A');
+          background-repeat: no-repeat;
+          width: 16px;
+          height: 16px;
+          margin-left: 18px;
+          display: inline-block;
+          background-size: contain;
+          cursor: pointer;
+        }
+      }
     }
   }
 }
