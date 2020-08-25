@@ -15,11 +15,7 @@
     },
     data: ()=>({
         projects: [
-          {
-            id: 1,
-            name: 'Васян',
-            img: 'img/no-image-project.png',
-          },
+
           ],
     }),
     methods: {

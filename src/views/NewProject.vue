@@ -9,13 +9,15 @@
         </div>
         <div class="project-page-content">
             <ProjectOverview v-bind:name="project.name" v-show="activeTab == 1"></ProjectOverview>
+            <ProjectFloors v-show="activeTab == 2"></ProjectFloors>
         </div>
         <div class="project-page-controls" v-if="!published">
-            <div class="project-page-button" :class="{invisible: activeTab == 1}">Back</div>
-            <div class="project-page-subcontrols" v-if="project.name.length > 0">
+            <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="activeTab--; makeActive(activeTab);">Back</div>
+            <div class="project-page-subcontrols">
                 <div class="project-page-button">Save Draft</div>
-                <div class="project-page-button blue-button" v-if="activeTab != 6">Next</div>
-                <div class="project-page-button blue-button" v-if="activeTab == 6">Publish</div>
+                <div class="project-page-button blue-button" v-if="checkNext()" @click="activeTab++; makeActive(activeTab);">Next</div>
+                <div class="project-page-button inactive-button" v-if="!checkNext()">Next</div>
+                <div class="project-page-button blue-button" v-if="checkPublish()">Publish</div>
             </div>
         </div>
         <div class="project-page-publish" v-if="published">
@@ -29,14 +31,16 @@
 
 <script>
   import ProjectOverview from '@/components/project/ProjectOverview.vue'
+  import ProjectFloors from '@/components/project/ProjectFloors.vue'
   export default {
     name: 'newproject',
     components: {
-      ProjectOverview,
+      ProjectOverview, ProjectFloors,
     },
     mounted() {
       var tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
+      this.checkActive();
     },
     methods: {
       makeActive(e) {
@@ -48,7 +52,37 @@
           }
           tabs[this.activeTab - 1].classList.add('active');
         }
-      }
+      },
+      checkActive() {
+        if(this.project.floors.length > 0) {
+          this.progresses[2].active = true;
+        } else {
+          this.progresses[2].active = false;
+        }
+      },
+      checkPublish() {
+        if(this.activeTab === 6) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      checkNext() {
+        if(this.activeTab === 1) {
+          if(this.project.name.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if(this.activeTab === 2) {
+            if(this.project.floors.length > 0) {
+              return true;
+            } else {
+              return false;
+            }
+        }
+      },
     },
     data: ()=>({
       activeTab: 1,
@@ -89,6 +123,7 @@
       project: {
         name: 'Васян',
         logo: '',
+        floors: [],
       },
     }),
   }

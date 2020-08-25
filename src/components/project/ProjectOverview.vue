@@ -78,7 +78,9 @@
         }
         if(this.showUnits === true && this.projectName.length > 0) {
           this.$parent.progresses[1].active = true;
-          this.$parent.progresses[2].active = true;
+          if(this.$parent.project.floors.length > 0) {
+            this.$parent.progresses[2].active = true;
+          }
         } else {
           this.$parent.progresses[1].active = false;
           this.$parent.progresses[2].active = false;
@@ -97,7 +99,9 @@
       changeUnits() {
         if(this.showUnits === true && this.projectName.length > 0) {
           this.$parent.progresses[1].active = true;
-          this.$parent.progresses[2].active = true;
+          if(this.$parent.project.floors.length > 0) {
+            this.$parent.progresses[2].active = true;
+          }
         } else {
           this.$parent.progresses[1].active = false;
           this.$parent.progresses[2].active = false;

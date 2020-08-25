@@ -9,6 +9,8 @@
 <script>
   import ConstructorLayout from '@/layouts/ConstructorLayout';
   import EmptyLayout from '@/layouts/EmptyLayout';
+
+
   export default {
     computed: {
       layout() {

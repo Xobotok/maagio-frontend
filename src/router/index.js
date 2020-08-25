@@ -28,6 +28,12 @@ const routes = [
     meta: { layout: 'constructor' },
     component: () => import('../views/NewProject.vue'),
   },
+/*  {
+    path: '/new-floor',
+    name: 'NewFloor',
+    meta: { layout: 'constructor' },
+    component: () => import('../views/NewFloor.vue'),
+  },*/
 ];
 
 const router = new VueRouter({
