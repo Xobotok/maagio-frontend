@@ -12,7 +12,7 @@
 
         <ul class="dropdown-menu superscroll" v-if="showMenu">
             <li v-for="(option, idx) in options" :key="idx">
-                <a href="javascript:void(0)" :number="idx" @click="updateOption(option);">
+                <a href="javascript:void(0)" :number="idx" @click="updateOption(option); dropdownCallback()">
                     {{ option.name }}
                 </a>
             </li>
@@ -22,12 +22,13 @@
 
 <script>
   export default {
-    'name': 'dropdown',
+    'name': 'specDropdown',
     data() {
       return {
         selectedOption: {
           name: '',
           val: '',
+          id: '',
         },
         showMenu: false,
         placeholderText: 'Please select an item',
@@ -37,6 +38,7 @@
       options: {
         type: [Array, Object]
       },
+      id: 'id',
       selected: {},
       placeholder: [String],
       closeOnOutsideClick: {
@@ -58,6 +60,11 @@
       document.removeEventListener('click', this.clickHandler);
     },
     methods: {
+      dropdownCallback: function () {
+        if(this.selectedOption) {
+          this.$parent.selectNewFloor(this)
+        }
+      },
       updateOption(option) {
         this.selectedOption = option;
         this.showMenu = false;
@@ -81,13 +88,11 @@
     .btn-group {
         border: 2px solid #BDBDBD;
         position: relative;
-        width: 100%;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         border-radius: 8px;
         display: inline-block;
         vertical-align: middle;
-        background-color: #fff;
     }
     .btn-group a:hover {
         text-decoration: none;
@@ -95,7 +100,7 @@
     .dropdown-toggle {
         color: #636b6f;
         min-width: 100px;
-        padding: 9px 20px 9px 10px;
+        padding: 7px 20px 7px 10px;
         text-transform: none;
         font-weight: 300;
         border: 0;

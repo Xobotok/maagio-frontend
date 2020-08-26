@@ -7,8 +7,9 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Projects',
+    meta: { layout: 'constructor' },
+    component: () => import('../views/MyProjects.vue'),
   },
   {
     path: '/projects',
@@ -28,16 +29,10 @@ const routes = [
     meta: { layout: 'constructor' },
     component: () => import('../views/NewProject.vue'),
   },
-/*  {
-    path: '/new-floor',
-    name: 'NewFloor',
-    meta: { layout: 'constructor' },
-    component: () => import('../views/NewFloor.vue'),
-  },*/
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
 });

@@ -14,13 +14,14 @@
                 this.parentNode.getElementsByClassName('dropdown-container')[0].style.display = 'block';">Replace
                 </div>
                 <div class="dropdown-container" style="display: none">
-                    <dropdown :options="arrayOfObjects"
+                    <specDropdown
+                            :options="arrayOfObjects"
                               :selected="object"
                               :elementid="key"
                               v-on:updateOption="selectNewFloor"
                               :placeholder="'Select an Item'"
                               :closeOnOutsideClick="true">
-                    </dropdown>
+                    </specDropdown>
                 </div>
                 <div class="floor-button inactive" v-if="floors.length === 1">Replace</div>
                 <div class="floor-button" @click="removeFloor(key)">Remove</div>
@@ -33,11 +34,11 @@
 </template>
 
 <script>
-  import dropdown from '@/components/simple/dropdown.vue'
+  import specDropdown from '@/components/simple/specDropdown.vue'
   export default {
     'name': 'ProjectFloors',
     components: {
-      'dropdown': dropdown,
+      specDropdown,
     },
     data: ()=>({
       arrayOfObjects: [],
@@ -51,12 +52,7 @@
       this.floors = this.$parent.project.floors;
     },
     methods: {
-      callbackFunction: function (e) {
-
-      },
       selectNewFloor(element) {
-       /* let newFloor = element.getAttribute('number');
-        let currentFloor = '';*/
        if(element.selectedOption) {
          let elementId = element.$attrs.elementid;
          let newId = element.selectedOption.val;

@@ -10,6 +10,7 @@
         <div class="project-page-content">
             <ProjectOverview v-bind:name="project.name" v-show="activeTab == 1"></ProjectOverview>
             <ProjectFloors v-show="activeTab == 2"></ProjectFloors>
+            <ProjectUnits v-show="activeTab == 3"></ProjectUnits>
         </div>
         <div class="project-page-controls" v-if="!published">
             <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="activeTab--; makeActive(activeTab);">Back</div>
@@ -32,10 +33,11 @@
 <script>
   import ProjectOverview from '@/components/project/ProjectOverview.vue'
   import ProjectFloors from '@/components/project/ProjectFloors.vue'
+  import ProjectUnits from '@/components/project/ProjectUnits.vue'
   export default {
     name: 'newproject',
     components: {
-      ProjectOverview, ProjectFloors,
+      ProjectOverview, ProjectFloors,ProjectUnits
     },
     mounted() {
       var tabs = document.getElementsByClassName('progress-tab');
