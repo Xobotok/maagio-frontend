@@ -129,7 +129,7 @@
           for(let i = 0; i < this.units.length; i++) {
             if(this.units[i].id === id) {
               this.templateUnit = this.units[i].unit;
-              this.templateUnit.id = id;
+
               this.openPopup();
               break;
             }

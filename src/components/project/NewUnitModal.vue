@@ -153,6 +153,12 @@
     }),
     methods: {
       saveUnit() {
+        let units = this.$parent.units;
+        for(var i = 0; i < units.length; i++) {
+          if(units[i].unit.unitNumber === this.templateUnit.unitNumber && units[i].unit.floor === this.templateUnit.floor) {
+            this.$parent.units.splice(i, 1);
+          }
+        }
         if(this.checkSave()) {
           this.$parent.units.push({id: this.templateUnit.unitNumber, unit: this.templateUnit});
           this.closeModal();
@@ -162,12 +168,6 @@
         if(this.templateUnit.unitNumber !== 0 && this.templateUnit.bedroom !== 0 && this.templateUnit.bedroom !== ''
           && this.templateUnit.price !== '' && this.templateUnit.status !== '' && this.templateUnit.bathroom !== 0
         && this.templateUnit.interiorFootage !== '' && this.templateUnit.imagePoint.X !== '' && this.templateUnit.imagePoint.Y !== '') {
-          let units = this.$parent.units;
-          for(var i = 0; i < units.length; i++) {
-            if(units[i].unit.unitNumber === this.templateUnit.unitNumber && units[i].unit.floor === this.templateUnit.floor) {
-              this.$parent.units.splice(i, 1);
-            }
-          }
             return true;
         } else {
           return false;
