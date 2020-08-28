@@ -161,6 +161,7 @@
         }
         if(this.checkSave()) {
           this.$parent.units.push({id: this.templateUnit.unitNumber, unit: this.templateUnit});
+          this.$parent.$parent.project.units = this.$parent.units;
           this.closeModal();
         }
       },

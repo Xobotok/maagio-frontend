@@ -124,6 +124,7 @@
               this.units.splice(i, 1);
             }
           }
+          this.$parent.project.units = this.units;
         },
         editUnit(id) {
           for(let i = 0; i < this.units.length; i++) {

@@ -11,6 +11,8 @@
             <ProjectOverview v-bind:name="project.name" v-show="activeTab == 1"></ProjectOverview>
             <ProjectFloors v-show="activeTab == 2"></ProjectFloors>
             <ProjectUnits v-show="activeTab == 3"></ProjectUnits>
+            <ProjectMap v-show="activeTab == 4"></ProjectMap>
+            <ProjectGalleries v-show="activeTab == 5"></ProjectGalleries>
         </div>
         <div class="project-page-controls" v-if="!published">
             <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="activeTab--; makeActive(activeTab);">Back</div>
@@ -34,10 +36,12 @@
   import ProjectOverview from '@/components/project/ProjectOverview.vue'
   import ProjectFloors from '@/components/project/ProjectFloors.vue'
   import ProjectUnits from '@/components/project/ProjectUnits.vue'
+  import ProjectMap from '@/components/project/ProjectMap.vue'
+  import ProjectGalleries from '@/components/project/ProjectGalleries.vue'
   export default {
     name: 'newproject',
     components: {
-      ProjectOverview, ProjectFloors,ProjectUnits
+      ProjectOverview, ProjectFloors, ProjectUnits, ProjectMap, ProjectGalleries
     },
     mounted() {
       var tabs = document.getElementsByClassName('progress-tab');
@@ -84,6 +88,13 @@
               return false;
             }
         }
+        if(this.activeTab === 3) {
+          if(this.project.units.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       },
     },
     data: ()=>({
@@ -126,6 +137,7 @@
         name: 'Васян',
         logo: '',
         floors: [],
+        units: [],
       },
     }),
   }
