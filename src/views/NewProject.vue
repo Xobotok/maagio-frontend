@@ -95,6 +95,13 @@
             return false;
           }
         }
+        if(this.activeTab === 4) {
+          if(!this.project.mapActivate || (this.project.mapActivate === true && this.project.map !== '')) {
+            return true;
+          } else {
+            return false;
+          }
+        }
       },
     },
     data: ()=>({
@@ -138,6 +145,8 @@
         logo: '',
         floors: [],
         units: [],
+        mapActivate: true,
+        map: '',
       },
     }),
   }
