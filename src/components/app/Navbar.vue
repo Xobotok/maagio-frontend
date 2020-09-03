@@ -11,6 +11,7 @@
         <div class="navbar__right">
             <router-link to="/new" class="new-project">
                 <div class="new-project">
+                    <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
                     <div class="new-project-icon"></div>
                     <div class="new-project-text">New App</div>
                 </div>
@@ -28,5 +29,16 @@
 <script>
     export default {
       'name': 'Navbar',
+      computed : {
+        isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+      },
+      methods: {
+        logout: function () {
+          this.$store.dispatch('logout')
+          .then(() => {
+            this.$router.push('/login')
+          })
+        }
+      },
     }
 </script>

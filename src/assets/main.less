@@ -31,6 +31,14 @@ div, input, textarea {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+a:active, a:focus { outline: none; }
+
+input, textarea {outline:none;}
+input:active, textarea:active {outline:none;}
+:focus {outline:none;}
+textarea {resize:none;}
+textarea {resize:vertical;}
+textarea {resize:horizontal;}
 a {
   text-decoration: none;
 }
@@ -1143,5 +1151,64 @@ main {
       object-fit: cover;
       height: 100%;
     }
+  }
+}
+
+.authorise-form {
+  display: flex;
+  justify-content: center;
+  padding-top: 80px;
+  & form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 80px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+    .message {
+      width: 100%;
+      color: red;
+      text-align: center;
+      max-width: 250px;
+    }
+    h1 {
+      font-family: 'RighteousRegular', sans-serif;
+    }
+    h2 {
+      margin-bottom: 0;
+    }
+    input {
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 1px solid #828282;
+      padding: 5px 0 5px 0;
+      margin-top: 30px;
+      width: 250px;
+    }
+    button:active {
+      background: #2F80ED;
+    }
+    button:hover {
+      background: #2f89f8;
+    }
+    button {
+      margin-top: 20px;
+      background: #2F80ED;
+      border-radius: 5px;
+      padding: 10px 40px;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+  }
+  .form-link:hover {
+    color: #318dfe;
+  }
+  .form-link {
+    color: #2F80ED;
+    margin-top: 20px;
   }
 }
