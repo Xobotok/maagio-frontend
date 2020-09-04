@@ -79,7 +79,6 @@
       },
     },
     mounted: function () {
-      console.log(this.$parent);
       var script = document.createElement('script');
       script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDAHyg8_wG19M4GTE4BDSuez-Xc3wjllYQ&callback=initMap';
       script.defer = true;

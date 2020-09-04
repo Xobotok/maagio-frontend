@@ -35,7 +35,6 @@
     mounted() {
       if(this.$route.query.message) {
         this.message = this.$route.query.message;
-        console.log(this.$route.query.message);
       }
 
     }

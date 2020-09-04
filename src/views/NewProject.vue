@@ -20,7 +20,7 @@
                 <div class="project-page-button">Save Draft</div>
                 <div class="project-page-button blue-button" v-if="checkNext()" @click="activeTab++; makeActive(activeTab);">Next</div>
                 <div class="project-page-button inactive-button" v-if="!checkNext()">Next</div>
-                <div class="project-page-button blue-button" v-if="checkPublish()">Publish</div>
+                <div class="project-page-button blue-button" @click="publish" v-if="checkPublish()">Publish</div>
             </div>
         </div>
         <div class="project-page-publish" v-if="published">
@@ -38,6 +38,7 @@
   import ProjectUnits from '@/components/project/ProjectUnits.vue'
   import ProjectMap from '@/components/project/ProjectMap.vue'
   import ProjectGalleries from '@/components/project/ProjectGalleries.vue'
+  import constants from '../Constants'
   export default {
     name: 'newproject',
     components: {
@@ -59,6 +60,9 @@
           tabs[this.activeTab - 1].classList.add('active');
         }
       },
+      publish(){
+        this.uploadFiles();
+      },
       checkActive() {
         if(this.project.floors.length > 0) {
           this.progresses[2].active = true;
@@ -72,6 +76,60 @@
         } else {
           return false;
         }
+      },
+      uploadFiles() {
+        let data = new FormData();
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        for(let i = 0; i < this.project.floors.length; i++) {
+          if(this.project.floors[i].image !== '') {
+            data.append( 'floor-'+i, this.project.floors[i].image );
+          }
+        }
+        for(let i = 0; i < this.project.galleries.length; i++) {
+          for(let n = 0; n < this.project.galleries[i].photos.length; n++) {
+            data.append( 'gallery-'+i + '_photo-' + n, this.project.galleries[i].photos[n] );
+          }
+
+        }
+        data.append('my_file_upload', 1);
+        data.append('user_id', user.uid);
+        data.append('token', token);
+        data.append('project', JSON.stringify(this.project));
+        $.ajax({
+          url         : constants.BACKEND_URL + 'project/save-new-project',
+          type        : 'POST', // важно!
+          data        : data,
+          cache       : false,
+          dataType    : 'json',
+          // отключаем обработку передаваемых данных, пусть передаются как есть
+          processData : false,
+          // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
+          contentType : false,
+          // функция успешного ответа сервера
+          success     : function( respond, status, jqXHR ){
+
+            // ОК - файлы загружены
+            if( typeof respond.error === 'undefined' ){
+              // выведем пути загруженных файлов в блок '.ajax-reply'
+              var files_path = respond.files;
+              var html = '';
+              $.each( files_path, function( key, val ){
+                html += val +'<br>';
+              } )
+
+              $('.ajax-reply').html( html );
+            }
+            // ошибка
+            else {
+              console.log('ОШИБКА: ' + respond.data );
+            }
+          },
+          // функция ошибки ответа сервера
+          error: function( jqXHR, status, errorThrown ){
+            console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
+          }
+        });
       },
       checkNext() {
         if(this.activeTab === 1) {
@@ -147,6 +205,7 @@
         units: [],
         mapActivate: true,
         map: '',
+        galleries: [],
       },
     }),
   }

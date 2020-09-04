@@ -19,19 +19,19 @@
                     <div class="units-list-header"></div>
                 </div>
                 <div class="units-list-blocks" v-for="unit in units">
-                    <div class="units-list-value">{{unit.unit.unitNumber}}</div>
-                    <div class="units-list-value">{{statusNames[unit.unit.status].name}}</div>
-                    <div class="units-list-value">{{unit.unit.price}} $</div>
-                    <div class="units-list-value">{{unit.unit.floor}}</div>
-                    <div class="units-list-value">{{unit.unit.interiorFootage}}</div>
-                    <div class="units-list-value">{{unit.unit.exteriorFootage}}</div>
-                    <div class="units-list-value">{{unit.unit.bedroom}}</div>
-                    <div class="units-list-value">{{unit.unit.bathroom}}</div>
-                    <div class="units-list-value" v-if="unit.unit.bmr == 1">Да</div>
-                    <div class="units-list-value" v-if="unit.unit.bmr == 0">Нет</div>
+                    <div class="units-list-value">{{unit.unitNumber}}</div>
+                    <div class="units-list-value">{{statusNames[unit.status].name}}</div>
+                    <div class="units-list-value">{{unit.price}} $</div>
+                    <div class="units-list-value">{{unit.floor}}</div>
+                    <div class="units-list-value">{{unit.interiorFootage}}</div>
+                    <div class="units-list-value">{{unit.exteriorFootage}}</div>
+                    <div class="units-list-value">{{unit.bedroom}}</div>
+                    <div class="units-list-value">{{unit.bathroom}}</div>
+                    <div class="units-list-value" v-if="unit.bmr == 1">Да</div>
+                    <div class="units-list-value" v-if="unit.bmr == 0">Нет</div>
                     <div class="units-list-value units-icons">
-                        <div class="units-edit-icon" @click="editUnit(unit.id)"></div>
-                        <div class="units-remove-icon" @click="deleteUnit(unit.id)"></div>
+                        <div class="units-edit-icon" @click="editUnit(unit)"></div>
+                        <div class="units-remove-icon" @click="deleteUnit(unit)"></div>
                     </div>
                 </div>
             </div>
@@ -70,27 +70,7 @@
             Y: '',
           },
         },
-        units: [{
-          id: '100d',
-          unit: {
-            unitNumber: '100d',
-            floor: 1,
-            bedroom: 1,
-            bathroom: 1,
-            price: '120000',
-            status: '0',
-            HOA: '10000',
-            interiorFootage: '32,2',
-            exteriorFootage: '0',
-            bmr: true,
-            parking: true,
-            floorImage: '',
-            imagePoint: {
-              X: '32.4204',
-              Y: '38.8571',
-            }
-          }}
-        ],
+        units: [],
         openAddUnit: false,
       }),
       methods: {
@@ -106,8 +86,8 @@
             HOA: '',
             interiorFootage: '',
             exteriorFootage: '',
-            bmr: false,
-            parking: false,
+            bmr: 0,
+            parking: 0,
             floorImage: '',
             imagePoint: {
               X: '',
@@ -118,23 +98,24 @@
         openPopup() {
           this.openAddUnit = true;
         },
-        deleteUnit(id) {
+        deleteUnit(unit) {
           for(let i = 0; i < this.units.length; i++) {
-            if(this.units[i].id === id) {
+            if(this.units[i] === unit) {
               this.units.splice(i, 1);
+            }
+          }
+          for(let i = 0; i < this.$parent.project.floors.length; i++) {
+            for(let n = 0; n < this.$parent.project.floors[i].units.length; n++) {
+              if(this.$parent.project.floors[i].units[n] === unit) {
+                this.$parent.project.floors[i].units.splice(n, 1);
+              }
             }
           }
           this.$parent.project.units = this.units;
         },
-        editUnit(id) {
-          for(let i = 0; i < this.units.length; i++) {
-            if(this.units[i].id === id) {
-              this.templateUnit = this.units[i].unit;
-
-              this.openPopup();
-              break;
-            }
-          }
+        editUnit(unit) {
+          this.templateUnit = unit;
+          this.openPopup();
         }
       },
     }

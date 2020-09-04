@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import constants from '../Constants'
 Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
@@ -32,10 +33,10 @@ export default new Vuex.Store({
         axios({url: 'http://a0466733.xsph.ru/authorisation/login/?email=' + user.email + '&password=' + user.password, method: 'GET' })
         .then(resp => {
           if(resp.data.ok == 1) {
-            console.log(resp.data);
             const token = resp.data.token
             const user = resp.data.user
             localStorage.setItem('token', token)
+            localStorage.setItem('maagio_user', JSON.stringify(user));
             axios.defaults.headers.common['Authorization'] = token
             commit('auth_success', token, user)
             resolve(resp)
@@ -54,7 +55,7 @@ export default new Vuex.Store({
     register({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({url: 'http://a0466733.xsph.ru/authorisation/register/?email=' + user.email + '&name=' + user.name + '&last_name=' +
+        axios({url: constants.BACKEND_URL+'/authorisation/register/?email=' + user.email + '&name=' + user.name + '&last_name=' +
           '&company=' + user.company + '&password=' + user.password, method: 'GET' })
         .then(resp => {
          /* const token = resp.data.token
@@ -81,6 +82,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('logout')
         localStorage.removeItem('token')
+        localStorage.removeItem('maagio_user')
         delete axios.defaults.headers.common['Authorization']
         resolve()
       })

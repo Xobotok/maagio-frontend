@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="unit-image-container">
-                        <img src="../../assets/img/default-floor.jpg" @click="changeColumnDefinition" alt="">
+                        <img :src="floorPreview()" @click="changeColumnDefinition" alt="">
                         <div class="unit-point" v-if="templateUnit.imagePoint.X != '' && templateUnit.imagePoint.Y != ''" :style="{left: 'calc(' + templateUnit.imagePoint.X + '% - 50px)', top: 'calc(' + templateUnit.imagePoint.Y + '% - 30px)'}">
                             <div class="unit-point-bedrooms" v-if="templateUnit.bedroom >= 0 && templateUnit.bedroom != ''">{{templateUnit.bedroom}} bedroom</div>
                             <div class="unit-point-number">
@@ -139,8 +139,8 @@
         HOA: '',
         interiorFootage: '',
         exteriorFootage: '',
-        bmr: false,
-        parking: false,
+        bmr: 0,
+        parking: 0,
         floorImage: '',
         imagePoint: {
           X: '',
@@ -152,23 +152,35 @@
 
     }),
     methods: {
+      floorPreview() {
+        return this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
+      },
       saveUnit() {
-        let units = this.$parent.units;
-        for(var i = 0; i < units.length; i++) {
-          if(units[i].unit.unitNumber === this.templateUnit.unitNumber && units[i].unit.floor === this.templateUnit.floor) {
-            this.$parent.units.splice(i, 1);
-          }
-        }
         if(this.checkSave()) {
-          this.$parent.units.push({id: this.templateUnit.unitNumber, unit: this.templateUnit});
-          this.$parent.$parent.project.units = this.$parent.units;
+          for(let i = 0; i <  this.$parent.$parent.project.floors.length; i++) {
+            for(let n = 0; n < this.$parent.$parent.project.floors[i].units.length; n++) {
+              if(this.$parent.$parent.project.floors[i].units[n] === this.templateUnit) {
+                this.$parent.$parent.project.floors[i].units.splice(n, 1);
+                n--;
+              }
+            }
+          }
+          for(let i = 0; i < this.$parent.units.length; i++) {
+            if(this.$parent.units[i] === this.templateUnit) {
+              this.$parent.units.splice(i, 1);
+              i--;
+            }
+          }
+          this.$parent.units.push(this.templateUnit);
+          this.$parent.$parent.project.floors[this.templateUnit.floor - 1]['units'].push(this.templateUnit);
           this.closeModal();
+          console.log(this.$parent.$parent.project.floors);
         }
       },
       checkSave() {
         if(this.templateUnit.unitNumber !== 0 && this.templateUnit.bedroom !== 0 && this.templateUnit.bedroom !== ''
           && this.templateUnit.price !== '' && this.templateUnit.status !== '' && this.templateUnit.bathroom !== 0
-        && this.templateUnit.interiorFootage !== '' && this.templateUnit.imagePoint.X !== '' && this.templateUnit.imagePoint.Y !== '') {
+        && this.templateUnit.interiorFootage !== '') {
             return true;
         } else {
           return false;
@@ -211,7 +223,7 @@
           let percentX = x / pixpercentX;
           let percentY = y / pixpercentY;
           this.templateUnit.imagePoint.X = percentX;
-          this.templateUnit.imagePoint.Y = percentY;;
+          this.templateUnit.imagePoint.Y = percentY;
           clearTimeout(this.timer);
           // COLUMN_DEFINITION[c]+=50
           self.counter = 0;

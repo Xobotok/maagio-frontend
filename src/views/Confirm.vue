@@ -10,6 +10,7 @@
   import Vue from 'vue'
   import Vuex from 'vuex'
   import axios from 'axios'
+  import constants from '../Constants';
   export default {
     data(){
       return {
@@ -19,7 +20,7 @@
     methods: {
       confirmMail(){
         const request = new XMLHttpRequest();
-        const url = "http://a0466733.xsph.ru/authorisation/confirm/?confirm_token=" + this.$route.query.confirm_token;
+        const url = constants.BACKEND_URL + "/authorisation/confirm/?confirm_token=" + this.$route.query.confirm_token;
         request.open('GET', url);
         request.setRequestHeader('Accept', 'application/json, text/plain, */*');
         request.addEventListener("readystatechange", () => {

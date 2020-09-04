@@ -3,7 +3,7 @@
         <div class="galleries-container">
             <div class="gallery-item" v-for="gallery in galleries">
                 <div class="photo-container">
-                    <img :src="gallery.photos[0].link" alt="">
+                    <img :src="gallery.previews[0].data" alt="">
                 </div>
                 <div class="gallery-panel">
                     <div class="gallery-name">{{gallery.name}}</div>
@@ -30,37 +30,25 @@
       galleries: [],
       openModal: false,
       tempGallery: {
-        photos: [
-          {
-            link: require('../../assets/img/no-image-project.png'),
-            number: 1,
-          },
-          {
-            link: require('../../assets/img/no-image-project.png'),
-            number: 2,
-          },
-          {
-            link: require('../../assets/img/no-image-project.png'),
-            number: 3,
-          }
-        ],
+        photos: [],
         name: '',
+        previews: [],
+        changed: false,
       },
     }),
     methods: {
       createNewGallery() {
         this.tempGallery = {
           photos: [
-            {
-              link: require('../../assets/img/no-image-project.png'),
-              number: 1,
-            },
           ],
+          previews: [],
           name: '',
+          changed: false,
         };
         this.openModal = true;
       },
       editGallery(gallery) {
+
         this.tempGallery = gallery;
         this.openModal = true;
       },
