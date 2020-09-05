@@ -47,7 +47,7 @@
                     PROJECT LOGO
                 </div>
                 <div class="overview-description">The graphics will appear on the splash screen</div>
-                <div class="logo-preview"></div>
+                <div class="logo-preview"><img :src="this.$parent.logoPreview" alt=""></div>
                 <div class="logo-upload" v-on:click="openPhotoUpload()">Click to upload</div>
                 <input type="file" v-on:change="renderPreview" id="overview-logo" style="display: none"
                        accept="image/png, image/jpeg">
@@ -65,6 +65,7 @@
       showUnits: true,
       showMap: true,
       showGallery: true,
+      logoPreview: '',
     }),
     mounted() {
       this.projectName = this.$parent.project.name;
@@ -84,7 +85,17 @@
         container.click();
       },
       renderPreview: function (e) {
-        var file = e.target.files[0];
+        let reader  = new FileReader();
+        reader.addEventListener("load", function () {
+          this.$parent.logoPreview = reader.result;
+          this.$parent.project.logo = e.target.files[0];
+        }.bind(this), false);
+        if( e.target.files[0] ){
+          if ( /\.(jpe?g|png)$/i.test( e.target.files[0].name ) ) {
+            reader.readAsDataURL( e.target.files[0] );
+          }
+        }
+        console.log(this.$parent.project);
       },
       enterName() {
         this.$parent.project.name = this.projectName;

@@ -11,7 +11,7 @@
         <div class="navbar__right">
             <router-link to="/new" class="new-project">
                 <div class="new-project">
-                    <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
+                    <span v-if="isLoggedIn" style="padding-right: 10px;"><a @click="logout">Logout</a></span>
                     <div class="new-project-icon"></div>
                     <div class="new-project-text">New App</div>
                 </div>

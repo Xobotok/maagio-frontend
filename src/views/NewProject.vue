@@ -2,7 +2,7 @@
     <div class="new-project-page">
         <div class="new-project-progress">
             <div class="progress-tab" v-for="(progress, key) in progresses"
-                 :class="{inactive: progress.active != true}">
+                 :class="{inactive: progress.active != true || published === true}">
                 <div class="progress-name" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
                 <div class="progress-arrow" v-if="progress.arrow"></div>
             </div>
@@ -13,20 +13,27 @@
             <ProjectUnits v-show="activeTab == 3"></ProjectUnits>
             <ProjectMap v-show="activeTab == 4"></ProjectMap>
             <ProjectGalleries v-show="activeTab == 5"></ProjectGalleries>
+            <ProjectPublish v-show="activeTab == 6"></ProjectPublish>
         </div>
-        <div class="project-page-controls" v-if="!published">
+        <div class="project-page-controls" v-if="!published && !loaded">
             <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="activeTab--; makeActive(activeTab);">Back</div>
             <div class="project-page-subcontrols">
                 <div class="project-page-button">Save Draft</div>
                 <div class="project-page-button blue-button" v-if="checkNext()" @click="activeTab++; makeActive(activeTab);">Next</div>
-                <div class="project-page-button inactive-button" v-if="!checkNext()">Next</div>
+                <div class="project-page-button inactive-button" v-if="!checkNext() && activeTab !== 6">Next</div>
                 <div class="project-page-button blue-button" @click="publish" v-if="checkPublish()">Publish</div>
+                <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab === 6">Publish</div>
             </div>
         </div>
         <div class="project-page-publish" v-if="published">
             <div class="publish-button">
                 <span class="publish-icon"></span>
                 Published
+            </div>
+        </div>
+        <div class="project-page-publish" v-if="loaded && !published">
+            <div class="publish-button">
+                Loaded
             </div>
         </div>
     </div>
@@ -38,11 +45,12 @@
   import ProjectUnits from '@/components/project/ProjectUnits.vue'
   import ProjectMap from '@/components/project/ProjectMap.vue'
   import ProjectGalleries from '@/components/project/ProjectGalleries.vue'
+  import ProjectPublish from '@/components/project/ProjectPublish.vue'
   import constants from '../Constants'
   export default {
     name: 'newproject',
     components: {
-      ProjectOverview, ProjectFloors, ProjectUnits, ProjectMap, ProjectGalleries
+      ProjectOverview, ProjectFloors, ProjectUnits, ProjectMap, ProjectGalleries, ProjectPublish
     },
     mounted() {
       var tabs = document.getElementsByClassName('progress-tab');
@@ -51,6 +59,9 @@
     },
     methods: {
       makeActive(e) {
+        if(this.published === true) {
+          return false;
+        }
         if (this.progresses[e - 1].active === true) {
           this.activeTab = e;
           var tabs = document.getElementsByClassName('progress-tab');
@@ -62,6 +73,10 @@
       },
       publish(){
         this.uploadFiles();
+
+      },
+      saveDraft() {
+
       },
       checkActive() {
         if(this.project.floors.length > 0) {
@@ -71,13 +86,29 @@
         }
       },
       checkPublish() {
+        if(this.published === true) {
+          return false;
+        }
+        let unitsFlag = true;
+        for (let i = 0; i < this.project.floors.length; i++) {
+          if(this.project.floors[i].units.length > 0) {
+            unitsFlag = false;
+          }
+        }
         if(this.activeTab === 6) {
+          if((this.progresses[1].active === true && this.project.floors.length < 1) ||
+            (this.progresses[2].active === true && unitsFlag) ||
+            (this.progresses[3].active === true && (!this.project.map.lat || !this.project.map.lng)) ||
+            (this.progresses[4].active === true && this.project.galleries.length < 1)) {
+            return false;
+          }
           return true;
         } else {
           return false;
         }
       },
       uploadFiles() {
+        this.loaded = true;
         let data = new FormData();
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         let token = localStorage.getItem('token');
@@ -96,6 +127,8 @@
         data.append('user_id', user.uid);
         data.append('token', token);
         data.append('project', JSON.stringify(this.project));
+        data.append('logo', this.project.logo);
+        let obj = this;
         $.ajax({
           url         : constants.BACKEND_URL + 'project/save-new-project',
           type        : 'POST', // важно!
@@ -108,7 +141,11 @@
           contentType : false,
           // функция успешного ответа сервера
           success     : function( respond, status, jqXHR ){
-
+            console.log(obj);
+            if(respond.ok === 1) {
+              obj.published = true;
+                $('#personal-link').text(respond.project_link);
+            }
             // ОК - файлы загружены
             if( typeof respond.error === 'undefined' ){
               // выведем пути загруженных файлов в блок '.ajax-reply'
@@ -132,6 +169,9 @@
         });
       },
       checkNext() {
+        if(this.published === true) {
+          return false;
+        }
         if(this.activeTab === 1) {
           if(this.project.name.length > 0) {
             return true;
@@ -147,11 +187,13 @@
             }
         }
         if(this.activeTab === 3) {
-          if(this.project.units.length > 0) {
-            return true;
-          } else {
-            return false;
+          let flag = false;
+          for(let i = 0; i < this.project.floors.length; i++) {
+            if(this.project.floors[i].units.length > 0) {
+              flag = true;
+            }
           }
+          return flag;
         }
         if(this.activeTab === 4) {
           if(!this.project.mapActivate || (this.project.mapActivate === true && this.project.map !== '')) {
@@ -160,12 +202,25 @@
             return false;
           }
         }
+        if(this.activeTab === 5) {
+          if(this.progresses[4].active === true && (this.project.galleries.length > 0)) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if(this.activeTab === 6) {
+          return false;
+        }
       },
     },
     data: ()=>({
       activeTab: 1,
       tabsCount: 1,
       published: false,
+      loaded: false,
+      logoPreview: '',
+      personalLink: '',
       progresses: [
         {
           name: 'Overview',
@@ -199,7 +254,7 @@
         },
       ],
       project: {
-        name: 'Васян',
+        name: '',
         logo: '',
         floors: [],
         units: [],
