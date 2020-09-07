@@ -70,7 +70,6 @@
       },
       goBack() {
         let currentTab = this.activeTab;
-        console.log(currentTab);
         for(let i = currentTab - 1; i > 0; i--) {
           if(this.progresses[i - 1].active === true) {
             this.activeTab = i;
