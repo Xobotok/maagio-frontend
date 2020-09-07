@@ -1,6 +1,6 @@
 <template>
     <div class="project-floors">
-        <div class="project-floor" v-for="(floor, key) in floors">
+        <div class="project-floor" v-for="(floor, key) in this.$parent.project.floors">
             <div class="floor-upload-button" v-show="floor.image == ''">
                 <div class="logo-upload" @click="uploadImage(key)">Upload floor image
                 </div>
@@ -49,18 +49,18 @@
       floorNumbers: [],
     }),
     mounted() {
-      this.floors = this.$parent.project.floors;
+
     },
     methods: {
       uploadFloorImage(e) {
         let number = e.target.getAttribute('floor-number');
-        this.floors[number].imageName = name;
+        this.$parent.project.floors[number].imageName = name;
         let file = e.target.files[0];
         let reader = new FileReader();
 
         reader.addEventListener("load", function () {
-          this.floors[number].preview = reader.result;
-          this.floors[number].image = file;
+          this.$parent.project.floors[number].preview = reader.result;
+          this.$parent.project.floors[number].image = file;
 
         }.bind(this), false);
         if (file) {
@@ -76,27 +76,29 @@
           let elementId = element.$attrs.elementid;
           let newId = element.selectedOption.val;
           let obj = this.floors[elementId];
-          this.floors.splice(elementId, 1);
-          this.floors.splice(newId, 0, obj);
+          this.$parent.project.floors.splice(elementId, 1);
+          this.$parent.project.floors.splice(newId, 0, obj);
           this.closeDropDown();
         }
 
       },
       addFloor() {
+        console.log(this.$parent.project);
         let floor = {
           image: '',
           imageName: '',
           preview: '',
           units: [],
         };
-        this.floors.push(floor);
+        this.$parent.project.floors.push(floor);
         this.arrayOfObjects = [];
-        for (var i = 0; i < this.floors.length; i++) {
+        for (var i = 0; i < this.$parent.project.floors.length; i++) {
           this.arrayOfObjects.push({ name: 'Floor ' + (i + 1), val: i });
         }
-        this.$parent.project.floors = this.floors;
+
         this.$parent.checkActive();
         this.$parent.checkNext();
+
       },
       uploadImage(key) {
         document.getElementById('floor-image-' + key).click();
@@ -113,17 +115,15 @@
       },
       removeFloor: function (key) {
         this.closeDropDown();
-        this.floorNumbers = [];
-        for (let i = 0; i < this.floors.length - 1; i++) {
-          this.floorNumbers.push('Floor ' + (i + 1));
+        this.$parent.floorNumbers = [];
+        for (let i = 0; i < this.$parent.project.floors.length - 1; i++) {
+          this.$parent.floorNumbers.push('Floor ' + (i + 1));
         }
-        this.floors.splice(key, 1);
+        this.$parent.project.floors.splice(key, 1);
         this.arrayOfObjects = [];
-        for (let i = 0; i < this.floors.length; i++) {
+        for (let i = 0; i < this.$parent.project.floors.length; i++) {
           this.arrayOfObjects.push({ name: 'Floor ' + (i + 1), val: i });
         }
-        this.$parent.project.floors = this.floors;
-
         this.$parent.checkActive();
         this.$parent.checkNext();
       },

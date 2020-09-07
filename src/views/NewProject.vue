@@ -16,10 +16,10 @@
             <ProjectPublish v-show="activeTab == 6"></ProjectPublish>
         </div>
         <div class="project-page-controls" v-if="!published && !loaded">
-            <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="activeTab--; makeActive(activeTab);">Back</div>
+            <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="goBack()">Back</div>
             <div class="project-page-subcontrols">
                 <div class="project-page-button">Save Draft</div>
-                <div class="project-page-button blue-button" v-if="checkNext()" @click="activeTab++; makeActive(activeTab);">Next</div>
+                <div class="project-page-button blue-button" v-if="checkNext()" @click="goNext">Next</div>
                 <div class="project-page-button inactive-button" v-if="!checkNext() && activeTab !== 6">Next</div>
                 <div class="project-page-button blue-button" @click="publish" v-if="checkPublish()">Publish</div>
                 <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab === 6">Publish</div>
@@ -33,7 +33,7 @@
         </div>
         <div class="project-page-publish" v-if="loaded && !published">
             <div class="publish-button">
-                Loaded
+                Loading
             </div>
         </div>
     </div>
@@ -53,11 +53,32 @@
       ProjectOverview, ProjectFloors, ProjectUnits, ProjectMap, ProjectGalleries, ProjectPublish
     },
     mounted() {
-      var tabs = document.getElementsByClassName('progress-tab');
+      let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
       this.checkActive();
     },
     methods: {
+      goNext(){
+        let currentTab = this.activeTab;
+        for(let i = currentTab; i < this.progresses.length; i++) {
+          if(this.progresses[i].active === true) {
+            this.activeTab = i + 1;
+            this.makeActive(this.activeTab);
+            break;
+          }
+        }
+      },
+      goBack() {
+        let currentTab = this.activeTab;
+        console.log(currentTab);
+        for(let i = currentTab - 1; i > 0; i--) {
+          if(this.progresses[i - 1].active === true) {
+            this.activeTab = i;
+            this.makeActive(this.activeTab);
+            break;
+          }
+        }
+      },
       makeActive(e) {
         if(this.published === true) {
           return false;
@@ -144,7 +165,7 @@
             console.log(obj);
             if(respond.ok === 1) {
               obj.published = true;
-                $('#personal-link').text(respond.project_link);
+                $('#personal-link').text(document.location.protocol +'//' + document.location.host +'/#/show?project=' + respond.project_link);
             }
             // ОК - файлы загружены
             if( typeof respond.error === 'undefined' ){
@@ -168,6 +189,7 @@
           }
         });
       },
+
       checkNext() {
         if(this.published === true) {
           return false;

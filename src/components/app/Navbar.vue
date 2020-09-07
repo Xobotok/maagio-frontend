@@ -9,19 +9,26 @@
             <div class="inactive-nav">FAQ <span class="small-top">coming soon</span></div>
         </div>
         <div class="navbar__right">
+            <span v-if="isLoggedIn" style="padding-right: 10px; cursor: pointer;"><a @click="logout">Logout</a></span>
             <router-link to="/new" class="new-project">
                 <div class="new-project">
-                    <span v-if="isLoggedIn" style="padding-right: 10px;"><a @click="logout">Logout</a></span>
                     <div class="new-project-icon"></div>
                     <div class="new-project-text">New App</div>
                 </div>
             </router-link>
-            <router-link to="/profile" class="new-project">
+            <div class="new-project">
                 <div class="profile">
                     <div class="profile-icon"></div>
-                    <div class="profile-name">Denis Vasiliev</div>
+                    <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
                 </div>
-            </router-link>
+            </div>
+
+            <!--<router-link to="/profile" class="new-project">
+                <div class="profile">
+                    <div class="profile-icon"></div>
+                    <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
+                </div>
+            </router-link>-->
         </div>
     </nav>
 </template>
@@ -32,6 +39,10 @@
       computed : {
         isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
       },
+      data: ()=>({
+        user_name: '',
+        user_lastname: '',
+        }),
       methods: {
         logout: function () {
           this.$store.dispatch('logout')
@@ -40,5 +51,12 @@
           })
         }
       },
+      mounted(){
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        this.user_name = user.name;
+        if(this.user_lastname != ''){
+          this.user_lastname = user.last_name;
+        }
+      }
     }
 </script>

@@ -31,7 +31,12 @@
     props: ['project'],
     methods: {
       getImgUrl() {
-        return require('../../assets/'+this._props.project.img);
+        if(this._props.project.project_logo == null) {
+          return require('../../assets/img/default_logo.jpg');
+        } else {
+          console.log('"'+this._props.project.project_logo+'"');
+          return this._props.project.project_logo;
+        }
       }
     },
     mounted: function () {

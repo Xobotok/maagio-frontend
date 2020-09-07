@@ -95,7 +95,6 @@
             reader.readAsDataURL( e.target.files[0] );
           }
         }
-        console.log(this.$parent.project);
       },
       enterName() {
         this.$parent.project.name = this.projectName;
@@ -125,6 +124,8 @@
         }
       },
       changeUnits() {
+        this.$parent.project.floors = [];
+        console.log(this.$parent.project);
         if (this.showUnits === true && this.projectName.length > 0) {
           this.$parent.progresses[1].active = true;
           if (this.$parent.project.floors.length > 0) {
@@ -136,6 +137,7 @@
         }
       },
       changeMap() {
+        this.$parent.project.map = '';
         if (this.showMap === true && this.projectName.length > 0) {
           this.$parent.progresses[3].active = true;
         } else {
@@ -143,6 +145,7 @@
         }
       },
       changeGallery() {
+        this.$parent.project.galleries = [];
         if (this.showGallery === true && this.projectName.length > 0) {
           this.$parent.progresses[4].active = true;
         } else {
