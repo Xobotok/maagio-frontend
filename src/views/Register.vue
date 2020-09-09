@@ -34,6 +34,7 @@
         } else {
           let data = {
             name: this.name,
+            last_name: this.last_name,
             email: this.email,
             company: this.company,
             password: this.password,

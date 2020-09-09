@@ -9,6 +9,7 @@
 <script>
   import ConstructorLayout from '@/layouts/ConstructorLayout';
   import EmptyLayout from '@/layouts/EmptyLayout';
+  import ShowLayout from '@/layouts/ShowLayout';
 
 
   export default {
@@ -18,7 +19,7 @@
       }
     },
     components: {
-      EmptyLayout, ConstructorLayout
+      EmptyLayout, ConstructorLayout, ShowLayout
     },
   }
 </script>

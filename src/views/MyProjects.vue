@@ -38,7 +38,6 @@
         success     : function( respond, status, jqXHR ){
           if(respond.ok === 1) {
             obj.projects = respond.data;
-            console.log(respond.data);
           }
 
         },

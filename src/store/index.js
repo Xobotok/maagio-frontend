@@ -41,8 +41,7 @@ export default new Vuex.Store({
             commit('auth_success', token, user)
             resolve(resp)
           } else {
-            window.location.href = "#/login/?message=" + resp.data.message;
-            window.location.reload();
+            user.obj.message = resp.data.message;
           }
         })
         .catch(err => {
@@ -65,7 +64,7 @@ export default new Vuex.Store({
           commit('auth_success', token, user)
           resolve(resp)*/
          if(resp.data.ok == 1) {
-           window.location.href = "#/login/?message=" + resp.data.message;
+           window.location.href = "/#/login/?message=" + resp.data.message;
          } else {
            alert(resp.data.error);
          }
