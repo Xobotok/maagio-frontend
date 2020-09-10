@@ -6,6 +6,8 @@
         </div>
         <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
         <Floors v-if="this.$parent.activeTab === 'Floor plates'"></Floors>
+        <Gallery v-if="this.$parent.activeTab === 'Gallery'"></Gallery>
+        <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
     </div>
 </template>
 
@@ -13,9 +15,11 @@
   import constants from '../Constants';
   import ShowHome from '@/components/show/ShowHome.vue'
   import Floors from '@/components/show/ShowFloors.vue'
+  import Gallery from '@/components/show/ShowGallery.vue'
+  import ShowMap from '@/components/show/ShowMap.vue'
   export default {
     components: {
-      ShowHome,Floors
+      ShowHome,Floors, Gallery, ShowMap
     },
     name: 'show',
     data: ()=>({

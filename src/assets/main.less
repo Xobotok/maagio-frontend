@@ -518,6 +518,7 @@ main {
   text-align: center;
   font-size: 18px;
   display: inline-block;
+  white-space: nowrap;
   padding-left: 20px;
   padding-right: 20px;
   margin-left: 20px;
@@ -754,6 +755,42 @@ main {
             & .overview-checkbox:first-child {
               padding-right: 30px;
             }
+          }
+          .unit-image {
+            padding-top: 20px;
+            .unit-image-header {
+              font-family: RobotoMedium, sans-serif;
+            }
+            .unit-image-buttons {
+              display: flex;
+              margin-top: 10px;
+              justify-content: center;
+            }
+            .remove-image:hover {
+              color: rgba(200, 0, 0, 0.76);
+            }
+            .remove-image {
+              cursor: pointer;
+              padding-left: 20px;
+              padding-right: 20px;
+              padding-top: 8px;
+              padding-bottom: 8px;
+              color: rgba(255, 0, 0, 0.76);
+            }
+            .unit-image-preview {
+              padding: 20px;
+              border: 2px solid #E0E0E0;
+              -webkit-border-radius: 12px;
+              -moz-border-radius: 12px;
+              border-radius: 12px;
+              margin-top: 10px;
+              margin-bottom: 10px;
+            }
+            img{
+              width: 100%;
+              object-fit: contain;
+            }
+
           }
         }
         & .project-unit-right {

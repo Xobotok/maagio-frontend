@@ -69,6 +69,8 @@
             X: '',
             Y: '',
           },
+          unitImage: '',
+          unitImagePreview: '',
         },
         units: [],
         openAddUnit: false,
@@ -93,6 +95,8 @@
               X: '',
               Y: '',
             },
+            unitImage: '',
+            unitImagePreview: '',
           };
         },
         openPopup() {

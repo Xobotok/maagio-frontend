@@ -118,6 +118,7 @@ main {
   padding-left: 80px;
   background-color: white;
   height: 100vh;
+  overflow: hidden;
   .app-head {
     width: 100%;
     padding-left: 20px;
@@ -146,6 +147,29 @@ main {
      position: relative;
    }
     .floor-image {
+      height: calc(100vh - 108px);
+      & .units-list {
+        padding-top: 40px;
+        display: flex;
+        flex-direction: column;
+        .units-item:hover {
+          background-color: #AC795C;
+          color: white;
+        }
+        .units-item {
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-bottom: 10px;
+          padding-top: 10px;
+          cursor: pointer;
+          border: 2px solid #AC795C;
+          margin-top: 8px;
+          margin-bottom: 8px;
+          -webkit-border-radius: 12px;
+          -moz-border-radius: 12px;
+          border-radius: 12px;
+        }
+      }
       .unit-point {
         position: absolute;
         width: 100px;
@@ -255,7 +279,7 @@ main {
   display: flex;
   position: fixed;
   background-color: white;
-  width: 100vw;
+  width: calc(100vw - 80px);
   height: 100vh;
   top: 0;
   z-index: 99999;
@@ -311,5 +335,164 @@ main {
   }
   .unit-image {
     width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.gallery-show {
+  height: calc(100% - 68px);
+  .gallery-list {
+    display: flex;
+    height: 100%;
+    .gallery-control {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      display: flex;
+      padding: 10px;
+      background-color: white;
+      .control-number {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+      .control-arrow-left.inactive {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .control-arrow-left {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M8%2016L9.41%2014.59L3.83%209L16%209L16%207L3.83%207L9.41%201.41L8%20-6.99382e-07L6.99382e-07%208L8%2016Z%22%20fill%3D%22black%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .control-arrow-right.inactive {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .control-arrow-right {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M8%200L6.59%201.41L12.17%207H0V9H12.17L6.59%2014.59L8%2016L16%208L8%200Z%22%20fill%3D%22black%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+    }
+    .gallery-tab {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+    .gallery-content {
+      position: relative;
+      flex-shrink: 1;
+      width: 33%;
+      padding: 20px;
+      display: flex;
+      .gallery-name {
+        position: absolute;
+        bottom: 80px;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        text-shadow: 0px 1px 2px rgba(0, 0, 0, 1);
+      }
+      & .gallery-art {
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        cursor: pointer;
+        background-color: #F8F8F8;
+        img {
+          object-fit: cover;
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
+  }
+  .open-gallery {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    padding-left: 40px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .return {
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%2220%22%20viewBox%3D%220%200%2012%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M11.67%201.77L9.89%200L0%209.9L9.9%2019.8L11.67%2018.03L3.54%209.9L11.67%201.77Z%22%20fill%3D%22black%22/%3E%0A%3C/svg%3E%0A');
+      background-repeat: no-repeat;
+      width: 12px;
+      height: 20px;
+      position: absolute;
+      top: 40px;
+      left: 20px;
+      cursor: pointer;
+    }
+    .gallery-control {
+      position: absolute;
+      bottom: 10px;
+      display: flex;
+      padding: 10px;
+      background-color: white;
+      .control-arrow-left.inactive {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .control-arrow-left {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M8%2016L9.41%2014.59L3.83%209L16%209L16%207L3.83%207L9.41%201.41L8%20-6.99382e-07L6.99382e-07%208L8%2016Z%22%20fill%3D%22black%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+      .control-number {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+      .control-arrow-right.inactive {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .control-arrow-right {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M8%200L6.59%201.41L12.17%207H0V9H12.17L6.59%2014.59L8%2016L16%208L8%200Z%22%20fill%3D%22black%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+    }
+    img {
+      object-fit: contain;
+      width: 90vw;
+      height: 90vh;
+    }
+    .gradient {
+      width: 100%;
+      height: 40px;
+      background: rgb(0,0,0);
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,1) 84%);
+    }
+  }
+}
+
+.show-map {
+  #map {
+    width: 100%;
+    height: 100vh;
   }
 }

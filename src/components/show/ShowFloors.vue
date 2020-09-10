@@ -21,14 +21,20 @@
                     <div class="unit-status-text">$ {{this.openedUnit.price}}</div>
                 </div>
             </div>
-            <div class="unit-image"></div>
+            <div class="unit-image">
+                <img :src="this.openedUnit.image" alt="">
+            </div>
         </div>
         <div class="floors-content">
             <div class="floor-image">
-                <div class="image-container">
+                <div class="units-list" v-if="floorImage == ''">
+                    <div class="no-units" v-if="this.floor != '' && this.floor.units.length === 0">No units</div>
+                   <div class="units-item"  v-for="unit in this.floor.units" @click="openUnit(unit)">Unit number {{unit.unit_number}} </div>
+                </div>
+                <div class="image-container" v-if="floorImage != ''">
                     <img :src="floorImage" alt="">
                     <div v-for="unit in this.floor.units" @click="openUnit(unit)" class="unit-point"
-                         v-if="unit.mark_x != '' && unit.mark_y != ''"
+                         v-if="(unit.mark_x != '' && unit.mark_x != null) && (unit.mark_y != '' && unit.mark_y != null)"
                          :style="{left: 'calc(' + unit.mark_x + '% - 50px)', top: 'calc(' + unit.mark_y + '% - 30px)'}">
                         <div class="unit-point-bedrooms" v-if="unit.bad > 0 && unit.bad != ''">{{unit.bad}} bedroom
                         </div>
@@ -95,7 +101,10 @@
     mounted(){
       this.floor = JSON.parse(JSON.stringify(this.$parent.project.floors[0]));
       this.reserveFloor = this.$parent.project.floors[0];
-      this.floorImage = this.$parent.project.floors[0].image.image_link;
+      if(this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
+        this.floorImage = this.$parent.project.floors[0].image.image_link;
+      }
+
       for (let i = 0; i < this.floor.units.length; i++) {
         let flag = true;
         this.floor.units[i].visible = true;
@@ -111,14 +120,15 @@
         this.statusList[i] = false;
         this.statusList[this.floor.units[i].status] = true;
       }
-      console.log(this.floor.units);
     },
     methods: {
       openFloor(index) {
         this.activeFloor = index;
         this.floor = JSON.parse(JSON.stringify(this.$parent.project.floors[index]));
         this.reserveFloor = this.$parent.project.floors[index];
-        this.floorImage = this.$parent.project.floors[index].image.image_link;
+        if(this.$parent.project.floors[index].image != '' && this.$parent.project.floors[index].image != null) {
+          this.floorImage = this.$parent.project.floors[index].image.image_link;
+        }
         this.renderFilters();
       },
       renderFilters(){

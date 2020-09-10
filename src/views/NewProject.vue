@@ -136,6 +136,11 @@
           if(this.project.floors[i].image !== '') {
             data.append( 'floor-'+i, this.project.floors[i].image );
           }
+          for(let n = 0; n < this.project.floors[i].units.length; n++) {
+            if(this.project.floors[i].units[n].unitImage != '') {
+              data.append('floor-'+i + '-unit-' +n, this.project.floors[i].units[n].unitImage);
+            }
+          }
         }
         for(let i = 0; i < this.project.galleries.length; i++) {
           for(let n = 0; n < this.project.galleries[i].photos.length; n++) {
@@ -161,7 +166,6 @@
           contentType : false,
           // функция успешного ответа сервера
           success     : function( respond, status, jqXHR ){
-            console.log(obj);
             if(respond.ok === 1) {
               obj.published = true;
                 $('#personal-link').text(document.location.protocol +'//' + document.location.host +'/#/show?project=' + respond.project_link);

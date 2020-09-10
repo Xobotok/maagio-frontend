@@ -5,7 +5,6 @@
     </component>
   </div>
 </template>
-
 <script>
   import ConstructorLayout from '@/layouts/ConstructorLayout';
   import EmptyLayout from '@/layouts/EmptyLayout';

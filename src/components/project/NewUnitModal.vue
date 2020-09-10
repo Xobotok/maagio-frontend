@@ -89,21 +89,49 @@
                             </div>
                         </div>
                     </div>
+                    <div class="unit-image">
+                        <div class="unit-image-header">Unit plan</div>
+                        <div class="unit-image-preview" v-if="templateUnit.unitImagePreview != ''">
+                            <img :src="templateUnit.unitImagePreview" alt="">
+                        </div>
+                        <div class="unit-image-buttons">
+                            <div class="button-container">
+                                <div class="logo-upload" onclick="document.getElementById('image').click()">Upload
+                                    photo
+                                </div>
+                            </div>
+                            <input type="file" name="image" @change="uploadImage" style="display: none" multiple
+                                   accept="image/png, image/jpeg" id="image">
+                            <div class="remove-image" v-if="templateUnit.unitImagePreview != ''"
+                                 @click="removeImage">Remove
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="project-unit-right">
                     <div class="unit-image-header">
                         <span>Unit Location*</span> Double click on the floor plates to add the unit location.
-                        <div class="button-container" @click="templateUnit.imagePoint.X = ''; templateUnit.imagePoint.Y = ''"><div class="logo-upload">Reset</div></div>
+                        <div class="button-container"
+                             @click="templateUnit.imagePoint.X = ''; templateUnit.imagePoint.Y = ''">
+                            <div class="logo-upload">Reset</div>
+                        </div>
                     </div>
 
                     <div class="unit-image-container">
                         <img :src="floorPreview()" @click="changeColumnDefinition" alt="">
-                        <div class="unit-point" v-if="templateUnit.imagePoint.X != '' && templateUnit.imagePoint.Y != ''" :style="{left: 'calc(' + templateUnit.imagePoint.X + '% - 50px)', top: 'calc(' + templateUnit.imagePoint.Y + '% - 30px)'}">
-                            <div class="unit-point-bedrooms" v-if="templateUnit.bedroom >= 0 && templateUnit.bedroom != ''">{{templateUnit.bedroom}} bedroom</div>
+                        <div class="unit-point"
+                             v-if="templateUnit.imagePoint.X != '' && templateUnit.imagePoint.Y != ''"
+                             :style="{left: 'calc(' + templateUnit.imagePoint.X + '% - 50px)', top: 'calc(' + templateUnit.imagePoint.Y + '% - 30px)'}">
+                            <div class="unit-point-bedrooms"
+                                 v-if="templateUnit.bedroom >= 0 && templateUnit.bedroom != ''">{{templateUnit.bedroom}}
+                                bedroom
+                            </div>
                             <div class="unit-point-number">
                                 {{templateUnit.unitNumber}}
                             </div>
-                            <div class="unit-point-status" v-if="templateUnit.status !== ''">{{statusOption[templateUnit.status].name}}</div>
+                            <div class="unit-point-status" v-if="templateUnit.status !== ''">
+                                {{statusOption[templateUnit.status].name}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,6 +174,8 @@
           X: '',
           Y: '',
         },
+        unitImage: '',
+        unitImagePreview: '',
       },
       counter: 0,  // count the clicks
       timer: null,
@@ -155,18 +185,24 @@
       floorPreview() {
         return this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
       },
+      removeImage(){
+        this.templateUnit.unitImagePreview = '';
+        this.templateUnit.unitImage = '';
+        let file = document.getElementById('image');
+        file.value = '';
+      },
       saveUnit() {
-        if(this.checkSave()) {
-          for(let i = 0; i <  this.$parent.$parent.project.floors.length; i++) {
-            for(let n = 0; n < this.$parent.$parent.project.floors[i].units.length; n++) {
-              if(this.$parent.$parent.project.floors[i].units[n] === this.templateUnit) {
+        if (this.checkSave()) {
+          for (let i = 0; i < this.$parent.$parent.project.floors.length; i++) {
+            for (let n = 0; n < this.$parent.$parent.project.floors[i].units.length; n++) {
+              if (this.$parent.$parent.project.floors[i].units[n] === this.templateUnit) {
                 this.$parent.$parent.project.floors[i].units.splice(n, 1);
                 n--;
               }
             }
           }
-          for(let i = 0; i < this.$parent.units.length; i++) {
-            if(this.$parent.units[i] === this.templateUnit) {
+          for (let i = 0; i < this.$parent.units.length; i++) {
+            if (this.$parent.units[i] === this.templateUnit) {
               this.$parent.units.splice(i, 1);
               i--;
             }
@@ -178,10 +214,10 @@
         }
       },
       checkSave() {
-        if(this.templateUnit.unitNumber !== 0 && this.templateUnit.bedroom !== 0 && this.templateUnit.bedroom !== ''
+        if (this.templateUnit.unitNumber !== 0 && this.templateUnit.bedroom !== 0 && this.templateUnit.bedroom !== ''
           && this.templateUnit.price !== '' && this.templateUnit.status !== '' && this.templateUnit.bathroom !== 0
-        && this.templateUnit.interiorFootage !== '') {
-            return true;
+          && this.templateUnit.interiorFootage !== '') {
+          return true;
         } else {
           return false;
         }
@@ -205,16 +241,16 @@
             break;
         }
       },
-      changeColumnDefinition: function(event){
+      changeColumnDefinition: function (event) {
         let self = this;
         this.counter++;
 
-        if(this.counter === 1) {
-          this.timer = setTimeout(function() {
+        if (this.counter === 1) {
+          this.timer = setTimeout(function () {
             // DO NOTHING BUT RESET IN CASE THERES JUST ONE CLICK
             self.counter = 0
           }, 300);  // increase delay as you like
-        }else {
+        } else {
           let target = event.target.getBoundingClientRect();
           let x = event.clientX - target.left;
           let y = event.clientY - target.top;
@@ -227,6 +263,19 @@
           clearTimeout(this.timer);
           // COLUMN_DEFINITION[c]+=50
           self.counter = 0;
+        }
+      },
+      uploadImage(e){
+        this.file = e.target.files[0];
+        let reader = new FileReader();
+        reader.addEventListener("load", function () {
+          this.templateUnit.unitImagePreview = reader.result;
+          this.templateUnit.unitImage = e.target.files[0];
+        }.bind(this), false);
+        if (this.file) {
+          if (/\.(jpe?g|png)$/i.test(this.file.name)) {
+            reader.readAsDataURL(this.file);
+          }
         }
       }
     },
