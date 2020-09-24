@@ -41,20 +41,23 @@
         this.$parent.project.mapActivate = this.mapActivate;
       },
       mapCenter(lat, lng) {
-        window.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: lat, lng: lng },
-          zoom: 18,
-          fullscreenControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-        });
-        var marker = new google.maps.Marker({
-          position: {lat: lat, lng: lng},
-          map: map,
-        });
-        this.mapMarker = {lat: lat, lng: lng};
-        this.$parent.project.map = {lat: lat, lng: lng};
-        this.updateMap();
+        if(lat != '' && lng != '') {
+          window.map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: lat, lng: lng },
+            zoom: 18,
+            fullscreenControl: false,
+            streetViewControl: false,
+            mapTypeControl: false,
+          });
+          var marker = new google.maps.Marker({
+            position: {lat: lat, lng: lng},
+            map: map,
+          });
+          this.mapMarker = {lat: lat, lng: lng};
+          this.$parent.project.map = {lat: lat, lng: lng};
+          this.updateMap();
+        }
+
       },
       updateMap() {
         let data = new FormData();

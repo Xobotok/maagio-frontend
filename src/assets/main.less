@@ -232,7 +232,31 @@ main {
   padding-top: 50px;
   display: flex;
   justify-content: flex-start;
+  flex-direction: column;
   flex-wrap: wrap;
+  .project-header {
+    font-size: 20px;
+    text-transform: uppercase;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    color: #828282;
+  }
+  .project-list.draft-list {
+    .project-menu {
+      .project-menu-text {
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        color: #4F4F4F;
+      }
+    }
+  }
+  .project-list {
+    padding-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
   & .project-empty-card {
     display: flex;
     margin: 20px;
@@ -365,11 +389,12 @@ main {
         padding-top: 10px;
         padding-bottom: 10px;
         border-radius: 6px;
+        color: #4F4F4F;
       }
       & .menu-delimiter {
-        width: 1px;
+        width: 2px;
         height: 20px;
-        background-color: #828282;
+        background-color: #bababa;
       }
       & .menu-link {
         background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2223%22%20height%3D%2223%22%20viewBox%3D%220%200%2023%2023%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M20%2020H2.5V2.5H11.25V0H2.5C1.1125%200%200%201.125%200%202.5V20C0%2021.375%201.1125%2022.5%202.5%2022.5H20C21.375%2022.5%2022.5%2021.375%2022.5%2020V11.25H20V20ZM13.75%200V2.5H18.2375L5.95%2014.7875L7.7125%2016.55L20%204.2625V8.75H22.5V0H13.75Z%22%20fill%3D%22%234F4F4F%22/%3E%0A%3C/svg%3E%0A');
@@ -462,11 +487,9 @@ main {
         cursor: default;
       }
     }
-    & .inactive {
-      & .progress-name {
-        opacity: 0.3;
-        cursor: default;
-      }
+    & .progress-name.inactive {
+      opacity: 0.3;
+      cursor: default;
     }
   }
   & .project-page-controls {
@@ -1001,7 +1024,7 @@ main {
         position: relative;
         & .units-block-warning {
           position: absolute;
-          top:4px;
+          top: 4px;
           font-size: 12px;
           width: 100%;
           text-align: center;
@@ -1043,8 +1066,8 @@ main {
               justify-content: space-between;
             }
             .control-button {
-             margin-left: 20px;
-             margin-right: 20px;
+              margin-left: 20px;
+              margin-right: 20px;
               cursor: pointer;
             }
             .delete-accept {
@@ -1367,7 +1390,7 @@ main {
         margin-top: -12px;
         width: 100%;
         flex-direction: column;
-        left:0;
+        left: 0;
         height: 50px;
         background-color: #fafafa;
         .delete-message {

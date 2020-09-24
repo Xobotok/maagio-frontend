@@ -242,19 +242,8 @@
             if (respond.ok === 1) {
                 /*obj.published = true;*/
               floor.id = respond.floor.id;
+              floor.number = respond.floor.number;
             }
-            // ОК - файлы загружены
-            if (typeof respond.error === 'undefined') {
-              // выведем пути загруженных файлов в блок '.ajax-reply'
-              var files_path = respond.files;
-              var html = '';
-              $.each(files_path, function (key, val) {
-                html += val + '<br>';
-              })
-
-              $('.ajax-reply').html(html);
-            }
-            // ошибка
             else {
               console.log('ОШИБКА: ' + respond.data);
             }

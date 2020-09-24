@@ -1,25 +1,34 @@
 <template>
     <div class="projects" id="projects">
-        <ProjectEmptyCard v-if="projects.length == 0"></ProjectEmptyCard>
-        <ProjectCard v-for="project in projects" v-bind:project="project"></ProjectCard>
+        <ProjectEmptyCard v-if="published_projects.length == 0 && draft_projects.length == 0"></ProjectEmptyCard>
+        <div class="project-header" v-if="published_projects.length != 0">Published</div>
+        <div class="project-list" v-if="published_projects.length != 0">
+            <ProjectCard v-for="project in published_projects" v-bind:project="project"></ProjectCard>
+        </div>
+        <div class="project-header" v-if="draft_projects.length != 0">Draft</div>
+       <div class="project-list draft-list" v-if="draft_projects.length != 0">
+           <DraftProjectCard v-for="project in draft_projects" v-bind:project="project"></DraftProjectCard>
+       </div>
+
+
     </div>
 </template>
 
 <script>
     import ProjectEmptyCard from '@/components/project/ProjectEmptyCard.vue'
+    import DraftProjectCard from '@/components/project/DraftProjectCard.vue'
     import ProjectCard from '@/components/project/ProjectCard.vue'
     import constants from "../Constants";
   export default {
     name: 'myprojects',
     components: {
-      ProjectEmptyCard,ProjectCard
+      ProjectEmptyCard,ProjectCard, DraftProjectCard
     },
     data: ()=>({
         user_id: '',
         token: '',
-        projects: [
-
-          ],
+      draft_projects: [],
+      published_projects: [],
     }),
     methods: {
 
@@ -37,7 +46,9 @@
         dataType    : 'json',
         success     : function( respond, status, jqXHR ){
           if(respond.ok === 1) {
-            obj.projects = respond.data;
+            obj.published_projects = respond.published_projects;
+            obj.draft_projects = respond.draft_projects;
+            console.log(obj);
           }
 
         },

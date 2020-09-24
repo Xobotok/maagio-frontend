@@ -1,9 +1,9 @@
 <template>
     <div class="new-project-page">
         <div class="new-project-progress">
-            <div class="progress-tab" v-for="(progress, key) in progresses"
-                 :class="{inactive: progress.active != true || published === true}">
-                <div class="progress-name" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
+            <div class="progress-tab" v-for="(progress, key) in progresses">
+                <div class="progress-name active" v-if="progress.active == true && published !== true" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
+                <div class="progress-name inactive" v-if="progress.active != true || published === true">{{key + 1}} {{progress.name}}</div>
                 <div class="progress-arrow" v-if="progress.arrow"></div>
             </div>
         </div>
@@ -18,7 +18,7 @@
         <div class="project-page-controls" v-if="!published && !loaded">
             <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="goBack()">Back</div>
             <div class="project-page-subcontrols">
-                <div class="project-page-button">Save Draft</div>
+                <div class="project-page-button" @click="publish" v-if="project.published == 1">Unpublish</div>
                 <div class="project-page-button blue-button" v-if="checkNext()" @click="goNext">Next</div>
                 <div class="project-page-button inactive-button" v-if="!checkNext() && activeTab !== 6">Next</div>
                 <div class="project-page-button blue-button" @click="publish" v-if="checkPublish()">Publish</div>
@@ -41,205 +41,16 @@
 
 <script>
   import ProjectOverview from '@/components/project/ProjectOverview.vue'
-  import ProjectFloors from '@/components/project/ProjectFloors.vue'
-  import ProjectUnits from '@/components/project/ProjectUnits.vue'
-  import ProjectMap from '@/components/project/ProjectMap.vue'
-  import ProjectGalleries from '@/components/project/ProjectGalleries.vue'
-  import ProjectPublish from '@/components/project/ProjectPublish.vue'
-  import constants from '../Constants'
+  import ProjectFloors from '@/components/edit/ProjectFloors.vue'
+  import ProjectUnits from '@/components/edit/ProjectUnits.vue'
+  import ProjectMap from '@/components/edit/ProjectMap.vue'
+  import ProjectGalleries from '@/components/edit/ProjectGalleries.vue'
+  import ProjectPublish from '@/components/edit/ProjectPublish.vue'
+  import constants from "../Constants";
   export default {
     name: 'newproject',
     components: {
       ProjectOverview, ProjectFloors, ProjectUnits, ProjectMap, ProjectGalleries, ProjectPublish
-    },
-    mounted() {
-      let tabs = document.getElementsByClassName('progress-tab');
-      tabs[this.activeTab - 1].classList.add('active');
-      this.checkActive();
-    },
-    methods: {
-      goNext(){
-        let currentTab = this.activeTab;
-        for(let i = currentTab; i < this.progresses.length; i++) {
-          if(this.progresses[i].active === true) {
-            this.activeTab = i + 1;
-            this.makeActive(this.activeTab);
-            break;
-          }
-        }
-      },
-      goBack() {
-        let currentTab = this.activeTab;
-        for(let i = currentTab - 1; i > 0; i--) {
-          if(this.progresses[i - 1].active === true) {
-            this.activeTab = i;
-            this.makeActive(this.activeTab);
-            break;
-          }
-        }
-      },
-      makeActive(e) {
-        if(this.published === true) {
-          return false;
-        }
-        if (this.progresses[e - 1].active === true) {
-          this.activeTab = e;
-          var tabs = document.getElementsByClassName('progress-tab');
-          for (var i = 0; i < tabs.length; i++) {
-            tabs[i].classList.remove('active');
-          }
-          tabs[this.activeTab - 1].classList.add('active');
-        }
-      },
-      publish(){
-        this.uploadFiles();
-
-      },
-      saveDraft() {
-
-      },
-      checkActive() {
-        if(this.project.floors.length > 0) {
-          this.progresses[2].active = true;
-        } else {
-          this.progresses[2].active = false;
-        }
-      },
-      checkPublish() {
-        if(this.published === true) {
-          return false;
-        }
-        let unitsFlag = true;
-        for (let i = 0; i < this.project.floors.length; i++) {
-          if(this.project.floors[i].units.length > 0) {
-            unitsFlag = false;
-          }
-        }
-        if(this.activeTab === 6) {
-          if((this.progresses[1].active === true && this.project.floors.length < 1) ||
-            (this.progresses[2].active === true && unitsFlag) ||
-            (this.progresses[3].active === true && (!this.project.map.lat || !this.project.map.lng)) ||
-            (this.progresses[4].active === true && this.project.galleries.length < 1)) {
-            return false;
-          }
-          return true;
-        } else {
-          return false;
-        }
-      },
-      uploadFiles() {
-        this.loaded = true;
-        let data = new FormData();
-        let user = JSON.parse(localStorage.getItem('maagio_user'));
-        let token = localStorage.getItem('token');
-        for(let i = 0; i < this.project.floors.length; i++) {
-          if(this.project.floors[i].image !== '') {
-            data.append( 'floor-'+i, this.project.floors[i].image );
-          }
-          for(let n = 0; n < this.project.floors[i].units.length; n++) {
-            if(this.project.floors[i].units[n].unitImage != '') {
-              data.append('floor-'+i + '-unit-' +n, this.project.floors[i].units[n].unitImage);
-            }
-          }
-        }
-        for(let i = 0; i < this.project.galleries.length; i++) {
-          for(let n = 0; n < this.project.galleries[i].photos.length; n++) {
-            data.append( 'gallery-'+i + '_photo-' + n, this.project.galleries[i].photos[n] );
-          }
-
-        }
-        data.append('my_file_upload', 1);
-        data.append('user_id', user.uid);
-        data.append('token', token);
-        data.append('project', JSON.stringify(this.project));
-        data.append('logo', this.project.logo);
-        let obj = this;
-        $.ajax({
-          url         : constants.BACKEND_URL + 'project/save-new-project',
-          type        : 'POST', // важно!
-          data        : data,
-          cache       : false,
-          dataType    : 'json',
-          // отключаем обработку передаваемых данных, пусть передаются как есть
-          processData : false,
-          // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
-          contentType : false,
-          // функция успешного ответа сервера
-          success     : function( respond, status, jqXHR ){
-            if(respond.ok === 1) {
-              obj.published = true;
-                $('#personal-link').text(document.location.protocol +'//' + document.location.host +'/#/show?project=' + respond.project_link);
-            }
-            // ОК - файлы загружены
-            if( typeof respond.error === 'undefined' ){
-              // выведем пути загруженных файлов в блок '.ajax-reply'
-              var files_path = respond.files;
-              var html = '';
-              $.each( files_path, function( key, val ){
-                html += val +'<br>';
-              } )
-
-              $('.ajax-reply').html( html );
-            }
-            // ошибка
-            else {
-              obj.loaded = false;
-              console.log('ОШИБКА: ' + respond.data );
-            }
-          },
-          // функция ошибки ответа сервера
-          error: function( jqXHR, status, errorThrown ){
-            obj.loaded = false;
-            console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
-          }
-        });
-      },
-
-      checkNext() {
-        if(this.published === true) {
-          return false;
-        }
-        if(this.activeTab === 1) {
-          if(this.project.name.length > 0) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-        if(this.activeTab === 2) {
-            if(this.project.floors.length > 0) {
-              return true;
-            } else {
-              return false;
-            }
-        }
-        if(this.activeTab === 3) {
-          let flag = false;
-          for(let i = 0; i < this.project.floors.length; i++) {
-            if(this.project.floors[i].units.length > 0) {
-              flag = true;
-            }
-          }
-          return flag;
-        }
-        if(this.activeTab === 4) {
-          if(!this.project.mapActivate || (this.project.mapActivate === true && this.project.map !== '')) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-        if(this.activeTab === 5) {
-          if(this.progresses[4].active === true && (this.project.galleries.length > 0)) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-        if(this.activeTab === 6) {
-          return false;
-        }
-      },
     },
     data: ()=>({
       activeTab: 1,
@@ -248,6 +59,8 @@
       loaded: false,
       logoPreview: '',
       personalLink: '',
+      units: [],
+      oldProject: {},
       progresses: [
         {
           name: 'Overview',
@@ -284,11 +97,345 @@
         name: '',
         logo: '',
         floors: [],
+        unfloor_units: [],
         units: [],
         mapActivate: true,
         map: '',
         galleries: [],
       },
     }),
+    mounted() {
+      let tabs = document.getElementsByClassName('progress-tab');
+      tabs[this.activeTab - 1].classList.add('active');
+      this.checkActive();
+
+    },
+    methods: {
+      goNext(){
+        let obj = this;
+        let currentTab = obj.activeTab;
+        for (let i = currentTab; i < obj.progresses.length; i++) {
+          if (obj.progresses[i].active === true) {
+            if(obj.activeTab == 1) {
+              this.saveOverview();
+            }
+            obj.activeTab = i + 1;
+
+            obj.makeActive(obj.activeTab);
+            break;
+          }
+        }
+      },
+      saveDraft(){
+        if (this.activeTab == 1) {
+          this.saveOverview();
+        }
+        if(this.activeTab == 2) {
+          this.saveFloorPlates();
+        }
+      },
+      saveOverview() {
+        let obj = this;
+        if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo) {
+          this.loaded = true;
+          let data = new FormData();
+          let user = JSON.parse(localStorage.getItem('maagio_user'));
+          let token = localStorage.getItem('token');
+          data.append('user_id', user.uid);
+          data.append('token', token);
+          data.append('name', this.project.name);
+          data.append('logo', this.project.logo);
+          $.ajax({
+            url: constants.BACKEND_URL + 'project/update-overview',
+            type: 'POST', // важно!
+            data: data,
+            cache: false,
+            dataType: 'json',
+            // отключаем обработку передаваемых данных, пусть передаются как есть
+            processData: false,
+            // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
+            contentType: false,
+            // функция успешного ответа сервера
+            success: function (respond, status, jqXHR) {
+              obj.loaded = false;
+              if (respond.ok === 1) {
+                  /*obj.published = true;*/
+                obj.project.id = respond.project.id;
+                obj.project.logo = respond.project_logo;
+                obj.oldProject = JSON.parse(JSON.stringify(obj.project))
+              }
+              // ОК - файлы загружены
+              if (typeof respond.error === 'undefined') {
+                // выведем пути загруженных файлов в блок '.ajax-reply'
+                var files_path = respond.files;
+                var html = '';
+                $.each(files_path, function (key, val) {
+                  html += val + '<br>';
+                })
+
+                $('.ajax-reply').html(html);
+              }
+              // ошибка
+              else {
+                console.log('ОШИБКА: ' + respond.data);
+              }
+            },
+            // функция ошибки ответа сервера
+            error: function (jqXHR, status, errorThrown) {
+              obj.loaded = false;
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
+        } else {
+          obj.loaded = false;
+        }
+      },
+      saveFloorPlates(callBack){
+        let obj = this;
+        if (callBack) {
+          callBack();
+        }
+        let flag = false;
+        for(var i = 0; i< this.oldProject.floors.length; i++) {
+          for(var n = 0; n < this.project.floors.length; n++) {
+            if(this.oldProject.floors[i].id == this.project.floors[n].id && this.oldProject.floors[i].image_id == this.project.floors[n].image_id && this.oldProject.floors[i].number == this.project.floors[n].number) {
+              flag = true;
+            }
+          }
+        }
+        if(flag != true) {
+          this.loaded = true;
+          let data = new FormData();
+          let user = JSON.parse(localStorage.getItem('maagio_user'));
+          let token = localStorage.getItem('token');
+          let floors = [];
+          let floorImages = [];
+          for(var i = 0; i < this.project.floors.length; i++) {
+            let floor = {};
+            floor.number = i+ 1;
+            if(this.project.floors[i].id == '') {
+              this.project.floors[i].id = 0;
+            }
+            floor.id = this.project.floors[i].id;
+            if(this.project.floors[i].image_id != '') {
+              floor.image_id = this.project.floors[i].image_id;
+            }
+            if(this.project.floors[i].image != '') {
+              floor.image = this.project.floors[i].image.name + '_' + this.project.floors[i].image.size;
+              data.append('floor_images'+'_'+i, this.project.floors[i].image);
+            }
+            floors.push(floor)
+          }
+
+          data.append('user_id', user.uid);
+          data.append('token', token);
+          data.append('floors', JSON.stringify(floors));
+          data.append('project_id', this.project.id);
+          $.ajax({
+            url: constants.BACKEND_URL + 'project/update-floor-plates',
+            type: 'POST', // важно!
+            data: data,
+            cache: false,
+            dataType: 'json',
+            // отключаем обработку передаваемых данных, пусть передаются как есть
+            processData: false,
+            // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
+            contentType: false,
+            // функция успешного ответа сервера
+            success: function (respond, status, jqXHR) {
+              obj.loaded = false;
+              obj.goNext();
+              if (respond.ok === 1) {
+                  /*obj.published = true;*/
+                obj.project.logo = respond.project_logo;
+                obj.oldProject = JSON.parse(JSON.stringify(obj.project))
+              }
+              // ОК - файлы загружены
+              if (typeof respond.error === 'undefined') {
+                // выведем пути загруженных файлов в блок '.ajax-reply'
+                var files_path = respond.files;
+                var html = '';
+                $.each(files_path, function (key, val) {
+                  html += val + '<br>';
+                })
+
+                $('.ajax-reply').html(html);
+              }
+              // ошибка
+              else {
+                console.log('ОШИБКА: ' + respond.data);
+              }
+            },
+            // функция ошибки ответа сервера
+            error: function (jqXHR, status, errorThrown) {
+              obj.loaded = false;
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
+        } else {
+          obj.loaded = false;
+        }
+      },
+      saveUnits(){
+
+      },
+      saveMaps(){
+
+      },
+      saveGalleries(){
+
+      },
+      goBack() {
+        let currentTab = this.activeTab;
+        for (let i = currentTab - 1; i > 0; i--) {
+          if (this.progresses[i - 1].active === true) {
+            this.activeTab = i;
+            this.makeActive(this.activeTab);
+            break;
+          }
+        }
+      },
+      makeActive(e) {
+        this.saveDraft();
+        if (this.published === true) {
+          return false;
+        }
+        if(e == 6){
+          let protocol = document.location.protocol;
+          let host =  document.location.host;
+          if(this.project.special_link != undefined) {
+            this.personalLink = protocol + '//' + host+'/#/show?project=' + this.project.special_link;
+          } else {
+            this.personalLink = '';
+          }
+        }
+        if (this.progresses[e - 1].active === true) {
+          this.activeTab = e;
+          var tabs = document.getElementsByClassName('progress-tab');
+          for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+          }
+          tabs[this.activeTab - 1].classList.add('active');
+        }
+      },
+      publish(){
+        let data = new FormData();
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        data.append('user_id', user.uid);
+        data.append('token', token);
+        data.append('project_id', this.project.id);
+        let obj = this;
+        $.ajax({
+          url: constants.BACKEND_URL + 'project/publish',
+          type: 'POST', // важно!
+          data: data,
+          cache: false,
+          dataType: 'json',
+          processData: false,
+          contentType: false,
+          success: function (respond, status, jqXHR) {
+            obj.stopSave = false;
+            if (respond.ok === 1) {
+              obj.project.published = respond.published;
+              if(obj.project.published == 1) {
+                let protocol = document.location.protocol;
+                let host =  document.location.host;
+                obj.personalLink = protocol + '//' + host+'/#/show?project=' + respond.personal_link;
+                obj.published = true;
+              } else {
+                obj.published = false;
+                obj.personalLink = '';
+              }
+              console.log(obj);
+            } else {
+              console.log('ОШИБКА: ' + respond.data);
+            }
+          },
+          error: function (jqXHR, status, errorThrown) {
+            obj.stopSave = false;
+            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+          }
+        });
+
+      },
+      checkActive() {
+        if (this.project.floors != undefined && this.project.floors.length > 0) {
+          this.progresses[2].active = true;
+        } else {
+          this.progresses[2].active = false;
+        }
+      },
+      checkPublish() {
+        if (this.published === true) {
+          return false;
+        }
+        let unitsFlag = true;
+        if(this.project.floors != undefined) {
+          for (let i = 0; i < this.project.floors.length; i++) {
+            if (this.project.floors[i].units.length > 0) {
+              unitsFlag = false;
+            }
+          }
+        }
+
+        if (this.activeTab === 6) {
+          if ((this.progresses[1].active === true && this.project.floors.length < 1) ||
+            (this.progresses[2].active === true && unitsFlag) ||
+            (this.progresses[3].active === true && (!this.project.map.lat || !this.project.map.lng)) ||
+            (this.progresses[4].active === true && this.project.galleries.length < 1)) {
+            return false;
+          }
+          return true;
+        } else {
+          return false;
+        }
+      },
+      checkNext() {
+        if (this.published === true) {
+          return false;
+        }
+        if (this.activeTab === 1) {
+          if (this.project.name.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if (this.activeTab === 2) {
+          if (this.project.floors.length > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if (this.activeTab === 3) {
+          let flag = false;
+          for (let i = 0; i < this.project.floors.length; i++) {
+            if (this.project.floors[i].units.length > 0) {
+              flag = true;
+            }
+          }
+          return flag;
+        }
+        if (this.activeTab === 4) {
+          if (!this.project.mapActivate || (this.project.mapActivate === true && this.project.map !== '')) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if (this.activeTab === 5) {
+          if (this.progresses[4].active === true && (this.project.galleries.length > 0)) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        if (this.activeTab === 6) {
+          return false;
+        }
+      },
+    },
   }
 </script>

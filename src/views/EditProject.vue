@@ -1,9 +1,9 @@
 <template>
     <div class="new-project-page">
         <div class="new-project-progress">
-            <div class="progress-tab" v-for="(progress, key) in progresses"
-                 :class="{inactive: progress.active != true || published === true}">
-                <div class="progress-name" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
+            <div class="progress-tab" v-for="(progress, key) in progresses">
+                <div class="progress-name active" v-if="progress.active == true && published !== true" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
+                <div class="progress-name inactive" v-if="progress.active != true || published === true">{{key + 1}} {{progress.name}}</div>
                 <div class="progress-arrow" v-if="progress.arrow"></div>
             </div>
         </div>
@@ -108,19 +108,18 @@
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
       this.checkActive();
-
     },
     methods: {
       goNext(){
         let obj = this;
-          let currentTab = obj.activeTab;
-          for (let i = currentTab; i < obj.progresses.length; i++) {
-            if (obj.progresses[i].active === true) {
-              obj.activeTab = i + 1;
-              obj.makeActive(obj.activeTab);
-              break;
-            }
+        let currentTab = obj.activeTab;
+        for (let i = currentTab; i < obj.progresses.length; i++) {
+          if (obj.progresses[i].active === true) {
+            obj.activeTab = i + 1;
+            obj.makeActive(obj.activeTab);
+            break;
           }
+        }
       },
       saveDraft(){
         if (this.activeTab == 1) {
@@ -141,7 +140,6 @@
           data.append('token', token);
           data.append('name', this.project.name);
           data.append('logo', this.project.logo);
-          data.append('project_id', this.project.id);
           $.ajax({
             url: constants.BACKEND_URL + 'project/update-overview',
             type: 'POST', // важно!
@@ -157,8 +155,10 @@
               obj.loaded = false;
               if (respond.ok === 1) {
                   /*obj.published = true;*/
+                obj.project.id = respond.project.id;
                 obj.project.logo = respond.project_logo;
-                  obj.oldProject = JSON.parse(JSON.stringify(obj.project))
+                console.log(obj.project);
+                obj.oldProject = JSON.parse(JSON.stringify(obj.project))
               }
               // ОК - файлы загружены
               if (typeof respond.error === 'undefined') {
@@ -299,7 +299,11 @@
         if(e == 6){
           let protocol = document.location.protocol;
           let host =  document.location.host;
-          this.personalLink = protocol + '//' + host+'/#/show?project=' + this.project.special_link;
+          if(this.project.special_link != undefined) {
+            this.personalLink = protocol + '//' + host+'/#/show?project=' + this.project.special_link;
+          } else {
+            this.personalLink = '';
+          }
         }
         if (this.progresses[e - 1].active === true) {
           this.activeTab = e;
@@ -330,6 +334,16 @@
             obj.stopSave = false;
             if (respond.ok === 1) {
               obj.project.published = respond.published;
+              if(obj.project.published == 1) {
+                let protocol = document.location.protocol;
+                let host =  document.location.host;
+                obj.personalLink = protocol + '//' + host+'/#/show?project=' + respond.personal_link;
+                obj.published = true;
+              } else {
+                obj.published = false;
+                obj.personalLink = '';
+              }
+              console.log(obj);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }

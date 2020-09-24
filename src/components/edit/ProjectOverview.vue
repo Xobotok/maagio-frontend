@@ -141,6 +141,16 @@
       loadMap(){
         let lat = this.$parent.project.map.lat;
         let lng = this.$parent.project.map.lng;
+        if(this.$parent.project.map.lat != undefined) {
+          lat = this.$parent.project.map.lat;
+        } else {
+          lat = 34.055855;
+        }
+        if(this.$parent.project.map.lng != undefined) {
+          lng = this.$parent.project.map.lng;
+        } else {
+          lng = -118.246130;
+        }
         window.map = new google.maps.Map(document.getElementById('map'), {
           center: { lat: lat, lng: lng },
           zoom: 18,
