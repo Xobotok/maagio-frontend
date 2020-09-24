@@ -83,7 +83,6 @@
 
       },
       addFloor() {
-        console.log(this.$parent.project);
         let floor = {
           image: '',
           imageName: '',

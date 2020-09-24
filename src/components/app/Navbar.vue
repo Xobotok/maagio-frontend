@@ -16,19 +16,19 @@
                     <div class="new-project-text">New App</div>
                 </div>
             </router-link>
-            <div class="new-project">
+            <!--<div class="new-project">
                 <div class="profile">
                     <div class="profile-icon"></div>
                     <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
                 </div>
-            </div>
+            </div>-->
 
-            <!--<router-link to="/profile" class="new-project">
+            <router-link to="/profile" class="new-project">
                 <div class="profile">
                     <div class="profile-icon"></div>
                     <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
                 </div>
-            </router-link>-->
+            </router-link>
         </div>
     </nav>
 </template>

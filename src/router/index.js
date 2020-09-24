@@ -19,6 +19,12 @@ const routes = [
     component: () => import('../views/MyProjects.vue'),
   },
   {
+    path: '/edit',
+    name: 'EditProject',
+    meta: { layout: 'constructor',  requiresAuth: true },
+    component: () => import('../views/EditProject.vue'),
+  },
+  {
     path: '/profile',
     name: 'Profile',
     meta: { layout: 'constructor',  requiresAuth: true },

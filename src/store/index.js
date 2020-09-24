@@ -54,7 +54,7 @@ export default new Vuex.Store({
     register({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({url: constants.BACKEND_URL+'authorisation/register/?email=' + user.email + '&name=' + user.name + '&last_name=' +
+        axios({url: constants.BACKEND_URL+'authorisation/register/?email=' + user.email + '&name=' + user.name + '&last_name=' + user.last_name +
           '&company=' + user.company + '&password=' + user.password, method: 'GET' })
         .then(resp => {
          /* const token = resp.data.token

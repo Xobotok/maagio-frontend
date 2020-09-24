@@ -25,7 +25,6 @@
         request.setRequestHeader('Accept', 'application/json, text/plain, */*');
         request.addEventListener("readystatechange", () => {
           if (request.readyState === 4 && request.status === 200) {
-            console.log(document.getElementById('confirm-message'));
             let messageContainer = document.getElementById('confirm-message');
             let link = document.createElement('a');
             let text = document.createElement('div');

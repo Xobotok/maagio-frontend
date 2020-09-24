@@ -61,7 +61,6 @@
           }
         }
       }
-      console.log(this.galleries);
     },
   }
 </script>

@@ -40,7 +40,6 @@
         }
       },
       startShow() {
-        console.log(this.$parent.activeTab);
         if(this.$parent.tabs.floors === true) {
           this.$parent.activeTab = 'Floor plates';
         } else if(this.$parent.tabs.galleries === true){

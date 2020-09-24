@@ -183,11 +183,13 @@
             }
             // ошибка
             else {
+              obj.loaded = false;
               console.log('ОШИБКА: ' + respond.data );
             }
           },
           // функция ошибки ответа сервера
           error: function( jqXHR, status, errorThrown ){
+            obj.loaded = false;
             console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
           }
         });

@@ -11,9 +11,9 @@
         </li>
 
         <ul class="dropdown-menu superscroll" v-if="showMenu">
-            <li v-for="(option, idx) in options" :key="idx">
-                <a href="javascript:void(0)" :number="idx" @click="updateOption(option); dropdownCallback()">
-                    {{ option.name }}
+            <li v-for="(option, idx) in $parent.$parent.project.floors" :key="idx">
+                <a href="javascript:void(0)" :number="idx" @click="updateOption">
+                    Floor {{idx + 1}}
                 </a>
             </li>
         </ul>
@@ -35,9 +35,6 @@
       }
     },
     props: {
-      options: {
-        type: [Array, Object]
-      },
       id: 'id',
       selected: {},
       placeholder: [String],
@@ -47,6 +44,10 @@
       },
     },
     mounted() {
+      this.options = [];
+      for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
+        this.options.push({ name: 'Floor ' + (i + 1), val: i });
+      }
       this.selectedOption = this.selected;
       if (this.placeholder)
       {
@@ -65,10 +66,13 @@
           this.$parent.selectNewFloor(this)
         }
       },
-      updateOption(option) {
-        this.selectedOption = option;
+      updateOption(e) {
+        this.selectedOption.name = e.target.textContent;
+        this.selectedOption.val = e.target.textContent.split('Floor ')[1];
+        this.selectedOption.val = Number.parseInt(this.selectedOption.val) - 1;
+        this.selectedOption.id = this.$el.getAttribute('elementid');
+        this.$parent.selectNewFloor(this);
         this.showMenu = false;
-        this.$emit('updateOption', this.selectedOption);
       },
       toggleMenu() {
         this.showMenu = !this.showMenu;
