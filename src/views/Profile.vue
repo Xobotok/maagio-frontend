@@ -98,10 +98,7 @@
       });
     },
     beforeCreate(){
-      var script = document.createElement('script');
-      script.src = 'https://js.stripe.com/v3/';
-      script.defer = true;
-      document.head.appendChild(script);
+
     },
     methods: {
       stripeInit(){

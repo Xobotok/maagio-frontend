@@ -85,7 +85,7 @@
       reserveFloor: '',
       floorImage: '',
       bedroomList: [],
-      statuses: ['Available', 'Reserved', 'Sold'],
+      statuses: ['Available', 'Reserved', 'Sold', 'Unreleased'],
       statusList: [],
       openedUnit: '',
       openUnitPage: false,

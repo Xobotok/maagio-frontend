@@ -130,9 +130,6 @@
         if (this.activeTab == 1) {
           this.saveOverview();
         }
-        if(this.activeTab == 2) {
-          this.saveFloorPlates();
-        }
       },
       saveOverview() {
         let obj = this;
@@ -161,92 +158,6 @@
               if (respond.ok === 1) {
                   /*obj.published = true;*/
                 obj.project.id = respond.project.id;
-                obj.project.logo = respond.project_logo;
-                obj.oldProject = JSON.parse(JSON.stringify(obj.project))
-              }
-              // ОК - файлы загружены
-              if (typeof respond.error === 'undefined') {
-                // выведем пути загруженных файлов в блок '.ajax-reply'
-                var files_path = respond.files;
-                var html = '';
-                $.each(files_path, function (key, val) {
-                  html += val + '<br>';
-                })
-
-                $('.ajax-reply').html(html);
-              }
-              // ошибка
-              else {
-                console.log('ОШИБКА: ' + respond.data);
-              }
-            },
-            // функция ошибки ответа сервера
-            error: function (jqXHR, status, errorThrown) {
-              obj.loaded = false;
-              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
-            }
-          });
-        } else {
-          obj.loaded = false;
-        }
-      },
-      saveFloorPlates(callBack){
-        let obj = this;
-        if (callBack) {
-          callBack();
-        }
-        let flag = false;
-        for(var i = 0; i< this.oldProject.floors.length; i++) {
-          for(var n = 0; n < this.project.floors.length; n++) {
-            if(this.oldProject.floors[i].id == this.project.floors[n].id && this.oldProject.floors[i].image_id == this.project.floors[n].image_id && this.oldProject.floors[i].number == this.project.floors[n].number) {
-              flag = true;
-            }
-          }
-        }
-        if(flag != true) {
-          this.loaded = true;
-          let data = new FormData();
-          let user = JSON.parse(localStorage.getItem('maagio_user'));
-          let token = localStorage.getItem('token');
-          let floors = [];
-          let floorImages = [];
-          for(var i = 0; i < this.project.floors.length; i++) {
-            let floor = {};
-            floor.number = i+ 1;
-            if(this.project.floors[i].id == '') {
-              this.project.floors[i].id = 0;
-            }
-            floor.id = this.project.floors[i].id;
-            if(this.project.floors[i].image_id != '') {
-              floor.image_id = this.project.floors[i].image_id;
-            }
-            if(this.project.floors[i].image != '') {
-              floor.image = this.project.floors[i].image.name + '_' + this.project.floors[i].image.size;
-              data.append('floor_images'+'_'+i, this.project.floors[i].image);
-            }
-            floors.push(floor)
-          }
-
-          data.append('user_id', user.uid);
-          data.append('token', token);
-          data.append('floors', JSON.stringify(floors));
-          data.append('project_id', this.project.id);
-          $.ajax({
-            url: constants.BACKEND_URL + 'project/update-floor-plates',
-            type: 'POST', // важно!
-            data: data,
-            cache: false,
-            dataType: 'json',
-            // отключаем обработку передаваемых данных, пусть передаются как есть
-            processData: false,
-            // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
-            contentType: false,
-            // функция успешного ответа сервера
-            success: function (respond, status, jqXHR) {
-              obj.loaded = false;
-              obj.goNext();
-              if (respond.ok === 1) {
-                  /*obj.published = true;*/
                 obj.project.logo = respond.project_logo;
                 obj.oldProject = JSON.parse(JSON.stringify(obj.project))
               }

@@ -162,7 +162,7 @@
       floorOption: [],
       floorPreview: '',
       stopSave: false,
-      statusOption: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }],
+      statusOption: constants.STATUS_OPTIONS,
       templateUnit: {
         id: '',
         unit_number: 0,
@@ -247,7 +247,6 @@
                 unit.floor = this.$parent.$parent.project.floors[i].id;
               }
             }
-          console.log(unit);
             unit.unitImagePreview = '';
             data.append('user_id', user.uid);
             data.append('token', token);
@@ -310,6 +309,9 @@
             break;
           case 'Sold':
             this.templateUnit.status = 2;
+            break;
+          case 'Unreleased':
+            this.templateUnit.status = 3;
             break;
         }
       },

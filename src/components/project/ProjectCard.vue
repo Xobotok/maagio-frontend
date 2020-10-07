@@ -69,7 +69,7 @@
           success: function (respond, status, jqXHR) {
             obj.deleteProcess = false;
             if (respond.ok === 1) {
-              let projects = obj.$parent.projects;
+              let projects = obj.$parent.published_projects;
               for(var i = 0; i < projects.length; i++) {
                 if(projects[i].id == respond.project_id) {
                   projects.splice(i, 1);

@@ -12,9 +12,6 @@
       logo: '',
     }),
     mounted(){
-      var script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDAHyg8_wG19M4GTE4BDSuez-Xc3wjllYQ&callback=initMap';
-      script.defer = true;
       let lat = this.$parent.project.map.lat;
       let lng = this.$parent.project.map.lng;
       window.initMap = function () {
@@ -28,8 +25,7 @@
         });
         var marker = new google.maps.Marker({position: { lat: lat, lng: lng }, map: map});
       };
-// Append the 'script' element to 'head'
-      document.head.appendChild(script);
+      window.initMap();
     },
   }
 </script>

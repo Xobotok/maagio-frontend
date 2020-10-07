@@ -88,7 +88,7 @@
       NewUnitModal, EditUnitModal,
     },
     data: ()=>({
-      statusNames: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }],
+      statusNames: constants.STATUS_OPTIONS,
       oldUnit: {},
       templateUnit: {
         id: 0,
