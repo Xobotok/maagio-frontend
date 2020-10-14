@@ -6,7 +6,6 @@
   </div>
 </template>
 <script>
-
   import ConstructorLayout from '@/layouts/ConstructorLayout';
   import EmptyLayout from '@/layouts/EmptyLayout';
   import ShowLayout from '@/layouts/ShowLayout';
@@ -16,7 +15,7 @@
   script.defer = true;
   document.head.appendChild(script);
   var script = document.createElement('script');
-  script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDAHyg8_wG19M4GTE4BDSuez-Xc3wjllYQ';
+script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDEzKHEUbk3ocLvIgBGMOsJjguHEj0LR4s';
   script.defer = true;
   document.head.appendChild(script);
 

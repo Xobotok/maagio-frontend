@@ -158,12 +158,112 @@
           streetViewControl: false,
           mapTypeControl: false,
         });
-        var marker = new google.maps.Marker({
-          position: {lat: lat, lng: lng},
+        if(this.$parent.project.map.lng != undefined && this.$parent.project.map.lng != undefined) {
+          this.$parent.project.map = {lat: lat, lng: lng};
+          var marker = new google.maps.Marker({
+            position: {lat: lat, lng: lng},
+            map: window.map,
+          });
+          this.mapMarker = {lat: lat, lng: lng};
+        }
+        var styledMapType = new google.maps.StyledMapType(constants.MAP_OPTIONS,{name: 'Styled Map'});
+        window.map.mapTypes.set('styled_map', styledMapType);
+        window.map.setMapTypeId('styled_map');
+        for(var i = 0; i < this.$parent.project.markers.user_markers.length; i++) {
+          this.$parent.project.markers.user_markers[i] = this.createMarker(this.$parent.project.markers.user_markers[i]);
+        }
+        for(var i = 0; i < this.$parent.project.markers.culture.length; i++) {
+          this.$parent.project.markers.culture[i] = this.createMarker(this.$parent.project.markers.culture[i]);
+        }
+        for(var i = 0; i < this.$parent.project.markers.sport.length; i++) {
+          this.$parent.project.markers.sport[i] = this.createMarker(this.$parent.project.markers.sport[i]);
+        }
+        for(var i = 0; i < this.$parent.project.markers.nature.length; i++) {
+          this.$parent.project.markers.nature[i] = this.createMarker(this.$parent.project.markers.nature[i]);
+        }
+        for(var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
+          this.$parent.project.markers.restaurant[i] = this.createMarker(this.$parent.project.markers.restaurant[i]);
+        }
+      },
+      createMarker(marker){
+        var userMarker = new google.maps.Marker({
+          position: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
           map: map,
         });
-        this.mapMarker = {lat: lat, lng: lng};
-        this.$parent.project.map = {lat: lat, lng: lng};
+        if(marker.name == null) {
+          marker.name = '';
+        }
+        if(marker.address == null) {
+          marker.address = '';
+        }
+        if(marker.description == null) {
+          marker.description = '';
+        }
+        let infowindow = new google.maps.InfoWindow();
+        userMarker.addListener("click", ()=> {
+          infowindow.setContent(this.createInfoWindowDom(marker));
+          infowindow.open(map, userMarker);
+        });
+        userMarker.id = marker.id;
+        return userMarker;
+      },
+      createInfoWindowDom(info) {
+        var container = document.createElement('div');
+        container.classList.add('custom-marker');
+        var name = document.createElement('div');
+        name.classList.add('map-info-name');
+        name.textContent = info.name;
+        var address = document.createElement('div');
+        address.classList.add('map-info-address');
+        address.textContent = info.address;
+        var description = document.createElement('div');
+        description.classList.add('map-info-description');
+        description.textContent = info.description;
+        var button = document.createElement('div');
+        button.classList.add('map-info-button');
+        button.textContent = 'Delete marker';
+        button.setAttribute('marker-id', info.id);
+        button.addEventListener('click', this.deleteMarker);
+        container.appendChild(name);
+        container.appendChild(address);
+        container.appendChild(description);
+        container.appendChild(button);
+        return container;
+      },
+      deleteMarker(e) {
+        let obj = this;
+        let marker_id = e.target.getAttribute('marker-id');
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        let project_id  = window.location.href.split('project_id=');
+        project_id = project_id[project_id.length - 1];
+        let data = {
+          user_id: user.uid,
+          token: token,
+          project_id: project_id,
+          marker_id: marker_id,
+        };
+
+        $.ajax({
+          url         : constants.BACKEND_URL + 'marker/delete-marker',
+          type        : 'POST', // важно!
+          data        : data,
+          cache       : false,
+          dataType    : 'json',
+          success     : function( respond, status, jqXHR ){
+            if(respond.ok === 1) {
+                for(var i = 0; i < obj.$parent.project.markers.length; i++) {
+                  if(obj.$parent.project.markers[i].id == marker_id) {
+                    obj.$parent.project.markers[i].setMap(null);
+                  }
+                }
+            }
+          },
+          // функция ошибки ответа сервера
+          error: function( jqXHR, status, errorThrown ){
+            console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
+          }
+        });
       },
       openPhotoUpload() {
         var container = document.getElementById('overview-logo');
