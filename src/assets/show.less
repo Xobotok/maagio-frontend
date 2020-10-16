@@ -491,8 +491,46 @@ main {
 }
 
 .show-map {
+  position: relative;
   #map {
     width: 100%;
-    height: 100vh;
+    height: 90vh;
+  }
+  .custom-marker {
+    .map-info-name {
+      font-family: RobotoMedium, sans-serif;
+      font-size: 14px;
+      padding-bottom: 5px;
+    }
+    .map-info-description {
+      padding-top: 5px;
+    }
+    .map-info-button {
+      margin-top: 10px;
+      color: red;
+      font-family: RobotoMedium, sans-serif;
+      cursor: pointer;
+      display: inline-block;
+    }
+  }
+  .map-controls-list {
+    position: absolute;
+    right: 20px;
+    bottom: 50%;
+    z-index: 99999;
+    .map-control {
+      background-color: #fff;
+      color: #A72A39;
+      text-align: center;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      cursor: pointer;
+    }
+    .map-control.off {
+      background-color: #BCAFA8;
+      color: white;
+    }
   }
 }

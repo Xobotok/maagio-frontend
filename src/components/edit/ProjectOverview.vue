@@ -159,76 +159,32 @@
           mapTypeControl: false,
         });
         if(this.$parent.project.map.lng != undefined && this.$parent.project.map.lng != undefined) {
-          this.$parent.project.map = {lat: lat, lng: lng};
+          this.$parent.project.map.lat = lat;
+          this.$parent.project.map.lng = lng;
           var marker = new google.maps.Marker({
             position: {lat: lat, lng: lng},
             map: window.map,
           });
-          this.mapMarker = {lat: lat, lng: lng};
+          this.$parent.project.map.marker = marker;
         }
         var styledMapType = new google.maps.StyledMapType(constants.MAP_OPTIONS,{name: 'Styled Map'});
         window.map.mapTypes.set('styled_map', styledMapType);
         window.map.setMapTypeId('styled_map');
         for(var i = 0; i < this.$parent.project.markers.user_markers.length; i++) {
-          this.$parent.project.markers.user_markers[i] = this.createMarker(this.$parent.project.markers.user_markers[i]);
+          this.$parent.project.markers.user_markers[i] = this.$parent.createMarker(this.$parent.project.markers.user_markers[i]);
         }
         for(var i = 0; i < this.$parent.project.markers.culture.length; i++) {
-          this.$parent.project.markers.culture[i] = this.createMarker(this.$parent.project.markers.culture[i]);
+          this.$parent.project.markers.culture[i] = this.$parent.createMarker(this.$parent.project.markers.culture[i]);
         }
         for(var i = 0; i < this.$parent.project.markers.sport.length; i++) {
-          this.$parent.project.markers.sport[i] = this.createMarker(this.$parent.project.markers.sport[i]);
+          this.$parent.project.markers.sport[i] = this.$parent.createMarker(this.$parent.project.markers.sport[i]);
         }
         for(var i = 0; i < this.$parent.project.markers.nature.length; i++) {
-          this.$parent.project.markers.nature[i] = this.createMarker(this.$parent.project.markers.nature[i]);
+          this.$parent.project.markers.nature[i] = this.$parent.createMarker(this.$parent.project.markers.nature[i]);
         }
         for(var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
-          this.$parent.project.markers.restaurant[i] = this.createMarker(this.$parent.project.markers.restaurant[i]);
+          this.$parent.project.markers.restaurant[i] = this.$parent.createMarker(this.$parent.project.markers.restaurant[i]);
         }
-      },
-      createMarker(marker){
-        var userMarker = new google.maps.Marker({
-          position: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
-          map: map,
-        });
-        if(marker.name == null) {
-          marker.name = '';
-        }
-        if(marker.address == null) {
-          marker.address = '';
-        }
-        if(marker.description == null) {
-          marker.description = '';
-        }
-        let infowindow = new google.maps.InfoWindow();
-        userMarker.addListener("click", ()=> {
-          infowindow.setContent(this.createInfoWindowDom(marker));
-          infowindow.open(map, userMarker);
-        });
-        userMarker.id = marker.id;
-        return userMarker;
-      },
-      createInfoWindowDom(info) {
-        var container = document.createElement('div');
-        container.classList.add('custom-marker');
-        var name = document.createElement('div');
-        name.classList.add('map-info-name');
-        name.textContent = info.name;
-        var address = document.createElement('div');
-        address.classList.add('map-info-address');
-        address.textContent = info.address;
-        var description = document.createElement('div');
-        description.classList.add('map-info-description');
-        description.textContent = info.description;
-        var button = document.createElement('div');
-        button.classList.add('map-info-button');
-        button.textContent = 'Delete marker';
-        button.setAttribute('marker-id', info.id);
-        button.addEventListener('click', this.deleteMarker);
-        container.appendChild(name);
-        container.appendChild(address);
-        container.appendChild(description);
-        container.appendChild(button);
-        return container;
       },
       deleteMarker(e) {
         let obj = this;
@@ -327,7 +283,7 @@
         }
       },
       changeMap() {
-        this.$parent.project.map = '';
+        this.$parent.project.map = {lat: '', lng: '', address: ''};
         if (this.showMap === true && this.$parent.project.name.length > 0) {
           this.$parent.progresses[3].active = true;
         } else {

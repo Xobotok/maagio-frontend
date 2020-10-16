@@ -11,6 +11,8 @@
                 Enabled</label>
             <input type="checkbox" v-model="mapActivate" v-on:change="changeMapActive" id="map-active"
                    style="display: none">
+        </div>
+        <div class="markers-block" v-show="this.$parent.project.map.lat != '' && this.mapActivate == true">
             <div class="marker-block-button" v-show="!openMarker" @click="openAddMarker">Add marker</div>
             <div class="marker-block" v-show="openMarker">
                 <div class="marker-block-form">
@@ -47,85 +49,89 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="neardy-marker-buttons">
-            <div>
-                <div class="overview-checkbox"
-                     :class="{active: nearCulturePlaces == true, loading: nearCulturePlaces == 'pause'}">
-                    <label for="show-culture" v-show="nearCulturePlaces != 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near culture places</label>
-                    <label v-show="nearCulturePlaces == 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near culture places</label>
-                    <input type="checkbox" v-on:change="showNearPlaces(1)" v-model="nearCulturePlaces" id="show-culture"
-                           style="display: none">
+            <div class="neardy-marker-buttons">
+                <div>
+                    <div class="overview-checkbox"
+                         :class="{active: $parent.project.markers.culture.length > 0, loading: nearCulturePlaces == 'pause'}">
+                        <label for="show-culture" v-show="nearCulturePlaces != 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near culture places</label>
+                        <label v-show="nearCulturePlaces == 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near culture places</label>
+                        <input type="checkbox" v-on:change="showNearPlaces(1)" v-model="nearCulturePlaces"
+                               id="show-culture"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox-warning" v-if="nearCulturePlaces == 'pause'">Please, wait</div>
                 </div>
-                <div class="overview-checkbox-warning" v-if="nearCulturePlaces == 'pause'">Please, wait</div>
-            </div>
-            <div>
-                <div class="overview-checkbox"
-                     :class="{active: nearRestaurants == true, loading: nearRestaurants == 'pause'}">
-                    <label for="show-restaurants" v-show="nearRestaurants != 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near restaurants</label>
-                    <label v-show="nearRestaurants == 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near restaurants</label>
-                    <input type="checkbox" v-on:change="showNearPlaces(2)" v-model="nearRestaurants"
-                           id="show-restaurants"
-                           style="display: none">
+                <div>
+                    <div class="overview-checkbox"
+                         :class="{active: $parent.project.markers.restaurant.length > 0, loading: nearRestaurants == 'pause'}">
+                        <label for="show-restaurants" v-show="nearRestaurants != 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near restaurants</label>
+                        <label v-show="nearRestaurants == 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near restaurants</label>
+                        <input type="checkbox" v-on:change="showNearPlaces(2)" v-model="nearRestaurants"
+                               id="show-restaurants"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox-warning" v-if="nearRestaurants == 'pause'">Please, wait</div>
                 </div>
-                <div class="overview-checkbox-warning" v-if="nearRestaurants == 'pause'">Please, wait</div>
-            </div>
-            <div>
-                <div class="overview-checkbox"
-                     :class="{active: nearSport == true, loading: nearSport == 'pause'}">
-                    <label for="show-sport" v-show="nearSport != 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near sport places</label>
-                    <label v-show="nearSport == 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near sport places</label>
-                    <input type="checkbox" v-on:change="showNearPlaces(3)" v-model="nearSport" id="show-sport"
-                           style="display: none">
+                <div>
+                    <div class="overview-checkbox"
+                         :class="{active: $parent.project.markers.sport.length > 0, loading: nearSport == 'pause'}">
+                        <label for="show-sport" v-show="nearSport != 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near sport places</label>
+                        <label v-show="nearSport == 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near sport places</label>
+                        <input type="checkbox" v-on:change="showNearPlaces(3)" v-model="nearSport" id="show-sport"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox-warning" v-if="nearSport == 'pause'">Please, wait</div>
                 </div>
-                <div class="overview-checkbox-warning" v-if="nearSport == 'pause'">Please, wait</div>
-            </div>
-            <div>
-                <div class="overview-checkbox"
-                     :class="{active: nearNature == true, loading: nearNature == 'pause'}">
-                    <label for="show-nature" v-show="nearNature != 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near nature places</label>
-                    <label v-show="nearNature == 'pause'">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Show near nature places</label>
-                    <input type="checkbox" v-on:change="showNearPlaces(4)" v-model="nearNature" id="show-nature"
-                           style="display: none">
+                <div>
+                    <div class="overview-checkbox"
+                         :class="{active: $parent.project.markers.nature.length > 0, loading: nearNature == 'pause'}">
+                        <label for="show-nature" v-show="nearNature != 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near nature places</label>
+                        <label v-show="nearNature == 'pause'">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Show near nature places</label>
+                        <input type="checkbox" v-on:change="showNearPlaces(4)" v-model="nearNature" id="show-nature"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox-warning" v-if="nearNature == 'pause'">Please, wait</div>
                 </div>
-                <div class="overview-checkbox-warning" v-if="nearNature == 'pause'">Please, wait</div>
             </div>
         </div>
         <div class="map-container" v-show="mapActivate">
             <div class="input-container">
-                <input type="text" v-on:keyup.enter="searchAddress" v-model="searchingAddress" class="project-input">
+                <input v-if="!searchPause" type="text" v-on:keyup.enter="searchAddress"
+                       v-model="$parent.project.map.address" class="project-input">
+                <input v-if="searchPause" type="text" disabled v-model="$parent.project.map.address"
+                       class="project-input">
                 <div class="search-icon" @click="searchAddress"></div>
             </div>
             <div class="google-map" id="map">
@@ -152,6 +158,7 @@
       nearRestaurants: false,
       nearSport: false,
       nearNature: false,
+      searchPause: false,
       map: '',
       mapMarker: {},
       markerOption: constants.MARKER_TYPES,
@@ -171,38 +178,33 @@
       userMarkers: [],
     }),
     methods: {
+      inputSearch(e) {
+        console.log(e);
+      },
       showNearPlaces(type) {
-        let res = '';
-        switch (type) {
+        let res = 1;
+        switch (Number.parseInt(type)) {
           case 1:
-            if(this.nearCulturePlaces == false) {
-              res = false;
-            } else {
-              res = true;
+            if (this.$parent.project.markers.culture.length > 0) {
+              res = 0;
             }
             this.nearCulturePlaces = 'pause';
             break;
           case 2:
-            if(this.nearRestaurants == false) {
-              res = false;
-            } else {
-              res = true;
+            if (this.$parent.project.markers.restaurant.length > 0) {
+              res = 0;
             }
             this.nearRestaurants = 'pause';
             break;
           case 3:
-            if(this.nearSport == false) {
-              res = false;
-            } else {
-              res = true;
+            if (this.$parent.project.markers.sport.length > 0) {
+              res = 0;
             }
             this.nearSport = 'pause';
             break;
           case 4:
-            if(this.nearNature == false) {
-              res = false;
-            } else {
-              res = true;
+            if (this.$parent.project.markers.nature.length > 0) {
+              res = 0;
             }
             this.nearNature = 'pause';
             break;
@@ -225,15 +227,12 @@
           success: function (respond, status, jqXHR) {
             obj.stopSave = false;
             if (respond.ok === 1) {
-                if(respond.show == 1) {
-                  for(var i = 0; i < respond.places.length; i++) {
-                    let myLatLng = { lat: Number.parseFloat(respond.places[i].lat), lng: Number.parseFloat(respond.places[i].lng) };
-                    let marker = new google.maps.Marker({
-                      position: myLatLng,
-                      map: window.map,
-                    })
-                  }
-                }
+              if (respond.show == 1) {
+                obj.removeGoogleMarkers(respond.type);
+                obj.createGoogleMarkers(respond.type, respond.places);
+              } else {
+                obj.removeGoogleMarkers(respond.type);
+              }
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }
@@ -242,6 +241,63 @@
             console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
           }
         });
+      },
+      createGoogleMarkers(type, markers){
+        let arr = [];
+        switch (Number.parseInt(type)) {
+          case 1:
+            arr = this.$parent.project.markers.culture;
+            this.nearCulturePlaces = true;
+            break;
+          case 2:
+            arr = this.$parent.project.markers.restaurant;
+            this.nearRestaurants = true;
+            break;
+          case 3:
+            arr = this.$parent.project.markers.sport;
+            this.nearSport = true;
+            break;
+          case 4:
+            this.nearNature = true;
+            arr = this.$parent.project.markers.nature;
+            break;
+        }
+        for (var i = 0; i < markers.length; i++) {
+          let marker = this.$parent.createMarker(markers[i]);
+          arr.push(marker);
+        }
+      },
+      removeGoogleMarkers(type) {
+        switch (Number.parseInt(type)) {
+          case 1:
+            for (var i = 0; i < this.$parent.project.markers.culture.length; i++) {
+              this.$parent.project.markers.culture[i].setMap(null);
+            }
+            this.$parent.project.markers.culture = [];
+            this.nearCulturePlaces = true;
+            break;
+          case 2:
+            for (var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
+              this.$parent.project.markers.restaurant[i].setMap(null);
+            }
+            this.$parent.project.markers.restaurant = [];
+            this.nearRestaurants = true;
+            break;
+          case 3:
+            for (var i = 0; i < this.$parent.project.markers.sport.length; i++) {
+              this.$parent.project.markers.sport[i].setMap(null);
+            }
+            this.$parent.project.markers.sport = [];
+            this.nearSport = true;
+            break;
+          case 4:
+            for (var i = 0; i < this.$parent.project.markers.nature.length; i++) {
+              this.$parent.project.markers.nature[i].setMap(null);
+            }
+            this.$parent.project.markers.nature = [];
+            this.nearNature = true;
+            break;
+        }
       },
       selectMarkerType(e) {
         this.userMarkerType = e.name;
@@ -416,32 +472,22 @@
       },
       mapCenter(lat, lng) {
         if (lat != '' && lng != '') {
-          var marker = new google.maps.Marker({
-            position: { lat: lat, lng: lng },
-            map: map,
-          });
-          window.map.panTo(marker.getPosition());
-
-          this.mapMarker = { lat: lat, lng: lng };
-          this.$parent.project.map = { lat: lat, lng: lng };
-          this.updateMap();
+          window.map.panTo({ lat: Number.parseFloat(lat), lng: Number.parseFloat(lng) });
         }
-
       },
-      updateMap() {
+      searchAddress() {
+        this.searchPause = true;
         let data = new FormData();
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         let token = localStorage.getItem('token');
-        if (this.$parent.project.map.lat == this.$parent.project.oldMap.lat && this.$parent.project.map.lng == this.$parent.project.oldMap.lng) {
-          return;
-        }
+        console.log(this.$parent.project.map)
         data.append('user_id', user.uid);
         data.append('token', token);
         data.append('project_id', this.$parent.project.id);
-        data.append('map', JSON.stringify(this.$parent.project.map));
+        data.append('address', this.$parent.project.map.address);
         let obj = this;
         $.ajax({
-          url: constants.BACKEND_URL + 'map/update-map',
+          url: constants.BACKEND_URL + 'map/search-address',
           type: 'POST', // важно!
           data: data,
           cache: false,
@@ -450,10 +496,22 @@
           contentType: false,
           success: function (respond, status, jqXHR) {
             obj.stopSave = false;
+            obj.searchPause = false;
             if (respond.ok === 1) {
-              obj.userMarker = '';
+              obj.removeGoogleMarkers(1);
+              obj.removeGoogleMarkers(2);
+              obj.removeGoogleMarkers(3);
+              obj.removeGoogleMarkers(4);
+              obj.mapCenter(respond.map.lat, respond.map.lng);
+              if(obj.$parent.project.map.marker != undefined) {
+                obj.$parent.project.map.marker.setMap(null);
+              }
+              obj.$parent.project.map = respond.map;
+              obj.$parent.project.map.marker = new google.maps.Marker({
+                position: {lat: Number.parseFloat(obj.$parent.project.map.lat), lng: Number.parseFloat(obj.$parent.project.map.lng)},
+                map: window.map,
+              });
             } else {
-              console.log('ОШИБКА: ' + respond.data);
             }
           },
           error: function (jqXHR, status, errorThrown) {
@@ -462,31 +520,8 @@
           }
         });
       },
-      searchAddress() {
-        let callBackSearch = (callback)=> {
-          let geo = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + this.searchingAddress + '&key=AIzaSyDEzKHEUbk3ocLvIgBGMOsJjguHEj0LR4s';
-          this.$parent.project.oldMap = { lat: this.$parent.project.map.lat, lng: this.$parent.project.map.lng };
-          let x = new XMLHttpRequest();
-          x.open("GET", geo, true);
-          x.onload = (e = this)=> {
-            let result = JSON.parse(x.responseText);
-            if (result.results.length > 0) {
-              if (JSON.parse(x.responseText).results[0].geometry.location.lat && JSON.parse(x.responseText).results[0].geometry.location.lng) {
-                let lat = JSON.parse(x.responseText).results[0].geometry.location.lat;
-                let lng = JSON.parse(x.responseText).results[0].geometry.location.lng;
-                callback(lat, lng)
-              }
-            } else {
-
-            }
-          };
-          x.send(null);
-        }
-        if (this.searchingAddress.trim().length > 0) {
-          callBackSearch(this.mapCenter)
-        }
-      },
-    },
+    }
+    ,
     mounted: function () {
       this.markerOption = constants.MARKER_TYPES;
       window.initMap = function () {
@@ -503,6 +538,7 @@
         window.map.setMapTypeId('styled_map');
       };
       window.initMap();
-    },
+    }
+    ,
   }
 </script>

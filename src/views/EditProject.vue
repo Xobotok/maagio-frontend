@@ -100,8 +100,19 @@
         unfloor_units: [],
         units: [],
         mapActivate: true,
-        map: '',
+        map: {
+          address: '',
+          lat: '',
+          lng: '',
+        },
         galleries: [],
+        markers: {
+          user_markers: [],
+          culture: [],
+          sport: [],
+          nature: [],
+          restaurant: [],
+        }
       },
     }),
     mounted() {
@@ -349,6 +360,54 @@
         if (this.activeTab === 6) {
           return false;
         }
+      },
+      createInfoWindowDom(info) {
+        var container = document.createElement('div');
+        container.classList.add('custom-marker');
+        var name = document.createElement('div');
+        name.classList.add('map-info-name');
+        name.textContent = info.name;
+        var address = document.createElement('div');
+        address.classList.add('map-info-address');
+        address.textContent = info.address;
+        var description = document.createElement('div');
+        description.classList.add('map-info-description');
+        description.textContent = info.description;
+        if(info.creator == 0) {
+          var button = document.createElement('div');
+          button.classList.add('map-info-button');
+          button.textContent = 'Delete marker';
+          button.setAttribute('marker-id', info.id);
+          button.addEventListener('click', this.deleteMarker);
+          container.appendChild(button);
+        }
+        container.appendChild(name);
+        container.appendChild(address);
+        container.appendChild(description);
+
+        return container;
+      },
+      createMarker(marker){
+        var userMarker = new google.maps.Marker({
+          position: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
+          map: map,
+        });
+        if(marker.name == null) {
+          marker.name = '';
+        }
+        if(marker.address == null) {
+          marker.address = '';
+        }
+        if(marker.description == null) {
+          marker.description = '';
+        }
+        let infowindow = new google.maps.InfoWindow();
+        userMarker.addListener("click", ()=> {
+          infowindow.setContent(this.createInfoWindowDom(marker));
+          infowindow.open(map, userMarker);
+        });
+        userMarker.id = marker.id;
+        return userMarker;
       },
     },
   }

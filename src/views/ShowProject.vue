@@ -62,7 +62,10 @@
           if(respond !== null) {
             if(respond.ok === 1) {
               obj.project = respond.data;
-              console.log(obj.project);
+              obj.project.markers.culture = [];
+              obj.project.markers.restaurant = [];
+              obj.project.markers.sport = [];
+              obj.project.markers.nature = [];
               obj.checkTabStatus();
             } else {
 

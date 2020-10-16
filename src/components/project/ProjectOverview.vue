@@ -136,7 +136,7 @@
         }
       },
       changeMap() {
-        this.$parent.project.map = '';
+        this.$parent.project.map = {lat: '', lng: '', address: ''};
         if (this.showMap === true && this.projectName.length > 0) {
           this.$parent.progresses[3].active = true;
         } else {
