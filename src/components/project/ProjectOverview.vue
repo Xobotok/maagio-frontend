@@ -47,7 +47,7 @@
                     PROJECT LOGO
                 </div>
                 <div class="overview-description">The graphics will appear on the splash screen</div>
-                <div class="logo-preview"><img :src="this.$parent.logoPreview" alt=""></div>
+                <div class="logo-preview"><img v-if="this.$parent.logoPreview != ''" :src="this.$parent.logoPreview" alt=""></div>
                 <div class="logo-upload" v-on:click="openPhotoUpload()">Click to upload</div>
                 <input type="file" v-on:change="renderPreview" id="overview-logo" style="display: none"
                        accept="image/png, image/jpeg">
