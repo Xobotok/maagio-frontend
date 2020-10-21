@@ -27,8 +27,8 @@
                     <div class="units-list-value">{{unit.exteriorFootage}}</div>
                     <div class="units-list-value">{{unit.bedroom}}</div>
                     <div class="units-list-value">{{unit.bathroom}}</div>
-                    <div class="units-list-value" v-if="unit.bmr == 1">Да</div>
-                    <div class="units-list-value" v-if="unit.bmr == 0">Нет</div>
+                    <div class="units-list-value" v-if="unit.bmr == 1">Yes</div>
+                    <div class="units-list-value" v-if="unit.bmr == 0">No</div>
                     <div class="units-list-value units-icons">
                         <div class="units-edit-icon" @click="editUnit(unit)"></div>
                         <div class="units-remove-icon" @click="deleteUnit(unit)"></div>

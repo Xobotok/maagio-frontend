@@ -115,29 +115,31 @@
                 </div>
                 <div class="project-unit-right">
                     <div class="unit-image-header">
-                        <span>Unit Location*</span> Double click on the floor plates to add the unit location.
-                        <div class="button-container"
-                             @click="templateUnit.mark_x = ''; templateUnit.mark_y = ''">
-                            <div class="logo-upload">Reset</div>
+                        <span>Unit Location*</span> You can added unit mark on this floor
+                        <div class="button-container" v-if="templateUnit.mark == true && floorPreview != ''"
+                             @click="templateUnit.mark = false; templateUnit.unit_mark.x = 0; templateUnit.unit_mark.y = 0; templateUnit.unit_mark.width = 15; templateUnit.unit_mark.height = 10">
+                            <div class="logo-upload" v-if="">Remove unit mark</div>
+                        </div>
+                        <div class="button-container" @click="addUnitMark" v-if="templateUnit.mark == false  && floorPreview != ''">
+                            <div class="logo-upload">Add unit mark</div>
                         </div>
                     </div>
-
                     <div class="unit-image-container">
-                        <img :src="floorPreview" @click="changeColumnDefinition" alt="">
-                        <div class="unit-point"
-                             v-if="templateUnit.mark_x != '' && templateUnit.mark_y != ''"
-                             :style="{left: 'calc(' + templateUnit.mark_x + '% - 50px)', top: 'calc(' + templateUnit.mark_y + '% - 30px)'}">
-                            <div class="unit-point-bedrooms"
-                                 v-if="templateUnit.bad >= 0 && templateUnit.bad != ''">{{templateUnit.bad}}
-                                bedroom
+                        <vue-draggable-resizable v-if="templateUnit.mark == true" :x="templateUnit.unit_mark.x" :y="templateUnit.unit_mark.y" :w="templateUnit.unit_mark.width" :h="templateUnit.unit_mark.height" @dragging="onDrag" @resizing="onResize" :parent="true">
+                            <div class="unit-point">
+                                <div class="unit-point-bedrooms" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}"
+                                     v-if="templateUnit.bad >= 0 && templateUnit.bad != ''">{{templateUnit.bad}}
+                                    bedroom
+                                </div>
+                                <div class="unit-point-number" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
+                                    {{templateUnit.unit_number}}
+                                </div>
+                                <div class="unit-point-status" v-if="templateUnit.status !== ''" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
+                                    {{statusOption[templateUnit.status].name}}
+                                </div>
                             </div>
-                            <div class="unit-point-number">
-                                {{templateUnit.unit_number}}
-                            </div>
-                            <div class="unit-point-status" v-if="templateUnit.status !== ''">
-                                {{statusOption[templateUnit.status].name}}
-                            </div>
-                        </div>
+                        </vue-draggable-resizable>
+                        <div class="image-block"><img id="floor-image" :src="floorPreview" alt=""></div>
                     </div>
                 </div>
             </div>
@@ -153,60 +155,117 @@
 <script>
   import dropdown from '@/components/simple/dropdown.vue'
   import constants from "../../Constants";
+  import VueDraggableResizable from 'vue-draggable-resizable'
+
+  // optionally import default styles
+  import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
   export default {
     name: 'NewUnitModal',
     components: {
-      dropdown,
+      dropdown, VueDraggableResizable
     },
     data: ()=>({
       floorOption: [],
       floorPreview: '',
       stopSave: false,
       statusOption: constants.STATUS_OPTIONS,
-      templateUnit: {
-        id: '',
-        unit_number: 0,
-        floor: 1,
-        bad: 1,
-        bath: 1,
-        price: '',
-        status: 0,
-        HOA: '',
-        int_sq: '',
-        ext_sq: '',
-        bmr: 0,
-        parking: 0,
-        floorImage: '',
-        mark_x: '',
-        mark_y: '',
-        unitImage: '',
-        image: '',
-      },
+      templateUnit: constants.STANDART_UNIT,
       counter: 0,  // count the clicks
       timer: null,
 
     }),
     methods: {
+      calculateFontSize(){
+        let fontSize = this.templateUnit.unit_mark.height / 3 / 2;
+        let fontSize2 = this.templateUnit.unit_mark.width / 8;
+        if(fontSize < fontSize2) {
+          var min = fontSize;
+        } else {
+          var  min = fontSize2;
+        }
+        if(min > 14) {
+          return Number.parseInt(min);
+        } else {
+          return 14;
+        }
+      },
+      calculateX() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.width();
+        var percent = width / 100;
+        var mark_x = this.templateUnit.unit_mark.x * percent;
+        return Number.parseInt(mark_x);
+      },
+      calculateY() {
+        var imageContainer = $('#floor-image');
+        var height = imageContainer.height();
+        var percent = height / 100;
+        var mark_y = this.templateUnit.unit_mark.y * percent;
+        return Number.parseInt(mark_y);
+      },
+      calculateWidth() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.width();
+        var percent = width / 100;
+        var mark_width = this.templateUnit.unit_mark.width * percent;
+        return Number.parseInt(mark_width);
+      },
+      calculateHeight() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.height();
+        var percent = width / 100;
+        var mark_height = this.templateUnit.unit_mark.height * percent;
+        return Number.parseInt(mark_height);
+      },
+      calculateXBack() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.width();
+        var percent = width / 100;
+        var mark_x = this.templateUnit.unit_mark.x / percent;
+        return Number.parseFloat(mark_x);
+      },
+      calculateYBack() {
+        var imageContainer = $('#floor-image');
+        var height = imageContainer.height();
+        var percent = height / 100;
+        var mark_y = this.templateUnit.unit_mark.y / percent;
+        return Number.parseFloat(mark_y);
+      },
+      calculateWidthBack() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.width();
+        var percent = width / 100;
+        var mark_width = this.templateUnit.unit_mark.width / percent;
+        return Number.parseFloat(mark_width);
+      },
+      calculateHeightBack() {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.height();
+        var percent = width / 100;
+        var mark_height = this.templateUnit.unit_mark.height / percent;
+        return Number.parseFloat(mark_height);
+      },
+      onResize: function (x, y, width, height) {
+        this.templateUnit.unit_mark.x = x;
+        this.templateUnit.unit_mark.y = y;
+        this.templateUnit.unit_mark.width = width;
+        this.templateUnit.unit_mark.height = height;
+        this.templateUnit.unit_mark.font_size = this.calculateFontSize();
+        this.templateUnit.unit_mark.x_prc = this.calculateXBack();
+        this.templateUnit.unit_mark.y_prc = this.calculateYBack();
+        this.templateUnit.unit_mark.width_prc = this.calculateWidthBack();
+        this.templateUnit.unit_mark.height_prc = this.calculateHeightBack();
+      },
+      onDrag: function (x, y) {
+        this.templateUnit.unit_mark.x = x;
+        this.templateUnit.unit_mark.x_prc = this.calculateXBack();
+        this.templateUnit.unit_mark.y = y;
+        this.templateUnit.unit_mark.y_prc = this.calculateYBack();
+        this.templateUnit.unit_mark.width_prc = this.calculateWidthBack();
+        this.templateUnit.unit_mark.height_prc = this.calculateHeightBack();
+      },
       resetTemplateUnit() {
-        this.templateUnit = {
-          id: '',
-          unit_number: 0,
-          floor: 1,
-          bad: 1,
-          bath: 1,
-          price: '',
-          status: 0,
-          HOA: '',
-          int_sq: '',
-          ext_sq: '',
-          bmr: 0,
-          parking: 0,
-          floorImage: '',
-          mark_x: '',
-          mark_y: '',
-          unitImage: '',
-          image: '',
-        };
+        this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
       },
       ChangeFloorPreview() {
         if(this.templateUnit.floor > 0) {
@@ -254,7 +313,7 @@
             data.append('unit', JSON.stringify(unit));
             let obj = this;
             $.ajax({
-              url: constants.BACKEND_URL + 'unit/create-new-unit',
+              url: constants.BACKEND_URL + 'unit/update-unit',
               type: 'POST', // важно!
               data: data,
               cache: false,
@@ -315,29 +374,14 @@
             break;
         }
       },
-      changeColumnDefinition: function (event) {
-        let self = this;
-        this.counter++;
+      addUnitMark: function () {
+        this.templateUnit.unit_mark.x = this.calculateX();
+        this.templateUnit.unit_mark.y = this.calculateY();
+        this.templateUnit.unit_mark.width = this.calculateWidth();
+        this.templateUnit.unit_mark.height = this.calculateHeight();
+        this.templateUnit.unit_mark.font_size = this.calculateFontSize();
 
-        if (this.counter === 1) {
-          this.timer = setTimeout(function () {
-            // DO NOTHING BUT RESET IN CASE THERES JUST ONE CLICK
-            self.counter = 0
-          }, 300);  // increase delay as you like
-        } else {
-          let target = event.target.getBoundingClientRect();
-          let x = event.clientX - target.left;
-          let y = event.clientY - target.top;
-          let pixpercentX = (event.target.offsetWidth / 100);
-          let pixpercentY = (event.target.offsetHeight / 100);
-          let percentX = x / pixpercentX;
-          let percentY = y / pixpercentY;
-          this.templateUnit.mark_x = percentX;
-          this.templateUnit.mark_y = percentY;
-          clearTimeout(this.timer);
-          // COLUMN_DEFINITION[c]+=50
-          self.counter = 0;
-        }
+        this.templateUnit.mark = true;
       },
       uploadImage(e){
         this.file = e.target.files[0];

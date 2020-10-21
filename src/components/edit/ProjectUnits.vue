@@ -27,8 +27,8 @@
                     <div class="units-list-value">{{unit.ext_sq}}</div>
                     <div class="units-list-value">{{unit.bad}}</div>
                     <div class="units-list-value">{{unit.bath}}</div>
-                    <div class="units-list-value" v-if="unit.bmr == 1">Да</div>
-                    <div class="units-list-value" v-if="unit.bmr == 0">Нет</div>
+                    <div class="units-list-value" v-if="unit.bmr == 1">Yes</div>
+                    <div class="units-list-value" v-if="unit.bmr == 0">No</div>
                     <div class="units-list-value units-icons">
                         <div class="units-edit-icon" @click="editUnit(unit)"></div>
                         <div class="units-remove-icon" @click="prepareDelete"></div>
@@ -52,8 +52,8 @@
                         <div class="units-list-value">{{unit.ext_sq}}</div>
                         <div class="units-list-value">{{unit.bad}}</div>
                         <div class="units-list-value">{{unit.bath}}</div>
-                        <div class="units-list-value" v-if="unit.bmr == 1">Да</div>
-                        <div class="units-list-value" v-if="unit.bmr == 0">Нет</div>
+                        <div class="units-list-value" v-if="unit.bmr == 1">Yes</div>
+                        <div class="units-list-value" v-if="unit.bmr == 0">No</div>
                         <div class="units-list-value units-icons">
                             <div class="units-edit-icon" @click="editUnit(unit)"></div>
                             <div class="units-remove-icon" @click="prepareDelete"></div>

@@ -18,6 +18,7 @@
     "materialize-css": "^1.0.0-rc.2",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.12",
+    "vue-draggable-resizable": "^2.2.0",
     "vue-moveable": "^1.8.9",
     "vue-router": "^3.2.0",
     "vue-stripe": "^0.1.52",

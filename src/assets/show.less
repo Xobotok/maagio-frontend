@@ -119,6 +119,7 @@ main {
   background-color: white;
   height: 100vh;
   overflow: hidden;
+  overflow-y: auto;
   .app-head {
     width: 100%;
     padding-left: 20px;
@@ -147,7 +148,6 @@ main {
      position: relative;
    }
     .floor-image {
-      height: calc(100vh - 108px);
       & .units-list {
         padding-top: 40px;
         display: flex;
@@ -170,10 +170,10 @@ main {
           border-radius: 12px;
         }
       }
-      .unit-point {
+      & .unit-point {
         position: absolute;
-        width: 100px;
-        height: 60px;
+        width: 100%;
+        height: 100%;
         justify-content: center;
         display: flex;
         flex-direction: column;
@@ -185,11 +185,21 @@ main {
           padding: 5px;
           width: 100%;
           text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 33%;
         }
         & .unit-point-number {
           font-size: 20px;
           color: black;
           font-family: RobotoBold, sans-serif;
+          height: 33%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #fff;
+          width: 100%;
         }
         & .unit-point-bedrooms {
           background-color: #2F80ED;
@@ -197,17 +207,23 @@ main {
           padding: 5px;
           width: 100%;
           text-align: center;
+          height: 33%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
       padding-right: 90px;
       display: flex;
       justify-content: center;
       position: relative;
+      margin-top: 20px;
+      margin-bottom: 20px;
       & img {
+        max-height: 600px;
+        -o-object-fit: contain;
         object-fit: contain;
-        max-height: calc(100vh - 160px);
-        padding-top: 20px;
-        padding-bottom: 20px;
+        max-width: 830px;
       }
     }
     .show-floors-footer {

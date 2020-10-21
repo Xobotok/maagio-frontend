@@ -61,6 +61,15 @@
         success     : function( respond, status, jqXHR ){
           if(respond !== null) {
             if(respond.ok === 1) {
+              for(var i = 0; i < respond.data.floors.length; i++){
+                for(var n = 0; n < respond.data.floors[i].units.length; n++) {
+                  if(respond.data.floors[i].units[n].unit_mark != null) {
+                    respond.data.floors[i].units[n].show = true;
+                    respond.data.floors[i].units[n].unit_mark.natural_width = 0;
+                    respond.data.floors[i].units[n].unit_mark.natural_height = 0;
+                  }
+                }
+              }
               obj.project = respond.data;
               obj.project.markers.culture = [];
               obj.project.markers.restaurant = [];

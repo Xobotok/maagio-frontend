@@ -7,7 +7,9 @@
                     <div class="unit-header">{{this.$parent.project.name}}</div>
                     <div class="unit-number">{{this.openedUnit.unit_number}}</div>
                     <div class="unit-number">Floor {{this.activeFloor + 1}}</div>
-                    <div class="unit-extra-info"  style="padding-bottom: 20px; padding-top: 20px;">{{this.openedUnit.int_sq}} Sq.Ft. Interior</div>
+                    <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
+                        {{this.openedUnit.int_sq}} Sq.Ft. Interior
+                    </div>
                     <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
                         Exterior
                     </div>
@@ -29,13 +31,16 @@
             <div class="floor-image">
                 <div class="units-list" v-if="floorImage == ''">
                     <div class="no-units" v-if="this.floor != '' && this.floor.units.length === 0">No units</div>
-                   <div class="units-item"  v-for="unit in this.floor.units" @click="openUnit(unit)">Unit number {{unit.unit_number}} </div>
+                    <div class="units-item" v-for="unit in this.floor.units" @click="openUnit(unit)">Unit number
+                        {{unit.unit_number}}
+                    </div>
                 </div>
                 <div class="image-container" v-if="floorImage != ''">
-                    <img :src="floorImage" alt="">
-                    <div v-for="unit in this.floor.units" @click="openUnit(unit)" class="unit-point"
-                         v-if="(unit.mark_x != '' && unit.mark_x != null) && (unit.mark_y != '' && unit.mark_y != null)"
-                         :style="{left: 'calc(' + unit.mark_x + '% - 50px)', top: 'calc(' + unit.mark_y + '% - 30px)'}">
+                    <img :src="floorImage" id="floor-image" alt="">
+                    <div v-for="unit in floor.units" @click="openUnit(unit)" class="unit-point"
+                         v-if="unit.unit_mark != null && unit.show != false"
+                         :style="{left: unit.unit_mark.x + '%', top: unit.unit_mark.y + '%', width: unit.unit_mark.natural_width + 'px',
+                         height: unit.unit_mark.natural_height + 'px', fontSize: unit.unit_mark.font_size + 'px'}">
                         <div class="unit-point-bedrooms" v-if="unit.bad > 0 && unit.bad != ''">{{unit.bad}} bedroom
                         </div>
                         <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
@@ -81,7 +86,7 @@
     name: 'show-floors',
     data: ()=>({
       activeFloor: 0,
-      floor: '',
+      floor: { units: [{ show: true }] },
       reserveFloor: '',
       floorImage: '',
       bedroomList: [],
@@ -98,11 +103,13 @@
         status: [],
       },
     }),
+    updated(){
+
+    },
     mounted(){
-      this.floor = JSON.parse(JSON.stringify(this.$parent.project.floors[0]));
-      this.reserveFloor = this.$parent.project.floors[0];
-      if(this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
-        this.floorImage = this.$parent.project.floors[0].image.image_link;
+      this.floor = this.$parent.project.floors[0];
+      if (this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
+        this.floorImage = this.$parent.project.floors[0].image;
       }
 
       for (let i = 0; i < this.floor.units.length; i++) {
@@ -120,14 +127,52 @@
         this.statusList[i] = false;
         this.statusList[this.floor.units[i].status] = true;
       }
+      var obj = this;
+      setTimeout(function () {
+        for (var i = 0; i < obj.floor.units.length; i++) {
+          if (obj.floor.units[i].unit_mark != null) {
+            obj.floor.units[i].unit_mark.natural_width = obj.calculateWidth(obj.floor.units[i]);
+            obj.floor.units[i].unit_mark.natural_height = obj.calculateHeight(obj.floor.units[i]);
+            obj.floor.units[i].unit_mark.font_size = obj.calculateFontSize(obj.floor.units[i]);
+          }
+        }
+      }, 200)
     },
     methods: {
+      calculateFontSize(unit){
+        let fontSize = unit.unit_mark.natural_height / 3 / 2;
+        let fontSize2 = unit.unit_mark.natural_width / 8;
+        if(fontSize < fontSize2) {
+          var min = fontSize;
+        } else {
+          var  min = fontSize2;
+        }
+        if(min > 14) {
+          return Number.parseInt(min);
+        } else {
+          return 14;
+        }
+      },
+      calculateWidth(unit) {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.width();
+        var percent = width / 100;
+        var mark_width = unit.unit_mark.width * percent;
+        return Number.parseInt(mark_width);
+      },
+      calculateHeight(unit) {
+        var imageContainer = $('#floor-image');
+        var width = imageContainer.height();
+        var percent = width / 100;
+        var mark_height = unit.unit_mark.height * percent;
+        return Number.parseInt(mark_height);
+      },
       openFloor(index) {
         this.activeFloor = index;
-        this.floor = JSON.parse(JSON.stringify(this.$parent.project.floors[index]));
+        this.floor = this.$parent.project.floors[index];
         this.reserveFloor = this.$parent.project.floors[index];
-        if(this.$parent.project.floors[index].image != '' && this.$parent.project.floors[index].image != null) {
-          this.floorImage = this.$parent.project.floors[index].image.image_link;
+        if (this.$parent.project.floors[index].image != '' && this.$parent.project.floors[index].image != null) {
+          this.floorImage = this.$parent.project.floors[index].image;
         }
         this.renderFilters();
       },
@@ -179,23 +224,20 @@
         this.useFilter();
       },
       useFilter() {
-        this.floor.units = [];
-        for (let i = 0; i < this.reserveFloor.units.length; i++) {
-          this.floor.units.push(this.reserveFloor.units[i]);
+        for (var iter = 0; iter < this.floor.units.length; iter++) {
+          this.floor.units[iter].show = true;
         }
-        for (let n = 0; n < this.filters.bed.length; n++) {
-          for (let iter = 0; iter < this.floor.units.length; iter++) {
-            if (this.floor.units[iter].bad == this.filters.bed[n]) {
-              this.floor.units.splice(iter, 1);
-              iter--;
+        for (var iter = 0; iter < this.floor.units.length; iter++) {
+          for (var n = 0; n < this.filters.bed.length; n++) {
+          if (this.floor.units[iter].bad == this.filters.bed[n]) {
+              this.floor.units[iter].show = false;
             }
           }
         }
-        for (let m = 0; m < this.filters.status.length; m++) {
-          for (let iter2 = 0; iter2 < this.floor.units.length; iter2++) {
+        for (let iter2 = 0; iter2 < this.floor.units.length; iter2++) {
+          for (let m = 0; m < this.filters.status.length; m++) {
             if (this.floor.units[iter2].status == this.filters.status[m]) {
-              this.floor.units.splice(iter2, 1);
-              iter2--;
+              this.floor.units[iter2].show = false;
             }
           }
         }

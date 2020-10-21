@@ -2,8 +2,11 @@ export default {
   /*BACKEND_URL: 'https://backend.getmaggio.com/web/',*/
   FRONTEND_URL: 'http://hareapj.cluster051.hosting.ovh.net/',
   BACKEND_URL: 'http://web/',
-  STATUS_OPTIONS: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }, {name: 'Unreleased'}],
-  MARKER_TYPES: [{val: '', name: 'Culture' }, {val: '', name: 'Restaurants' }, {val: '', name: 'Sport' }, {val: '', name: 'Parks & Recreations'}],
+  STATUS_OPTIONS: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }, { name: 'Unreleased' }],
+  MARKER_TYPES: [{ val: '', name: 'Culture' }, { val: '', name: 'Restaurants' }, { val: '', name: 'Sport' }, {
+    val: '',
+    name: 'Parks & Recreations'
+  }],
   MAP_OPTIONS: [
     {
       "elementType": "geometry",
@@ -170,4 +173,35 @@ export default {
       ]
     },
   ],
+  STANDART_UNIT: {
+    id: '',
+    unit_number: 0,
+    floor: 1,
+    bad: 1,
+    bath: 1,
+    price: '',
+    status: 0,
+    HOA: '',
+    int_sq: '',
+    ext_sq: '',
+    bmr: 0,
+    parking: 0,
+    floorImage: '',
+    mark: false,
+    unitImage: '',
+    image: '',
+    unit_mark: {
+      id: '',
+      x: 0,
+      y: 0,
+      width: 15,
+      height: 10,
+      font_size: 16,
+      x_prc: 0,
+      y_prc: 0,
+      width_prc: 15,
+      height_prc: 10,
+      font_size_prc: 16,
+    },
+  }
 }
