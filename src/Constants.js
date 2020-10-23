@@ -3,8 +3,8 @@ export default {
   FRONTEND_URL: 'http://hareapj.cluster051.hosting.ovh.net/',
   BACKEND_URL: 'http://web/',
   STATUS_OPTIONS: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }, { name: 'Unreleased' }],
-  MARKER_TYPES: [{ val: '', name: 'Culture' }, { val: '', name: 'Restaurants' }, { val: '', name: 'Sport' }, {
-    val: '',
+  MARKER_TYPES: [{ val: '1', name: 'Culture' }, { val: '2', name: 'Restaurants' }, { val: '3', name: 'Sport' }, {
+    val: '4',
     name: 'Parks & Recreations'
   }],
   MAP_OPTIONS: [
@@ -173,10 +173,14 @@ export default {
       ]
     },
   ],
+  DEFAULT_MAP_POSITION:{
+    lat: 34.055855,
+    lng: -118.246130,
+  },
   STANDART_UNIT: {
     id: '',
     unit_number: 0,
-    floor: 1,
+    floor: '',
     bad: 1,
     bath: 1,
     price: '',

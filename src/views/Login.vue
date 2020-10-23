@@ -36,7 +36,6 @@
       if(this.$route.query.message) {
         this.message = this.$route.query.message;
       }
-
     }
   }
 </script>

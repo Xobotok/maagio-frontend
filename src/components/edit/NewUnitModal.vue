@@ -1,46 +1,49 @@
 <template>
     <div class="fullscreen-modal">
         <div class="project-unit">
+            <div class="close-modal" @click="cancel">+</div>
             <div class="unit-create-header">Unit Info</div>
             <div class="project-unit-create">
                 <div class="project-unit-left">
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Units Number*</div>
-                            <div class=""><input type="text" v-model="templateUnit.unit_number" class="project-input">
+                            <div class="subcomponent-label">Units Number<span class="red">*</span></div>
+                            <div class=""><input type="text" @keyup="numberWarning = false" v-model="templateUnit.unit_number" class="project-input" :class="{warning: numberWarning}">
                             </div>
                         </div>
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Floor*</div>
+                            <div class="subcomponent-label">Floor<span class="red">*</span></div>
                             <dropdown :options="floorOption"
                                       :selected="{val: '', name: this.$parent.templateUnit.floor}"
                                       v-on:updateOption="selectNewFloor"
                                       :placeholder="'Select floor'"
-                                      :closeOnOutsideClick="true"></dropdown>
+                                      :closeOnOutsideClick="true"
+                            :class="{warning: floorWarning}">
+                            </dropdown>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Bedroom*</div>
+                            <div class="subcomponent-label">Bedroom<span class="red">*</span></div>
                             <div class=""><input type="number" min="0" max="99" v-model="templateUnit.bad"
-                                                 class="project-input"></div>
+                                                 :class="{warning: bedWarning}" class="project-input"></div>
                         </div>
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Bathroom*</div>
+                            <div class="subcomponent-label">Bathroom<span class="red">*</span></div>
                             <div class=""><input type="number" min="0" max="99" v-model="templateUnit.bath"
-                                                 class="project-input"></div>
+                                                 :class="{warning: bathWarning}" class="project-input"></div>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div style="width: 100%;">
-                            <div class="subcomponent-label">Price*</div>
-                            <div class=""><input type="number" min="1" v-model="templateUnit.price"
-                                                 class="project-input"></div>
+                            <div class="subcomponent-label">Price<span class="red">*</span></div>
+                            <div class=""><input @keyup="priceWarning = false" type="number" min="1" v-model="templateUnit.price"
+                                                 :class="{warning: priceWarning}" class="project-input"></div>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Status*</div>
+                            <div class="subcomponent-label">Status<span class="red">*</span></div>
                             <dropdown v-if="templateUnit.status != ''" :options="statusOption"
                                       :selected="{val: templateUnit.status, name: statusOption[templateUnit.status].name}"
                                       v-on:updateOption="selectStatus"
@@ -50,7 +53,8 @@
                                       :selected="{val: '', name: ''}"
                                       v-on:updateOption="selectStatus"
                                       :placeholder="'Select status'"
-                                      :closeOnOutsideClick="true"></dropdown>
+                                      :closeOnOutsideClick="true"
+                                      :class="{warning: statusWarning}"></dropdown>
                         </div>
                         <div class="unit-subcomponent">
                             <div class="subcomponent-label">HOA Fees</div>
@@ -60,8 +64,8 @@
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Interior sq. ft*</div>
-                            <div class=""><input type="text" min="1" step="any" v-model="templateUnit.int_sq"
+                            <div class="subcomponent-label">Interior sq. ft<span class="red">*</span></div>
+                            <div class=""><input @keyup="intWarning = false" type="text" :class="{warning: intWarning}" min="1" step="any" v-model="templateUnit.int_sq"
                                                  class="project-input"></div>
                         </div>
                         <div class="unit-subcomponent">
@@ -115,7 +119,7 @@
                 </div>
                 <div class="project-unit-right">
                     <div class="unit-image-header">
-                        <span>Unit Location*</span> You can added unit mark on this floor
+                        <span>Unit Location<span class="red">*</span> </span> You can added unit mark on this floor
                         <div class="button-container" v-if="templateUnit.mark == true && floorPreview != ''"
                              @click="templateUnit.mark = false; templateUnit.unit_mark.x = 0; templateUnit.unit_mark.y = 0; templateUnit.unit_mark.width = 15; templateUnit.unit_mark.height = 10">
                             <div class="logo-upload" v-if="">Remove unit mark</div>
@@ -145,7 +149,7 @@
             </div>
             <div class="unit-create-controls">
                 <div class="project-page-button blue-button" @click="saveUnit" v-if="checkSave()">Save</div>
-                <div class="project-page-button inactive-button" v-if="!checkSave()">Save</div>
+                <div class="project-page-button blue-button" @click="makeWarnings" v-if="!checkSave()">Save</div>
                 <div class="project-page-button" @click="cancel">Cancel</div>
             </div>
         </div>
@@ -172,9 +176,47 @@
       templateUnit: constants.STANDART_UNIT,
       counter: 0,  // count the clicks
       timer: null,
+      numberWarning: false,
+      floorWarning: false,
+      bedWarning: false,
+      priceWarning: false,
+      statusWarning: false,
+      bathWarning: false,
+      intWarning: false,
 
     }),
     methods: {
+      makeWarnings() {
+        this.numberWarning = false;
+        this.floorWarning = false;
+        this.bedWarning = false;
+        this.bathWarning = false;
+        this.priceWarning = false;
+        this.statusWarning = false;
+        this.intWarning = false;
+        if(this.templateUnit.unit_number === 0) {
+          this.numberWarning = true;
+        }
+        if(this.templateUnit.floor == '') {
+          this.floorWarning = true;
+        }
+        if(this.templateUnit.bad === '') {
+          this.bedWarning = true;
+        }
+        if(this.templateUnit.bath === '') {
+          this.bathWarning = true;
+        }
+        if(this.templateUnit.price === '') {
+          this.priceWarning = true;
+        }
+        if(this.templateUnit.status === '') {
+          this.statusWarning = true;
+        }
+        if(this.templateUnit.int_sq === '') {
+          this.intWarning = true;
+        }
+        $(this.$el).animate({scrollTop: 0}, 600);
+      },
       calculateFontSize(){
         let fontSize = this.templateUnit.unit_mark.height / 3 / 2;
         let fontSize2 = this.templateUnit.unit_mark.width / 8;
@@ -269,12 +311,8 @@
       },
       ChangeFloorPreview() {
         if(this.templateUnit.floor > 0) {
-          if(this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image != '') {
-            this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
-          }
-          if(this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview != '') {
-            this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
-          }
+          this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
+          this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
         }
       },
       removeImage(){
@@ -352,6 +390,23 @@
       },
       selectNewFloor(e){
         this.templateUnit.floor = e.name;
+        this.templateUnit.mark = false;
+        this.templateUnit.unit_mark = {
+          id: '',
+          x: 0,
+          y: 0,
+          width: 15,
+          height: 10,
+          font_size: 16,
+          x_prc: 0,
+          y_prc: 0,
+          width_prc: 15,
+          height_prc: 10,
+          font_size_prc: 16,
+        };
+        if(this.templateUnit.floor != '') {
+          this.floorWarning = false;
+        }
         this.ChangeFloorPreview();
       },
       cancel() {
@@ -359,6 +414,7 @@
         this.$parent.openAddUnit = false;
       },
       selectStatus(e) {
+        this.statusWarning = false;
         switch (e.name) {
           case 'Available':
             this.templateUnit.status = 0;

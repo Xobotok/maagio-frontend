@@ -119,8 +119,44 @@
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
       this.checkActive();
+      console.log(this);
     },
     methods: {
+      deleteMarker(e) {
+        let obj = this;
+        let marker_id = e.target.getAttribute('marker-id');
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        let project_id = window.location.href.split('project_id=');
+        project_id = project_id[project_id.length - 1];
+        let data = {
+          user_id: user.uid,
+          token: token,
+          project_id: project_id,
+          marker_id: marker_id,
+        };
+
+        $.ajax({
+          url: constants.BACKEND_URL + 'marker/delete-marker',
+          type: 'POST', // важно!
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function (respond, status, jqXHR) {
+            if (respond.ok === 1) {
+              for (var i = 0; i < obj.project.markers.user_markers.length; i++) {
+                if (obj.project.markers.user_markers[i].id == marker_id) {
+                  obj.project.markers.user_markers[i].setMap(null);
+                }
+              }
+            }
+          },
+          // функция ошибки ответа сервера
+          error: function (jqXHR, status, errorThrown) {
+            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+          }
+        });
+      },
       goNext(){
         if (this.activeTab == 1) {
           this.saveOverview();
@@ -373,6 +409,9 @@
         var description = document.createElement('div');
         description.classList.add('map-info-description');
         description.textContent = info.description;
+        container.appendChild(name);
+        container.appendChild(address);
+        container.appendChild(description);
         if(info.creator == 0) {
           var button = document.createElement('div');
           button.classList.add('map-info-button');
@@ -381,16 +420,28 @@
           button.addEventListener('click', this.deleteMarker);
           container.appendChild(button);
         }
-        container.appendChild(name);
-        container.appendChild(address);
-        container.appendChild(description);
-
         return container;
       },
       createMarker(marker){
+        var icon = '';
+        switch(Number.parseInt(marker.type)) {
+          case 1:
+            icon = constants.BACKEND_URL +'/img/Cultural.png';
+            break;
+          case 2:
+            icon = constants.BACKEND_URL +'/img/Restaurants.png';
+            break;
+          case 3:
+            icon = constants.BACKEND_URL +'/img/Sports.png';
+            break;
+          case 4:
+            icon = constants.BACKEND_URL +'/img/Nature.png';
+            break;
+        }
         var userMarker = new google.maps.Marker({
           position: { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) },
           map: map,
+          icon: icon,
         });
         if(marker.name == null) {
           marker.name = '';
@@ -401,10 +452,10 @@
         if(marker.description == null) {
           marker.description = '';
         }
-        let infowindow = new google.maps.InfoWindow();
+        window.infowindow = new google.maps.InfoWindow();
         userMarker.addListener("click", ()=> {
-          infowindow.setContent(this.createInfoWindowDom(marker));
-          infowindow.open(map, userMarker);
+          window.infowindow.setContent(this.createInfoWindowDom(marker));
+          window.infowindow.open(map, userMarker);
         });
         userMarker.id = marker.id;
         return userMarker;

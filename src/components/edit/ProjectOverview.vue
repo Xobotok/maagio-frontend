@@ -139,37 +139,16 @@
     },
     methods: {
       loadMap(){
-        let lat = this.$parent.project.map.lat;
-        let lng = this.$parent.project.map.lng;
-        if(this.$parent.project.map.lat != undefined) {
-          lat = this.$parent.project.map.lat;
-        } else {
-          lat = 34.055855;
-        }
-        if(this.$parent.project.map.lng != undefined) {
-          lng = this.$parent.project.map.lng;
-        } else {
-          lng = -118.246130;
-        }
-        window.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: lat, lng: lng },
-          zoom: 18,
-          fullscreenControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-        });
-        if(this.$parent.project.map.lng != undefined && this.$parent.project.map.lng != undefined) {
-          this.$parent.project.map.lat = lat;
-          this.$parent.project.map.lng = lng;
+        if(this.$parent.project.map.lng != undefined && this.$parent.project.map.lat != undefined) {
+          var center = new google.maps.LatLng(this.$parent.project.map.lat, this.$parent.project.map.lng);
+          window.map.panTo(center);
           var marker = new google.maps.Marker({
-            position: {lat: lat, lng: lng},
+            position: {lat: this.$parent.project.map.lat, lng: this.$parent.project.map.lng},
             map: window.map,
+            icon: constants.BACKEND_URL + '/img/Home.png'
           });
           this.$parent.project.map.marker = marker;
         }
-        var styledMapType = new google.maps.StyledMapType(constants.MAP_OPTIONS,{name: 'Styled Map'});
-        window.map.mapTypes.set('styled_map', styledMapType);
-        window.map.setMapTypeId('styled_map');
         for(var i = 0; i < this.$parent.project.markers.user_markers.length; i++) {
           this.$parent.project.markers.user_markers[i] = this.$parent.createMarker(this.$parent.project.markers.user_markers[i]);
         }
@@ -185,41 +164,6 @@
         for(var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
           this.$parent.project.markers.restaurant[i] = this.$parent.createMarker(this.$parent.project.markers.restaurant[i]);
         }
-      },
-      deleteMarker(e) {
-        let obj = this;
-        let marker_id = e.target.getAttribute('marker-id');
-        let user = JSON.parse(localStorage.getItem('maagio_user'));
-        let token = localStorage.getItem('token');
-        let project_id  = window.location.href.split('project_id=');
-        project_id = project_id[project_id.length - 1];
-        let data = {
-          user_id: user.uid,
-          token: token,
-          project_id: project_id,
-          marker_id: marker_id,
-        };
-
-        $.ajax({
-          url         : constants.BACKEND_URL + 'marker/delete-marker',
-          type        : 'POST', // важно!
-          data        : data,
-          cache       : false,
-          dataType    : 'json',
-          success     : function( respond, status, jqXHR ){
-            if(respond.ok === 1) {
-                for(var i = 0; i < obj.$parent.project.markers.length; i++) {
-                  if(obj.$parent.project.markers[i].id == marker_id) {
-                    obj.$parent.project.markers[i].setMap(null);
-                  }
-                }
-            }
-          },
-          // функция ошибки ответа сервера
-          error: function( jqXHR, status, errorThrown ){
-            console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
-          }
-        });
       },
       openPhotoUpload() {
         var container = document.getElementById('overview-logo');

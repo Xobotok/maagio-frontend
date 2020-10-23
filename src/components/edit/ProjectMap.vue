@@ -27,22 +27,22 @@
                             <textarea class="project-input superscroll" v-model="userMarker.description" cols="30"
                                       rows="10"></textarea>
                         </div>
-                        <!--<div class="marker-field-type">
+                        <div class="marker-field-type">
                             <dropdown :options="markerOption"
                                       v-on:updateOption="selectMarkerType"
                                       :selected="{val: '', name: ''}"
                                       :placeholder="'Select marker type'"
                                       :closeOnOutsideClick="true"></dropdown>
-                        </div>-->
+                        </div>
                     </div>
                 </div>
                 <div class="marker-buttons">
                     <div class="marker-block-button save-button"
-                         v-show="openMarker == true && userMarker != '' && markerPause == false"
+                         v-show="openMarker == true && userMarker != '' && markerPause == false && userMarker.marker != ''"
                          @click="addMarker">Save
                     </div>
                     <div class="marker-block-button save-button" style="opacity: 0.3;"
-                         v-show="(openMarker == true && userMarker == '')|| markerPause == true">Save
+                         v-show="(openMarker == true && userMarker.marker == '')|| markerPause == true">Save
                     </div>
                     <div class="marker-block-button cancel-button" v-show="openMarker == true" @click="cancelMarker">
                         Cancel
@@ -128,11 +128,17 @@
         </div>
         <div class="map-container" v-show="mapActivate">
             <div class="input-container">
-                <input v-if="!searchPause" type="text" v-on:keyup.enter="searchAddress"
+                <input v-if="!searchPause" type="text"  @focus="searchAddress" @blur="stopSearchAddress" v-on:keyup="searchAddress"
                        v-model="$parent.project.map.address" class="project-input">
+                <div class="address-list" v-if="addressPredictions.length > 0">
+                    <div class="address-info" v-for="address in addressPredictions" @click="appendAddress">{{address.description}}</div>
+                </div>
                 <input v-if="searchPause" type="text" disabled v-model="$parent.project.map.address"
                        class="project-input">
-                <div class="search-icon" @click="searchAddress"></div>
+                <div class="search-icon" v-if="!searchPause"></div>
+                <div class="cssload-container" v-if="searchPause">
+                    <div class="cssload-double-torus"></div>
+                </div>
             </div>
             <div class="google-map" id="map">
 
@@ -159,6 +165,7 @@
       nearSport: false,
       nearNature: false,
       searchPause: false,
+      addressPredictions: [],
       map: '',
       mapMarker: {},
       markerOption: constants.MARKER_TYPES,
@@ -171,6 +178,7 @@
         name: '',
         description: '',
         marker: '',
+        type: '',
       },
       userMarkerType: '',
       userMarkerIcon: '',
@@ -300,7 +308,7 @@
         }
       },
       selectMarkerType(e) {
-        this.userMarkerType = e.name;
+        this.userMarkerType = e.val;
       },
       openAddMarker() {
         if (this.openMarker === false) {
@@ -316,16 +324,33 @@
         let obj = this;
 
         function placeMarker(location) {
+          var icon = '';
+          switch(Number.parseInt(obj.userMarkerType)) {
+            case 1:
+              icon = constants.BACKEND_URL +'/img/Cultural.png';
+              break;
+            case 2:
+              icon = constants.BACKEND_URL +'/img/Restaurants.png';
+              break;
+            case 3:
+              icon = constants.BACKEND_URL +'/img/Sports.png';
+              break;
+            case 4:
+              icon = constants.BACKEND_URL +'/img/Nature.png';
+              break;
+          }
           if (obj.userMarker.marker == '') {
             obj.userMarker.marker = new google.maps.Marker({
               position: location,
               map: map,
+              icon: icon,
             });
           } else {
             obj.userMarker.marker.setMap(null);
             obj.userMarker.marker = new google.maps.Marker({
               position: location,
               map: map,
+              icon: icon,
             });
           }
         }
@@ -340,6 +365,7 @@
         marker.lng = this.userMarker.marker.getPosition().lng();
         marker.name = this.userMarker.name;
         marker.description = this.userMarker.description;
+        marker.type = this.userMarkerType;
         data.append('user_id', user.uid);
         data.append('token', token);
         data.append('project_id', this.$parent.project.id);
@@ -357,14 +383,15 @@
             obj.stopSave = false;
             if (respond.ok === 1) {
               obj.userMarker.marker.id = respond.marker.id;
-              obj.$parent.project.markers.push(obj.userMarker.marker);
-              obj.userMarkers.push(obj.userMarker);
+              obj.$parent.project.markers.user_markers.push(obj.userMarker.marker);
               obj.makeInfoWindow(obj.userMarker.marker, respond.marker);
               obj.userMarker = {
                 name: '',
                 description: '',
                 marker: '',
+                type: '',
               };
+              obj.userMarkerType = '';
               google.maps.event.clearListeners(map, 'click');
               obj.openMarker = false;
               obj.markerPause = false;
@@ -426,10 +453,9 @@
           dataType: 'json',
           success: function (respond, status, jqXHR) {
             if (respond.ok === 1) {
-              console.log(obj.$parent.project.markers);
-              for (var i = 0; i < obj.$parent.project.markers.length; i++) {
-                if (obj.$parent.project.markers[i].id == marker_id) {
-                  obj.$parent.project.markers[i].setMap(null);
+              for (var i = 0; i < obj.$parent.project.markers.user_markers.length; i++) {
+                if (obj.$parent.project.markers.user_markers[i].id == marker_id) {
+                  obj.$parent.project.markers.user_markers[i].setMap(null);
                 }
               }
             }
@@ -451,11 +477,10 @@
         if (info.description == null) {
           info.description = '';
         }
-        let infowindow = new google.maps.InfoWindow();
-        let content = this.createInfoWindowDom(info);
-        infowindow.setContent(content);
+        window.infowindow = new google.maps.InfoWindow();
         marker.addListener("click", ()=> {
-          infowindow.open(map, marker);
+          window.infowindow.setContent(this.createInfoWindowDom(info));
+          window.infowindow.open(map, marker);
         });
       },
       cancelMarker(){
@@ -475,19 +500,68 @@
           window.map.panTo({ lat: Number.parseFloat(lat), lng: Number.parseFloat(lng) });
         }
       },
+      stopSearchAddress() {
+        let obj = this;
+       setTimeout(function () {
+         obj.addressPredictions = [];
+        }, 500)
+      },
       searchAddress() {
+        if (this.$parent.project.map.address.length == 0) {
+          this.addressPredictions = [];
+          return false;
+        } else if(this.$parent.project.map.address.length < 3) {
+          return false;
+        }
+
+        var obj = this;
+        if (window.timer) {
+          window.clearTimeout(window.timer);
+        }
+        window.timer = setTimeout(function () {
+          let data = new FormData();
+          let user = JSON.parse(localStorage.getItem('maagio_user'));
+          let token = localStorage.getItem('token');
+          data.append('user_id', user.uid);
+          data.append('token', token);
+          data.append('project_id', obj.$parent.project.id);
+          data.append('address', obj.$parent.project.map.address);
+          $.ajax({
+            url: constants.BACKEND_URL + 'map/search-address',
+            type: 'POST', // важно!
+            data: data,
+            cache: false,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (respond, status, jqXHR) {
+              obj.stopSave = false;
+              if (respond.ok === 1) {
+                for (var i = 0; i < respond.predictions.length; i++) {
+                  obj.addressPredictions = respond.predictions;
+                }
+              }
+            },
+            error: function (jqXHR, status, errorThrown) {
+              obj.stopSave = false;
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
+        }, 500);
+      },
+      appendAddress(e) {
         this.searchPause = true;
         let data = new FormData();
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         let token = localStorage.getItem('token');
-        console.log(this.$parent.project.map)
         data.append('user_id', user.uid);
         data.append('token', token);
         data.append('project_id', this.$parent.project.id);
-        data.append('address', this.$parent.project.map.address);
+        data.append('address', e.target.textContent);
         let obj = this;
+        obj.addressPredictions = [];
         $.ajax({
-          url: constants.BACKEND_URL + 'map/search-address',
+          url: constants.BACKEND_URL + 'map/append-address',
           type: 'POST', // важно!
           data: data,
           cache: false,
@@ -503,19 +577,24 @@
               obj.removeGoogleMarkers(3);
               obj.removeGoogleMarkers(4);
               obj.mapCenter(respond.map.lat, respond.map.lng);
-              if(obj.$parent.project.map.marker != undefined) {
+              if (obj.$parent.project.map.marker != undefined) {
                 obj.$parent.project.map.marker.setMap(null);
               }
               obj.$parent.project.map = respond.map;
               obj.$parent.project.map.marker = new google.maps.Marker({
-                position: {lat: Number.parseFloat(obj.$parent.project.map.lat), lng: Number.parseFloat(obj.$parent.project.map.lng)},
+                position: {
+                  lat: Number.parseFloat(obj.$parent.project.map.lat),
+                  lng: Number.parseFloat(obj.$parent.project.map.lng)
+                },
                 map: window.map,
+                icon: constants.BACKEND_URL + '/img/Home.png'
               });
             } else {
             }
           },
           error: function (jqXHR, status, errorThrown) {
             obj.stopSave = false;
+            obj.searchPause = false;
             console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
           }
         });
@@ -524,11 +603,12 @@
     ,
     mounted: function () {
       this.markerOption = constants.MARKER_TYPES;
+      let obj = this;
       window.initMap = function () {
         // JS API is loaded and available
         var styledMapType = new google.maps.StyledMapType(constants.MAP_OPTIONS, { name: 'Styled Map' });
         window.map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: -34.397, lng: 150.644 },
+          center: { lat: constants.DEFAULT_MAP_POSITION.lat, lng: constants.DEFAULT_MAP_POSITION.lng },
           zoom: 15,
           fullscreenControl: false,
           streetViewControl: false,
@@ -536,9 +616,23 @@
         });
         window.map.mapTypes.set('styled_map', styledMapType);
         window.map.setMapTypeId('styled_map');
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        if (user.ip != undefined && (obj.$parent.project.map.lng != constants.DEFAULT_MAP_POSITION.lng && obj.$parent.project.map.lat != constants.DEFAULT_MAP_POSITION.lat)) {
+          $.ajax({
+            url: 'http://ipwhois.app/json/' + user.ip,
+            type: 'GET', // важно!
+            dataType: 'json',
+            success: function (respond, status, jqXHR) {
+              var center = new google.maps.LatLng(respond.latitude, respond.longitude);
+              window.map.panTo(center);
+            },
+            error: function (jqXHR, status, errorThrown) {
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
+        }
       };
       window.initMap();
-    }
-    ,
+    },
   }
 </script>

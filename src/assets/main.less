@@ -857,6 +857,7 @@ main {
     overflow: auto;
     & .project-unit {
       background-color: #fafafa;
+      position: relative;
       padding: 40px;
       box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.05);
       -webkit-border-radius: 12px;
@@ -1431,6 +1432,38 @@ main {
     position: relative;
     top: 20px;
     left: 20px;
+    .address-list {
+      position: absolute;
+      z-index: 999;
+      top: 40px;
+      background-color: white;
+      width: 300px;
+      border: 2px solid #BDBDBD;
+      border-radius: 4px;
+      .address-info:hover {
+        background-color: #f0ebec;
+      }
+      .address-info {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        cursor: pointer;
+      }
+    }
+  }
+  & .cssload-container {
+    position: absolute;
+    width: 26px;
+    background-size: contain;
+    background-color: white;
+    background-position: center;
+    height: 34px;
+    top: 3px;
+    left: 270px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
   }
   & .search-icon {
     position: absolute;
@@ -1441,8 +1474,8 @@ main {
     background-size: contain;
     background-color: white;
     background-position: center;
-    height: 35px;
-    top: 2px;
+    height: 34px;
+    top: 3px;
     left: 270px;
     z-index: 999;
     cursor: pointer;
@@ -1981,4 +2014,90 @@ main {
   100% {
     background-color: rgb(255, 255, 255);
   }
+}
+.warning {
+  border-color: #fe8f8f;
+}
+.btn-group.warning {
+  border-color: #fe8f8f;
+}
+.close-modal:hover {
+  cursor: pointer;
+  opacity: .7;
+  color: #3e3e3e;
+}
+.close-modal {
+  position: absolute;
+  top: 0px;
+  opacity: 0.4;
+  right: 0px;
+  font-size: 40px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  font-family: 'RighteousRegular', sans-serif;
+  justify-content: center;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.close_icon {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23fff%3Bopacity%3A0%3B%7D.cls-2%7Bfill%3A%23231f20%3B%7D%3C/style%3E%3C/defs%3E%3Ctitle%3Eclose-circle%3C/title%3E%3Cg%20id%3D%22Layer_2%22%20data-name%3D%22Layer%202%22%3E%3Cg%20id%3D%22close-circle%22%3E%3Cg%20id%3D%22close-circle-2%22%20data-name%3D%22close-circle%22%3E%3Crect%20class%3D%22cls-1%22%20width%3D%2224%22%20height%3D%2224%22/%3E%3Cpath%20class%3D%22cls-2%22%20d%3D%22M12%2C2A10%2C10%2C0%2C1%2C0%2C22%2C12%2C10%2C10%2C0%2C0%2C0%2C12%2C2Zm0%2C18a8%2C8%2C0%2C1%2C1%2C8-8A8%2C8%2C0%2C0%2C1%2C12%2C20Z%22/%3E%3Cpath%20class%3D%22cls-2%22%20d%3D%22M14.71%2C9.29a1%2C1%2C0%2C0%2C0-1.42%2C0L12%2C10.59l-1.29-1.3a1%2C1%2C0%2C0%2C0-1.42%2C1.42L10.59%2C12l-1.3%2C1.29a1%2C1%2C0%2C0%2C0%2C0%2C1.42%2C1%2C1%2C0%2C0%2C0%2C1.42%2C0L12%2C13.41l1.29%2C1.3a1%2C1%2C0%2C0%2C0%2C1.42%2C0%2C1%2C1%2C0%2C0%2C0%2C0-1.42L13.41%2C12l1.3-1.29A1%2C1%2C0%2C0%2C0%2C14.71%2C9.29Z%22/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  opacity: .4;
+}
+.red {
+  color: red;
+}
+
+/*
+Load icon
+*/
+
+.cssload-container {
+  width: 100%;
+  height: 34px;
+  text-align: center;
+}
+
+.cssload-double-torus {
+  width: 23px;
+  height: 23px;
+  margin: 0 auto;
+  border: 2px double;
+  border-radius: 50%;
+  border-color: transparent rgba(187, 187, 187, 0.9) rgba(187, 187, 187, 0.9);
+  animation: cssload-spin 1770ms infinite linear;
+  -o-animation: cssload-spin 1770ms infinite linear;
+  -ms-animation: cssload-spin 1770ms infinite linear;
+  -webkit-animation: cssload-spin 1770ms infinite linear;
+  -moz-animation: cssload-spin 1770ms infinite linear;
+}
+
+
+
+@keyframes cssload-spin {
+  100%{ transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-o-keyframes cssload-spin {
+  100%{ -o-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-ms-keyframes cssload-spin {
+  100%{ -ms-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-webkit-keyframes cssload-spin {
+  100%{ -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-moz-keyframes cssload-spin {
+  100%{ -moz-transform: rotate(360deg); transform: rotate(360deg); }
 }
