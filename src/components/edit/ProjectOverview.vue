@@ -6,15 +6,6 @@
                 YOU WANT TO SHOW
             </div>
             <div class="overview-checkboxes">
-                <div class="overview-checkbox" :class="{active: showUnits}">
-                    <label for="show-units">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Floor Plates and Units</label>
-                    <input type="checkbox" v-on:change="changeUnits" v-model="showUnits" id="show-units"
-                           style="display: none">
-                </div>
                 <div class="overview-checkbox" :class="{active: showMap}">
                     <label for="show-map">
                         <div class="overview-checkbox-mask">
@@ -47,7 +38,7 @@
                     PROJECT LOGO
                 </div>
                 <div class="overview-description">The graphics will appear on the splash screen</div>
-                <div class="logo-preview"><img v-if="this.$parent.logoPreview != '' && this.$parent.logoPreview != unknown" :src="this.$parent.logoPreview" alt=""></div>
+                <div class="logo-preview"><img v-if="this.$parent.logoPreview != '' && this.$parent.logoPreview != 'unknown'" :src="this.$parent.logoPreview" alt=""></div>
                 <div class="logo-upload" v-on:click="openPhotoUpload()">Click to upload</div>
                 <input type="file" v-on:change="renderPreview" id="overview-logo" style="display: none"
                        accept="image/png, image/jpeg">
@@ -63,7 +54,6 @@
     data: ()=>({
       projectName: '',
       projectLogo: '',
-      showUnits: true,
       showMap: true,
       showGallery: true,
       logoPreview: '',
@@ -90,9 +80,6 @@
           if(respond.ok === 1) {
             obj.$parent.project = respond.data;
             obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
-            if(obj.$parent.project.floors.length === 0) {
-             obj.showUnits = false;
-            }
             if(!obj.$parent.project.map || obj.$parent.project.map == '') {
               obj.showMap = false;
             }
@@ -133,7 +120,6 @@
       } else {
         this.$parent.progresses[5].active = false;
       }
-      this.changeUnits();
       this.changeMap();
       this.changeGallery();
     },
@@ -188,7 +174,7 @@
         } else {
           this.$parent.progresses[5].active = false;
         }
-        if (this.showUnits === true && this.$parent.project.name.length > 0) {
+        if (this.$parent.project.name.length > 0) {
           this.$parent.progresses[1].active = true;
           if (this.$parent.project.floors.length > 0) {
             this.$parent.progresses[2].active = true;
@@ -206,24 +192,6 @@
           this.$parent.progresses[4].active = true;
         } else {
           this.$parent.progresses[4].active = false;
-        }
-      },
-      changeUnits() {
-        if(this.showUnits === false) {
-          this.$parent.oldFloors = JSON.parse(JSON.stringify(this.$parent.project.floors));
-        }
-        this.$parent.project.floors = [];
-        if(this.showUnits === true && this.$parent.oldFloors != undefined) {
-          this.$parent.project.floors = JSON.parse(JSON.stringify(this.$parent.oldFloors));
-        }
-        if (this.showUnits === true && this.$parent.project.name.length > 0) {
-          this.$parent.progresses[1].active = true;
-          if (this.$parent.project.floors.length > 0) {
-            this.$parent.progresses[2].active = true;
-          }
-        } else {
-          this.$parent.progresses[1].active = false;
-          this.$parent.progresses[2].active = false;
         }
       },
       changeMap() {

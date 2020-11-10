@@ -70,7 +70,7 @@
         {
           name: 'Floor Plates',
           arrow: true,
-          active: false,
+          active: true,
         },
         {
           name: 'Units',

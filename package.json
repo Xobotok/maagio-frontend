@@ -12,6 +12,7 @@
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.16.0",
+    "card": "^2.5.0",
     "core-js": "^3.6.5",
     "eslint-config-airbnb-base": "^14.2.0",
     "jquery": "^3.5.1",

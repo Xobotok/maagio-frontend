@@ -125,7 +125,6 @@ main {
   opacity: 0;
   z-index: -1;
 }
-
 .app-constructor-layout .navbar {
   height: 64px;
   display: flex;
@@ -147,7 +146,6 @@ main {
     border-right: 1px solid #828282;
   }
   &__middle {
-    width: 100%;
     display: flex;
     & .active-link {
       color: #4F4F4F;
@@ -1705,7 +1703,20 @@ main {
     min-width: 300px;
   }
 }
-
+.profile {
+  .profile-avatar {
+    padding-left: 5%;
+    padding-top: 66px;
+    .profile-user {
+      font-size: 30px;
+      font-family: RobotoBold, sans-serif;
+    }
+    .profile-mail {
+      font-size: 22px;
+      color: #828282;
+    }
+  }
+}
 .start-show {
   display: flex;
   align-items: center;
@@ -1716,34 +1727,90 @@ main {
 
 .profile-page {
   padding-top: 60px;
+  display: flex;
   padding-left: 3%;
   padding-right: 3%;
-  .profile-header {
+  .profile-separate {
+    display: flex;
+    justify-content: space-between;
+    max-width: 650px;
+    .profile-input {
+      width: 45%;
+    }
+  }
+  .profile-input {
+    max-width: 650px;
     font-size: 20px;
-    text-align: center;
+    color: #828282;
+    font-family: RobotoMedium, sans-serif;
+    input {
+      background-color: white;
+      border: 2px solid #BDBDBD;
+      font-size: 18px;
+      height: 49px;
+      width: 100%;
+      border-radius: 12px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+  .profile-header {
+    margin-bottom: 40px;
+    font-size: 34px;
+    color: #2F80ED;
+    text-align: left;
+  }
+  .profile-info:last-child {
+    border-left: 1px solid #828282;
+  }
+  .profile-info:first-child {
+    width: 35%;
+    min-width: 400px;
   }
   .profile-info {
-    -webkit-border-radius: 12px;
-    -moz-border-radius: 12px;
-    border-radius: 12px;
-    background-color: white;
+    width: 50%;
     padding: 20px;
     #payment-form {
       max-width: 300px;
     }
+    .tariff-description {
+      font-size: 20px;
+    }
+    .tariff-description.subscribe {
+      color: #2F80ED;
+    }
+    .tariff-description.trial {
+      color: #EB5757;
+    }
     .profile-text {
-      border-bottom: 1px solid #828282;
       padding-top: 4px;
       padding-bottom: 4px;
-      width: 300px;
-      margin-top: 10px;
       margin-bottom: 10px;
-      color: #4F4F4F;
+      margin-top: 10px;
       span {
         color: #2F80ED;
         font-family: RobotoMedium, sans-serif;
       }
     }
+  }
+  .save-profile-button.inactive {
+    background-color: #E0E0E0;
+    cursor: default;
+  }
+  .save-profile-button {
+    cursor: pointer;
+    margin-top: 40px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 34px;
+    padding-right: 34px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    font-size: 20px;
+    background-color: #2F80ED;
+    color: white;
+    display: inline-block;
   }
   .profile-details {
     .trial-block {
@@ -1764,47 +1831,6 @@ main {
         color: white;
         cursor: pointer;
       }
-    }
-  }
-  #payment-form {
-    padding: 20px;
-    background-color: #f8f8f8;
-    -webkit-border-radius: 12px;
-    -moz-border-radius: 12px;
-    border-radius: 12px;
-    .pay-submit:hover {
-      background-color: #30aaed;
-    }
-    .pay-submit.done {
-      cursor: default;
-      background-color: rgba(68, 179, 0, 0.76);
-    }
-    .pay-submit.inactive {
-      cursor: default;
-    }
-    .pay-submit {
-      background-color: #2D9CDB;
-      border: none;
-      width: 100%;
-      text-align: center;
-      -webkit-border-radius: 8px;
-      -moz-border-radius: 8px;
-      border-radius: 8px;
-      height: 43px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      cursor: pointer;
-    }
-    #card-errors {
-      font-size: 12px;
-      color: red;
-      height: 20px;
-    }
-    #card-element {
-      padding-top: 10px;
-      padding-bottom: 20px;
     }
   }
   .payment-tariff {
@@ -1829,7 +1855,74 @@ main {
   height: 23px;
   margin: auto;
 }
+.roboto_medium {
+  font-family: RobotoMedium, sans-serif;
+}
+.roboto_bold {
+  font-family: RobotoBold, sans-serif;
+}
+.pt10 {
+  padding-top: 10px;
+}
+.db {
+  display: block;
+}
+@keyframes fadeGray {
+  0% {
+    background-color: rgb(187, 187, 187);
+  }
 
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+@-o-keyframes fadeGray {
+  0% {
+    background-color: rgb(187, 187, 187);
+  }
+
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+@-ms-keyframes fadeGray {
+  0% {
+    background-color: rgb(187, 187, 187);
+  }
+
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+@-webkit-keyframes fadeGray {
+  0% {
+    background-color: rgb(187, 187, 187);
+  }
+
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+@-moz-keyframes fadeGray {
+  0% {
+    background-color: rgb(187, 187, 187);
+  }
+
+  100% {
+    background-color: rgb(255, 255, 255);
+  }
+}
+.subscribe-cancel-button .blockG {
+  animation-name: fadeGray;
+  -o-animation-name: fadeGray;
+  -ms-animation-name: fadeGray;
+  -webkit-animation-name: fadeGray;
+  -moz-animation-name: fadeGray;
+}
 .blockG {
   position: absolute;
   background-color: rgb(255, 255, 255);
@@ -2121,4 +2214,222 @@ Load icon
 
 @-moz-keyframes cssload-spin {
   100%{ -moz-transform: rotate(360deg); transform: rotate(360deg); }
+}
+.payment-modal {
+  position: fixed;
+  top: 0;
+  z-index: 9999999;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-object {
+  .jp-card .jp-card-front .jp-card-lower .jp-card-name {
+    display: none;
+  }
+  .jp-card .jp-card-front .jp-card-lower .jp-card-number {
+    font-size: 20px;
+  }
+  .jp-card-container {
+    margin: 0;
+  }
+  .card-name input {
+    width: 100%;
+  }
+  .container {
+    display: flex;
+    .card-inputs {
+      margin-right: 20px;
+    }
+  }
+  .card-inputs input {
+    padding: 5px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 1px solid #c9c9c9;
+  }
+  button {
+    background-color: #2D9CDB;
+    border: none;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    height: 43px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+  }
+  .card-details input {
+    width: 150px;
+  }
+  .card-details {
+    display: flex;
+    justify-content: space-between;
+  }
+  .payment-warning {
+    width: 100%;
+    color: red;
+    font-size: 12px;
+  }
+  .card-inputs {
+    .warning {
+      border-color: #fe8f8f;
+    }
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    padding: 20px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+  }
+  .pay-submit {
+    margin-top: 20px;
+  }
+}
+.payment-container {
+  background-color: #ffffff;
+  position: relative;
+  padding: 40px;
+  -webkit-border-radius:12px;
+  -moz-border-radius:12px;
+  border-radius:12px;
+  .header {
+    padding-bottom: 20px;
+    font-family: RobotoBold, sans-serif;
+  }
+  .description {
+    font-size: 28px;
+    padding-bottom: 20px;
+  }
+  .container {
+    background-color: #f8f8f8;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    .pay-submit:hover {
+      background-color: #2fabed;
+    }
+    .pay-submit.done:hover {
+      cursor: default;
+      background-color: rgba(68, 179, 0, 0.76);
+    }
+    .pay-submit.done {
+      cursor: default;
+      background-color: rgba(68, 179, 0, 0.76);
+    }
+    .pay-submit.inactive {
+      cursor: default;
+    }
+    .pay-submit {
+      background-color: #2D9CDB;
+      border: none;
+      width: 100%;
+      text-align: center;
+      -webkit-border-radius: 8px;
+      -moz-border-radius: 8px;
+      border-radius: 8px;
+      height: 43px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      cursor: pointer;
+    }
+    #card-errors {
+      font-size: 12px;
+      color: red;
+      height: 20px;
+    }
+    #card-element {
+      padding-top: 10px;
+      padding-bottom: 20px;
+    }
+  }
+}
+.subscribe-cancel-button:hover {
+  color: white;
+  background-color: #BDBDBD;
+}
+.subscribe-cancel-button {
+  color: #828282;
+  width: 184px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 20px;
+  display: inline-block;
+  margin-top: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 34px;
+  padding-right: 34px;
+  border-radius: 12px;
+  border: 2px solid #BDBDBD;
+  -webkit-transition: all .3s;
+  -moz-transition: all .3s;
+  -ms-transition: all .3s;
+  -o-transition: all .3s;
+  transition: all .3s;
+}
+.sub-controls {
+  display: flex;
+  font-size: 14px;
+  width: 100px;
+  justify-content: space-between;
+  .sub-controls-accept {
+    color: #fe2f2e;
+    cursor: pointer;
+  }
+  .sub-controls-decline {
+    color: rgba(0, 116, 0, 0.85);
+    cursor: pointer;
+  }
+}
+.subscribe-block:last-child {
+  margin-right: 0;
+  margin-left: 30px;
+}
+.subscribe-block {
+  flex: none;
+  display: flex;
+  margin-right: 30px;
+  color: #EB5757;
+  font-family: RobotoMedium, sans-serif;
+  align-items: center;
+  .subscribe-button {
+    margin-top: 0;
+    font-size: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+.subscribe-button:hover {
+  background-color: #f95959;
+}
+.subscribe-button {
+  font-size: 20px;
+  margin-top: 40px;
+  display: inline-block;
+  margin-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 34px;
+  padding-right: 34px;
+  background-color: #EB5757;
+  color: white;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+  cursor: pointer;
 }

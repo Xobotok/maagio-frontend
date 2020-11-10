@@ -6,15 +6,6 @@
                 YOU WANT TO SHOW
             </div>
             <div class="overview-checkboxes">
-                <div class="overview-checkbox" :class="{active: showUnits}">
-                    <label for="show-units">
-                        <div class="overview-checkbox-mask">
-                            <div class="overview-checkbox-icon"></div>
-                        </div>
-                        Floor Plates and Units</label>
-                    <input type="checkbox" v-on:change="changeUnits()" v-model="showUnits" id="show-units"
-                           style="display: none">
-                </div>
                 <div class="overview-checkbox" :class="{active: showMap}">
                     <label for="show-map">
                         <div class="overview-checkbox-mask">
@@ -62,7 +53,6 @@
     data: ()=>({
       projectName: '',
       projectLogo: '',
-      showUnits: true,
       showMap: true,
       showGallery: true,
       logoPreview: '',
@@ -103,7 +93,7 @@
         } else {
           this.$parent.progresses[5].active = false;
         }
-        if (this.showUnits === true && this.projectName.length > 0) {
+        if (this.projectName.length > 0) {
           this.$parent.progresses[1].active = true;
           if (this.$parent.project.floors.length > 0) {
             this.$parent.progresses[2].active = true;
@@ -125,7 +115,7 @@
       },
       changeUnits() {
         this.$parent.project.floors = [];
-        if (this.showUnits === true && this.projectName.length > 0) {
+        if (this.projectName.length > 0) {
           this.$parent.progresses[1].active = true;
           if (this.$parent.project.floors.length > 0) {
             this.$parent.progresses[2].active = true;

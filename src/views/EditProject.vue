@@ -70,12 +70,12 @@
         {
           name: 'Floor Plates',
           arrow: true,
-          active: false,
+          active: true,
         },
         {
           name: 'Units',
           arrow: true,
-          active: false,
+          active: true,
         },
         {
           name: 'Maps',
@@ -118,8 +118,6 @@
     mounted() {
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
-      this.checkActive();
-      console.log(this);
     },
     methods: {
       deleteMarker(e) {
@@ -319,13 +317,6 @@
           }
         });
 
-      },
-      checkActive() {
-        if (this.project.floors != undefined && this.project.floors.length > 0) {
-          this.progresses[2].active = true;
-        } else {
-          this.progresses[2].active = false;
-        }
       },
       checkPublish() {
         if (this.published === true) {
