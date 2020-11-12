@@ -152,6 +152,9 @@
           let token = localStorage.getItem('token');
           data.append('user_id', user.uid);
           data.append('token', token);
+          if(this.project.id != null) {
+            data.append('project_id', this.project.id);
+          }
           data.append('name', this.project.name);
           data.append('logo', this.project.logo);
           $.ajax({
@@ -172,6 +175,21 @@
                 obj.project.id = respond.project.id;
                 obj.project.logo = respond.project_logo;
                 obj.oldProject = JSON.parse(JSON.stringify(obj.project))
+                if(respond.project.published != 1) {
+                  window.db.setValue('draft_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
+                } else {
+                  window.db.setValue('published_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
+                }
+                window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
+                  if(e != undefined) {
+                    var project = JSON.parse(e.value);
+                    project.name = respond.project.name;
+                    project.logo = respond.project.logo;
+                  } else {
+                    var project = respond.project;
+                  }
+                  window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
+                });
               }
               // ОК - файлы загружены
               if (typeof respond.error === 'undefined') {

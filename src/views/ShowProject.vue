@@ -86,7 +86,33 @@
         },
 
         error: function( jqXHR, status, errorThrown ){
-
+          let project_link = project.split('project=')[1];
+          window.db.getAllValues('project', function (e) {
+            var projects = e;
+            for(var i = 0; i < projects.length; i++) {
+              var proj = JSON.parse(projects[i].value);
+              if(proj.special_link == project_link) {
+                window.db.getValue('project', Number.parseInt(proj.id), function (e) {
+                  var project_template = JSON.parse(e.value);
+                  project_template.markers.culture = [];
+                  project_template.markers.restaurant = [];
+                  project_template.markers.sport = [];
+                  project_template.markers.nature = [];
+                  for(var i = 0; i < project_template.floors.length; i++){
+                    for(var n = 0; n < project_template.floors[i].units.length; n++) {
+                      if(project_template.floors[i].units[n].unit_mark != null) {
+                        project_template.floors[i].units[n].show = true;
+                        project_template.floors[i].units[n].unit_mark.natural_width = 0;
+                        project_template.floors[i].units[n].unit_mark.natural_height = 0;
+                      }
+                    }
+                  }
+                  obj.project = project_template;
+                  obj.checkTabStatus();
+                })
+              }
+            }
+          });
         }
       });
     },

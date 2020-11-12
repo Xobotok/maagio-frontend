@@ -167,7 +167,7 @@
       floorPreview: '',
       stopSave: false,
       statusOption: constants.STATUS_OPTIONS,
-      templateUnit: constants.STANDART_UNIT,
+      templateUnit: JSON.parse(JSON.stringify(constants.STANDART_UNIT)),
       counter: 0,  // count the clicks
       timer: null,
       numberWarning: false,
@@ -389,7 +389,7 @@
                 }
                 obj.resetTemplateUnit();
                 obj.$parent.openEditUnit = false;
-
+                window.db.updateProjectFloors(obj.$parent.$parent.project.id, obj.$parent.$parent.project.floors);
               } else {
                 console.log('ОШИБКА: ' + respond.data);
               }

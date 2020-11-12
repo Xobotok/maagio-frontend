@@ -48,13 +48,32 @@
           if(respond.ok === 1) {
             obj.published_projects = respond.published_projects;
             obj.draft_projects = respond.draft_projects;
-            console.log(obj);
+            window.db.clearStore('published_projects');
+            for(var i = 0; i < obj.published_projects.length; i++) {
+              window.db.setValue('published_projects', Number.parseInt(obj.published_projects[i].id), obj.published_projects[i])
+            }
+            window.db.clearStore('draft_projects');
+            for(var i = 0; i < obj.draft_projects.length; i++) {
+              window.db.setValue('draft_projects', Number.parseInt(obj.draft_projects[i].id), obj.draft_projects[i])
+            }
           }
-
         },
 
         error: function( jqXHR, status, errorThrown ){
-
+          window.db.getAllValues('published_projects', function (e) {
+            var tmp1 = [];
+            for(var i = 0; i < e.length; i++) {
+              tmp1.push(e[0].value)
+            }
+            obj.published_projects = tmp1;
+          });
+          window.db.getAllValues('draft_projects', function (e) {
+            var tmp1 = [];
+            for(var i = 0; i < e.length; i++) {
+              tmp1.push(e[0].value)
+            }
+            obj.draft_projects = tmp1;
+          });
         }
       });
     }

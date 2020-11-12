@@ -206,8 +206,17 @@
                   /*obj.published = true;*/
                 obj.project.id = respond.project.id;
                 obj.project.logo = respond.project_logo;
-                console.log(obj.project);
-                obj.oldProject = JSON.parse(JSON.stringify(obj.project))
+                window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
+                    var project = JSON.parse(e.value);
+                    project.name = respond.project.name;
+                    project.logo = respond.project_logo;
+                    window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
+                });
+                if(respond.project.published != 1) {
+                  window.db.setValue('draft_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
+                } else {
+                  window.db.setValue('published_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
+                }
               }
               // ОК - файлы загружены
               if (typeof respond.error === 'undefined') {

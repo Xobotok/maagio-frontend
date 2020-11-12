@@ -90,50 +90,14 @@
     data: ()=>({
       statusNames: constants.STATUS_OPTIONS,
       oldUnit: {},
-      templateUnit: {
-        id: 0,
-        unit_number: 0,
-        floor: '',
-        bad: 1,
-        bath: 1,
-        price: '',
-        status: '',
-        HOA: '',
-        int_sq: '',
-        ext_sq: '',
-        bmr: 0,
-        parking: 0,
-        floorImage: '',
-        mark_x: '',
-        mark_y: '',
-        unitImage: '',
-        unitImagePreview: '',
-      },
+      templateUnit: JSON.parse(JSON.stringify(constants.STANDART_UNIT)),
       units: [],
       openAddUnit: false,
       openEditUnit: false,
     }),
     methods: {
       resetTemplateUnit() {
-        this.templateUnit = {
-          id: 0,
-          unit_number: 0,
-          floor:'',
-          bad: 1,
-          bath: 1,
-          price: '',
-          status: '',
-          HOA: '',
-          int_sq: '',
-          ext_sq: '',
-          bmr: 0,
-          parking: 0,
-          floorImage: '',
-          mark_x: '',
-          mark_y: '',
-          unitImage: '',
-          unitImagePreview: '',
-        };
+        this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
       },
       openPopup() {
         this.openAddUnit = true;
@@ -159,14 +123,6 @@
             this.units.splice(i, 1);
           }
         }
-        for (let i = 0; i < this.$parent.project.floors.length; i++) {
-          for (let n = 0; n < this.$parent.project.floors[i].units.length; n++) {
-            if (this.$parent.project.floors[i].units[n] === unit) {
-              this.$parent.project.floors[i].units.splice(n, 1);
-            }
-          }
-        }
-        this.$parent.project.units = this.units;
         let data = new FormData();
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         let token = localStorage.getItem('token');
@@ -184,7 +140,15 @@
           contentType: false,
           success: function (respond, status, jqXHR) {
             if (respond.ok === 1) {
-
+              for (let i = 0; i < obj.$parent.project.floors.length; i++) {
+                for (let n = 0; n < obj.$parent.project.floors[i].units.length; n++) {
+                  if (obj.$parent.project.floors[i].units[n] === unit) {
+                    obj.$parent.project.floors[i].units.splice(n, 1);
+                  }
+                }
+              }
+              obj.$parent.project.units = obj.units;
+              window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }

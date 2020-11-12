@@ -91,7 +91,7 @@
           success: function (respond, status, jqXHR) {
             obj.loaded = false;
             if (respond.ok === 1) {
-
+              window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }
@@ -184,7 +184,7 @@
             success: function (respond, status, jqXHR) {
               obj.loaded = false;
               if (respond.ok === 1) {
-
+                window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
               } else {
                 console.log('ОШИБКА: ' + respond.data);
               }
@@ -238,11 +238,12 @@
           // функция успешного ответа сервера
           success: function (respond, status, jqXHR) {
             obj.loaded = false;
-
             if (respond.ok === 1) {
+              console.log(1);
                 /*obj.published = true;*/
               floor.id = respond.floor.id;
               floor.number = respond.floor.number;
+             window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
             }
             else {
               console.log('ОШИБКА: ' + respond.data);

@@ -107,6 +107,7 @@
 
     },
     mounted(){
+      console.log(this);
       this.floor = this.$parent.project.floors[0];
       if (this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
         this.floorImage = this.$parent.project.floors[0].image;

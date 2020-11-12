@@ -619,7 +619,7 @@
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         if (user.ip != undefined && (obj.$parent.project.map.lng != constants.DEFAULT_MAP_POSITION.lng && obj.$parent.project.map.lat != constants.DEFAULT_MAP_POSITION.lat)) {
           $.ajax({
-            url: 'http://ipwhois.app/json/' + user.ip,
+            url: 'https://ipwhois.app/json/' + user.ip,
             type: 'GET', // важно!
             dataType: 'json',
             success: function (respond, status, jqXHR) {

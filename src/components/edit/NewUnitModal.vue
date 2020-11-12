@@ -367,7 +367,7 @@
                   obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units.push(respond.unit);
                   obj.resetTemplateUnit();
                   obj.$parent.openAddUnit = false;
-
+                  window.db.updateProjectFloors(obj.$parent.$parent.project.id, obj.$parent.$parent.project.floors);
                 } else {
                   console.log('ОШИБКА: ' + respond.data);
                 }

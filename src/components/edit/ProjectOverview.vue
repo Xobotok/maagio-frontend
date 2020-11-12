@@ -79,6 +79,7 @@
         success     : function( respond, status, jqXHR ){
           if(respond.ok === 1) {
             obj.$parent.project = respond.data;
+            window.db.setValue('project', Number.parseInt(respond.data.id), JSON.stringify(respond.data));
             obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
             if(!obj.$parent.project.map || obj.$parent.project.map == '') {
               obj.showMap = false;
@@ -110,6 +111,23 @@
         },
         // функция ошибки ответа сервера
         error: function( jqXHR, status, errorThrown ){
+          let project_id  = window.location.href.split('project_id=');
+          project_id = project_id[project_id.length - 1];
+          window.db.getValue('project', Number.parseInt(project_id), function (e) {
+            obj.$parent.project = JSON.parse(e.value);
+            obj.$parent.oldProject = JSON.parse(e.value);
+            if(!obj.$parent.project.map || obj.$parent.project.map == '') {
+              obj.showMap = false;
+            }
+            if(obj.$parent.project.galleries.length === 0) {
+              obj.showGallery = false;
+            }
+            if(obj.$parent.project.logo != null) {
+              obj.$parent.logoPreview = obj.$parent.project.logo;
+            }
+            obj.enterName();
+            obj.loadMap();
+          });
           console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
         }
       });
