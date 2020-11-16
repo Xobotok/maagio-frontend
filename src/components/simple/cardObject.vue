@@ -108,7 +108,6 @@
               obj.payment_done = true;
             } else {
               obj.payment_done = false;
-                console.log(respond.message);
             }
           },
           error: function (jqXHR, status, errorThrown) {

@@ -67,25 +67,22 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="project-units-control">
-            <div class="logo-upload" @click="openAddUnit = true">Add a Unit</div>
+            <div class="logo-upload" @click="addUnit()">Add a Unit</div>
         </div>
-        <NewUnitModal v-if="openAddUnit === true"></NewUnitModal>
-        <EditUnitModal :currentUnit="templateUnit" v-if="openEditUnit === true"></EditUnitModal>
+        <EditUnitModal v-if="openEditUnit === true"></EditUnitModal>
     </div>
 </template>
 
 <script>
-  import NewUnitModal from '@/components/edit/NewUnitModal.vue'
   import EditUnitModal from '@/components/edit/EditUnitModal.vue'
   import constants from "../../Constants";
   export default {
     name: 'ProjectUnits',
     components: {
-      NewUnitModal, EditUnitModal,
+      EditUnitModal,
     },
     data: ()=>({
       statusNames: constants.STATUS_OPTIONS,
@@ -200,6 +197,10 @@
             console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
           }
         });
+      },
+      addUnit() {
+        this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
+        this.openEditUnit = true;
       },
       editUnit(unit) {
         this.templateUnit = unit;

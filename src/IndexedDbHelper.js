@@ -1,3 +1,4 @@
+import * as $ from "jquery";
 var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction,
   baseName = "maggio",
@@ -32,6 +33,9 @@ window.db.onupgradeneeded = function () {
   }
   if (!db.objectStoreNames.contains('project')) { // если хранилище "books" не существует
     db.createObjectStore('project', { keyPath: 'id' }); // создаем хранилище
+  }
+  if (!db.objectStoreNames.contains('images')) { // если хранилище "books" не существует
+    db.createObjectStore('images', { keyPath: 'id' }); // создаем хранилище
   }
 };
 function logerr(err) {
@@ -122,6 +126,15 @@ window.db.clearStore = function (store) {
     }
   });
 };
+window.db.delValue = function(store, id) {
+  connectDB(function (db) {
+    var request = db.transaction([store], "readwrite").objectStore(store).delete(id);
+    request.onerror = logerr;
+    request.onsuccess = function () {
+      return request.result;
+    }
+  });
+};
 window.db.setValue = function (store, id, val) {
   connectDB(function (db) {
     var request = db.transaction([store], "readwrite").objectStore(store).put({'id': id, value: val });
@@ -169,6 +182,22 @@ window.db.setFile = function setFile(file) {
       return request.result;
     }
   });
+}
+window.db.setImage = function (image_id, file) {
+  function toDataURL(url, callback) {
+    $.ajax({
+      type: 'GET',
+      url: file,
+      dataType: 'blob',
+      success: function (data) {
+
+      }
+    });
+  }
+
+  toDataURL(file, function(dataUrl) {
+    console.log('RESULT:', dataUrl)
+  })
 }
 
 window.db.delFile = function delFile(file) {

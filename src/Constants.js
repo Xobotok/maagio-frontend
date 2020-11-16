@@ -185,7 +185,7 @@ export default {
     bad: 1,
     bath: 1,
     price: '',
-    status: 0,
+    status: '',
     HOA: '',
     int_sq: '',
     ext_sq: '',

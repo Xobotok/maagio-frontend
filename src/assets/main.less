@@ -995,7 +995,6 @@ main {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: #fff;
                 width: 100%;
               }
               & .unit-point-bedrooms {
@@ -1676,6 +1675,32 @@ main {
 .project-publish {
   padding-top: 80px;
   min-height: 300px;
+  .publish-container {
+    display: flex;
+    .copy-link.copied:hover {
+      background-color: #4D4D4D;
+      cursor: default;
+    }
+    .copy-link.copied {
+      background-color: #4D4D4D;
+    }
+    .copy-link:hover {
+      background-color: rgba(47, 128, 237, 0.84);
+    }
+    .copy-link {
+      margin-left: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      width: 100px;
+      text-align: center;
+      background-color: #2F80ED;
+      color: white;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
   & .publish-header {
     color: #828282;
     font-size: 20px;
@@ -1684,7 +1709,8 @@ main {
       font-family: RobotoBold, sans-serif;
     }
   }
-  & #personal-link {
+
+  & .personal-link {
     border: 1px solid #828282;
     background-color: transparent;
     -webkit-border-radius: 6px;
@@ -2432,4 +2458,13 @@ Load icon
   -moz-border-radius: 12px;
   border-radius: 12px;
   cursor: pointer;
+}
+.login-link {
+  margin-top: 10px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
 }

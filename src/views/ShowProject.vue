@@ -1,13 +1,14 @@
 <template>
-    <div class="show-project">
+    <div class="show-project" :class="{no__padding: this.$parent.activeTab == 'home'}">
         <div class="app-head" v-if="this.$parent.activeTab !== 'home'">
             <div class="app-head-name">{{project.name}}</div>
             <div class="app-head-tab">{{this.$parent.activeTab}}</div>
+            <div></div>
         </div>
-        <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
-        <Floors v-if="this.$parent.activeTab === 'Floor plates'"></Floors>
-        <Gallery v-if="this.$parent.activeTab === 'Gallery'"></Gallery>
-        <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
+            <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
+            <Floors v-if="this.$parent.activeTab === 'Floor plates'"></Floors>
+            <Gallery v-if="this.$parent.activeTab === 'Gallery'"></Gallery>
+            <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
     </div>
 </template>
 
@@ -65,6 +66,8 @@
                 for(var n = 0; n < respond.data.floors[i].units.length; n++) {
                   if(respond.data.floors[i].units[n].unit_mark != null) {
                     respond.data.floors[i].units[n].show = true;
+                    respond.data.floors[i].units[n].bedShow = true;
+                    respond.data.floors[i].units[n].statusShow = true;
                     respond.data.floors[i].units[n].unit_mark.natural_width = 0;
                     respond.data.floors[i].units[n].unit_mark.natural_height = 0;
                   }

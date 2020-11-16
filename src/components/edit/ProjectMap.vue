@@ -186,9 +186,6 @@
       userMarkers: [],
     }),
     methods: {
-      inputSearch(e) {
-        console.log(e);
-      },
       showNearPlaces(type) {
         let res = 1;
         switch (Number.parseInt(type)) {

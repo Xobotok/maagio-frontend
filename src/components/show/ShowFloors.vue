@@ -41,20 +41,24 @@
                          v-if="unit.unit_mark != null && unit.show != false"
                          :style="{left: unit.unit_mark.x + '%', top: unit.unit_mark.y + '%', width: unit.unit_mark.natural_width + 'px',
                          height: unit.unit_mark.natural_height + 'px', fontSize: unit.unit_mark.font_size + 'px'}">
-                        <div class="unit-point-bedrooms" v-if="unit.bad > 0 && unit.bad != ''">{{unit.bad}} bedroom
+                        <div class="unit-point-bedrooms" v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
                         </div>
                         <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
                         <div class="unit-point-number">
                             {{unit.unit_number}}
                         </div>
-                        <div class="unit-point-status" v-if="unit.status !== ''">{{statuses[unit.status]}}</div>
+                        <div class="unit-point-status" v-if="unit.status !== '' && unit.statusShow !== false">{{statuses[unit.status]}}</div>
                     </div>
                 </div>
             </div>
-            <div class="floor-navigation">
-                <div class="floor-navigation-tab" @click="openFloor(index)"
-                     :class="{active: index === activeFloor}" v-for="(floor, index) in this.$parent.project.floors">
-                    {{(index + 1)}}
+            <div class="navigation-container">
+                <div class="navigation-block">
+                    <div class="floor-navigation">
+                        <div class="floor-navigation-tab" @click="openFloor(index)"
+                             :class="{active: index === activeFloor}" v-for="(floor, index) in this.$parent.project.floors">
+                            {{(index + 1)}}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="show-floors-footer">
@@ -65,7 +69,6 @@
                         <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed != 0">{{bedroom.bed}} bedroom</label>
                         <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed == 0">STUDIO</label>
                     </div>
-
                 </div>
                 <div class="status-list">
                     <div class="status-item" v-for="(status, key) in statusList">
@@ -86,7 +89,7 @@
     name: 'show-floors',
     data: ()=>({
       activeFloor: 0,
-      floor: { units: [{ show: true }] },
+      floor: { units: [{ bedShow: true, statusShow: true }] },
       reserveFloor: '',
       floorImage: '',
       bedroomList: [],
@@ -103,11 +106,7 @@
         status: [],
       },
     }),
-    updated(){
-
-    },
-    mounted(){
-      console.log(this);
+    beforeMount(){
       this.floor = this.$parent.project.floors[0];
       if (this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
         this.floorImage = this.$parent.project.floors[0].image;
@@ -174,7 +173,10 @@
         this.reserveFloor = this.$parent.project.floors[index];
         if (this.$parent.project.floors[index].image != '' && this.$parent.project.floors[index].image != null) {
           this.floorImage = this.$parent.project.floors[index].image;
+        } else {
+          this.floorImage = '';
         }
+
         this.renderFilters();
       },
       renderFilters(){
@@ -226,19 +228,21 @@
       },
       useFilter() {
         for (var iter = 0; iter < this.floor.units.length; iter++) {
-          this.floor.units[iter].show = true;
+          this.floor.units[iter].bedShow = true;
+          this.floor.units[iter].statusShow = true;
         }
+        console.log(this);
         for (var iter = 0; iter < this.floor.units.length; iter++) {
           for (var n = 0; n < this.filters.bed.length; n++) {
           if (this.floor.units[iter].bad == this.filters.bed[n]) {
-              this.floor.units[iter].show = false;
+              this.floor.units[iter].bedShow = false;
             }
           }
         }
         for (let iter2 = 0; iter2 < this.floor.units.length; iter2++) {
           for (let m = 0; m < this.filters.status.length; m++) {
             if (this.floor.units[iter2].status == this.filters.status[m]) {
-              this.floor.units[iter2].show = false;
+              this.floor.units[iter2].statusShow = false;
             }
           }
         }

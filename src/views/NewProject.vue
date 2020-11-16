@@ -116,7 +116,6 @@
       },
     }),
     mounted() {
-      console.log(this.project);
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
       this.checkActive();

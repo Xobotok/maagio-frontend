@@ -10,7 +10,9 @@
             <input id="password-confirm" type="password" v-model="password_confirmation" placeholder="Password confirm*"
                    required>
             <button type="submit">Register</button>
+            <router-link to="/login" class="login-link">Log In</router-link>
         </form>
+
     </div>
 </template>
 

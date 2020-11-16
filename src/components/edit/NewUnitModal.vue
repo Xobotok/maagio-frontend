@@ -7,48 +7,52 @@
                 <div class="project-unit-left">
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Units Number<span class="red">*</span></div>
-                            <div class=""><input type="text" @keyup="numberWarning = false" v-model="templateUnit.unit_number" class="project-input" :class="{warning: numberWarning}">
+                            <div class="subcomponent-label">Units Number<span class="red"
+                                                                              v-if="templateUnit.unit_number == ''">*</span>
+                            </div>
+                            <div class=""><input type="text" @keyup="numberWarning = false"
+                                                 v-model="templateUnit.unit_number" class="project-input"
+                                                 :class="{warning: numberWarning}">
                             </div>
                         </div>
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Floor<span class="red">*</span></div>
+                            <div class="subcomponent-label">Floor<span class="red" v-if="this.templateUnit.floor == ''">*</span></div>
                             <dropdown :options="floorOption"
-                                      :selected="{val: '', name: this.$parent.templateUnit.floor}"
+                                      :selected="{val: this.templateUnit.floor, name: this.templateUnit.floor}"
                                       v-on:updateOption="selectNewFloor"
                                       :placeholder="'Select floor'"
                                       :closeOnOutsideClick="true"
-                            :class="{warning: floorWarning}">
+                                      :class="{warning: floorWarning}">
                             </dropdown>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Bedroom<span class="red">*</span></div>
+                            <div class="subcomponent-label">Bedroom<span v-if="templateUnit.bad == ''"
+                                                                         class="red">*</span></div>
                             <div class=""><input type="number" min="0" max="99" v-model="templateUnit.bad"
                                                  :class="{warning: bedWarning}" class="project-input"></div>
                         </div>
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Bathroom<span class="red">*</span></div>
+                            <div class="subcomponent-label">Bathroom<span v-if="templateUnit.bath == ''"
+                                                                          class="red">*</span></div>
                             <div class=""><input type="number" min="0" max="99" v-model="templateUnit.bath"
                                                  :class="{warning: bathWarning}" class="project-input"></div>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div style="width: 100%;">
-                            <div class="subcomponent-label">Price<span class="red">*</span></div>
-                            <div class=""><input @keyup="priceWarning = false" type="number" min="1" v-model="templateUnit.price"
+                            <div class="subcomponent-label">Price<span v-if="templateUnit.price == ''"
+                                                                       class="red">*</span></div>
+                            <div class=""><input @keyup="priceWarning = false" type="number" min="1"
+                                                 v-model="templateUnit.price"
                                                  :class="{warning: priceWarning}" class="project-input"></div>
                         </div>
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Status<span class="red">*</span></div>
-                            <dropdown v-if="templateUnit.status != ''" :options="statusOption"
-                                      :selected="{val: templateUnit.status, name: statusOption[templateUnit.status].name}"
-                                      v-on:updateOption="selectStatus"
-                                      :placeholder="'Select status'"
-                                      :closeOnOutsideClick="true"></dropdown>
+                            <div class="subcomponent-label">Status<span v-if="templateUnit.status === ''"
+                                                                        class="red">*</span></div>
                             <dropdown v-if="templateUnit.status == ''" :options="statusOption"
                                       :selected="{val: '', name: ''}"
                                       v-on:updateOption="selectStatus"
@@ -64,8 +68,11 @@
                     </div>
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Interior sq. ft<span class="red">*</span></div>
-                            <div class=""><input @keyup="intWarning = false" type="text" :class="{warning: intWarning}" min="1" step="any" v-model="templateUnit.int_sq"
+                            <div class="subcomponent-label">Interior sq. ft<span class="red"
+                                                                                 v-if="templateUnit.int_sq === ''">*</span>
+                            </div>
+                            <div class=""><input @keyup="intWarning = false" type="text" :class="{warning: intWarning}"
+                                                 min="1" step="any" v-model="templateUnit.int_sq"
                                                  class="project-input"></div>
                         </div>
                         <div class="unit-subcomponent">
@@ -118,27 +125,37 @@
                     </div>
                 </div>
                 <div class="project-unit-right">
-                    <div class="unit-image-header">
-                        <span>Unit Location<span class="red">*</span> </span> You can added unit mark on this floor
+                    <div class="unit-image-header" :class="{red: this.markWarning == true}"
+                         v-if="this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null">
+                        <span>Unit Location<span class="red"
+                                                 v-if="!(this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null && this.templateUnit.mark == true)">*</span> </span>
+                        You can added unit mark on this floor
                         <div class="button-container" v-if="templateUnit.mark == true && floorPreview != ''"
                              @click="templateUnit.mark = false; templateUnit.unit_mark.x = 0; templateUnit.unit_mark.y = 0; templateUnit.unit_mark.width = 15; templateUnit.unit_mark.height = 10">
                             <div class="logo-upload" v-if="">Remove unit mark</div>
                         </div>
-                        <div class="button-container" @click="addUnitMark" v-if="templateUnit.mark == false  && floorPreview != ''">
+                        <div class="button-container" @click="addUnitMark"
+                             v-if="templateUnit.mark == false  && floorPreview != ''">
                             <div class="logo-upload">Add unit mark</div>
                         </div>
                     </div>
                     <div class="unit-image-container">
-                        <vue-draggable-resizable v-if="templateUnit.mark == true" :x="templateUnit.unit_mark.x" :y="templateUnit.unit_mark.y" :w="templateUnit.unit_mark.width" :h="templateUnit.unit_mark.height" @dragging="onDrag" @resizing="onResize" :parent="true">
+                        <vue-draggable-resizable v-if="templateUnit.mark == true" :x="templateUnit.unit_mark.x"
+                                                 :y="templateUnit.unit_mark.y" :w="templateUnit.unit_mark.width"
+                                                 :h="templateUnit.unit_mark.height" @dragging="onDrag"
+                                                 @resizing="onResize" :parent="true">
                             <div class="unit-point">
-                                <div class="unit-point-bedrooms" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}"
+                                <div class="unit-point-bedrooms"
+                                     :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}"
                                      v-if="templateUnit.bad >= 0 && templateUnit.bad != ''">{{templateUnit.bad}}
                                     bedroom
                                 </div>
-                                <div class="unit-point-number" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
+                                <div class="unit-point-number"
+                                     :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
                                     {{templateUnit.unit_number}}
                                 </div>
-                                <div class="unit-point-status" v-if="templateUnit.status !== ''" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
+                                <div class="unit-point-status" v-if="templateUnit.status !== ''"
+                                     :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}">
                                     {{statusOption[templateUnit.status].name}}
                                 </div>
                             </div>
@@ -173,7 +190,37 @@
       floorPreview: '',
       stopSave: false,
       statusOption: constants.STATUS_OPTIONS,
-      templateUnit: constants.STANDART_UNIT,
+      templateUnit: {
+        id: '',
+        unit_number: 0,
+        floor: '',
+        bad: 1,
+        bath: 1,
+        price: '',
+        status: '',
+        HOA: '',
+        int_sq: '',
+        ext_sq: '',
+        bmr: 0,
+        parking: 0,
+        floorImage: '',
+        mark: false,
+        unitImage: '',
+        image: '',
+        unit_mark: {
+          id: '',
+          x: 0,
+          y: 0,
+          width: 15,
+          height: 10,
+          font_size: 16,
+          x_prc: 0,
+          y_prc: 0,
+          width_prc: 15,
+          height_prc: 10,
+          font_size_prc: 16,
+        },
+      },
       counter: 0,  // count the clicks
       timer: null,
       numberWarning: false,
@@ -183,6 +230,7 @@
       statusWarning: false,
       bathWarning: false,
       intWarning: false,
+      markWarning: false,
 
     }),
     methods: {
@@ -194,49 +242,57 @@
         this.priceWarning = false;
         this.statusWarning = false;
         this.intWarning = false;
-        if(this.templateUnit.unit_number === 0) {
+        this.markWarning = false;
+        if (this.templateUnit.unit_number === 0) {
           this.numberWarning = true;
         }
-        if(this.templateUnit.floor == '') {
+        if (this.templateUnit.floor == '') {
           this.floorWarning = true;
         }
-        if(this.templateUnit.bad === '') {
+        if (this.templateUnit.bad === '') {
           this.bedWarning = true;
         }
-        if(this.templateUnit.bath === '') {
+        if (this.templateUnit.bath === '') {
           this.bathWarning = true;
         }
-        if(this.templateUnit.price === '') {
+        if (this.templateUnit.price === '') {
           this.priceWarning = true;
         }
-        if(this.templateUnit.status === '') {
+        if (this.templateUnit.status === '') {
           this.statusWarning = true;
         }
-        if(this.templateUnit.int_sq === '') {
+        if (this.templateUnit.int_sq === '') {
           this.intWarning = true;
         }
-        $(this.$el).animate({scrollTop: 0}, 600);
+        if (this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null && this.templateUnit.mark == true) {
+          this.markWarning = false;
+        } else {
+          this.markWarning = true;
+        }
+        $(this.$el).animate({ scrollTop: 0 }, 600);
       },
       calculateFontSize(){
         let fontSize = this.templateUnit.unit_mark.height / 3 / 2;
         let fontSize2 = this.templateUnit.unit_mark.width / 8;
-        if(fontSize < fontSize2) {
+        if (fontSize < fontSize2) {
           var min = fontSize;
         } else {
-          var  min = fontSize2;
+          var min = fontSize2;
         }
-        if(min > 14) {
+        if (min > 14) {
           return Number.parseInt(min);
         } else {
           return 14;
         }
       },
       calculateX() {
-        var imageContainer = $('#floor-image');
-        var width = imageContainer.width();
-        var percent = width / 100;
-        var mark_x = this.templateUnit.unit_mark.x * percent;
-        return Number.parseInt(mark_x);
+        if (this.templateUnit.mark == true) {
+          var imageContainer = $('#floor-image');
+          var width = imageContainer.width();
+          var percent = width / 100;
+          var mark_x = this.templateUnit.unit_mark.x * percent;
+          return Number.parseInt(mark_x);
+        }
       },
       calculateY() {
         var imageContainer = $('#floor-image');
@@ -307,11 +363,13 @@
         this.templateUnit.unit_mark.height_prc = this.calculateHeightBack();
       },
       resetTemplateUnit() {
+        this.$parent.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
         this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
       },
       ChangeFloorPreview() {
-        if(this.templateUnit.floor > 0) {
+        if (this.templateUnit.floor > 0) {
           this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
+          this.templateUnit.floorImage = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
           this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
         }
       },
@@ -324,66 +382,74 @@
       },
       getUnitImage(){
         let img = document.getElementById('unit-preview');
-        if(img) {
-          img.setAttribute('src',this.templateUnit.unitImagePreview);
+        if (img) {
+          img.setAttribute('src', this.templateUnit.unitImagePreview);
         }
         return this.templateUnit.unitImagePreview;
       },
       saveUnit() {
         if (this.checkSave()) {
           this.stopSave = true;
-            let data = new FormData();
-            let user = JSON.parse(localStorage.getItem('maagio_user'));
-            let token = localStorage.getItem('token');
-            if(this.templateUnit.unitImage != '') {
-              data.append('image', this.templateUnit.unitImage);
+          let data = new FormData();
+          let user = JSON.parse(localStorage.getItem('maagio_user'));
+          let token = localStorage.getItem('token');
+          if (this.templateUnit.unitImage != '') {
+            data.append('image', this.templateUnit.unitImage);
+          }
+          let unit = JSON.parse(JSON.stringify(this.templateUnit));
+          for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
+            if (this.$parent.$parent.project.floors[i].number == this.templateUnit.floor) {
+              unit.floor = this.$parent.$parent.project.floors[i].id;
             }
-            let unit = JSON.parse(JSON.stringify(this.templateUnit));
-            for(var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
-              if(this.$parent.$parent.project.floors[i].number == this.templateUnit.floor) {
-                unit.floor = this.$parent.$parent.project.floors[i].id;
-              }
-            }
-            unit.unitImagePreview = '';
-            data.append('user_id', user.uid);
-            data.append('token', token);
-            data.append('project_id', this.$parent.$parent.project.id);
-            data.append('unit', JSON.stringify(unit));
-            let obj = this;
-            $.ajax({
-              url: constants.BACKEND_URL + 'unit/update-unit',
-              type: 'POST', // важно!
-              data: data,
-              cache: false,
-              dataType: 'json',
-              processData: false,
-              contentType: false,
-              success: function (respond, status, jqXHR) {
-                obj.stopSave = false;
-                if (respond.ok === 1) {
-                  if(respond.new_image) {
-                    respond.unit.image = respond.new_image;
-                  }
-                  obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units.push(respond.unit);
-                  obj.resetTemplateUnit();
-                  obj.$parent.openAddUnit = false;
-                  window.db.updateProjectFloors(obj.$parent.$parent.project.id, obj.$parent.$parent.project.floors);
-                } else {
-                  console.log('ОШИБКА: ' + respond.data);
+          }
+          unit.unitImagePreview = '';
+          data.append('user_id', user.uid);
+          data.append('token', token);
+          data.append('project_id', this.$parent.$parent.project.id);
+          data.append('unit', JSON.stringify(unit));
+          let obj = this;
+          $.ajax({
+            url: constants.BACKEND_URL + 'unit/update-unit',
+            type: 'POST', // важно!
+            data: data,
+            cache: false,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (respond, status, jqXHR) {
+              obj.stopSave = false;
+              if (respond.ok === 1) {
+                if (respond.new_image) {
+                  respond.unit.image = respond.new_image;
                 }
-              },
-              error: function (jqXHR, status, errorThrown) {
-                obj.stopSave = false;
-                console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+                obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units.push(respond.unit);
+                obj.resetTemplateUnit();
+                obj.$parent.openAddUnit = false;
+                window.db.updateProjectFloors(obj.$parent.$parent.project.id, obj.$parent.$parent.project.floors);
+              } else {
+                console.log('ОШИБКА: ' + respond.data);
               }
-            });
+            },
+            error: function (jqXHR, status, errorThrown) {
+              obj.stopSave = false;
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
         }
       },
       checkSave() {
         if (this.templateUnit.unit_number !== 0 && this.templateUnit.floor != '' && this.templateUnit.bad !== ''
           && this.templateUnit.price !== '' && this.templateUnit.status !== '' && this.templateUnit.bath !== ''
           && this.templateUnit.int_sq !== '' && this.stopSave === false) {
-          return true;
+          if ((this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null)) {
+            if (this.templateUnit.mark != false) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return true;
+          }
         } else {
           return false;
         }
@@ -404,7 +470,7 @@
           height_prc: 10,
           font_size_prc: 16,
         };
-        if(this.templateUnit.floor != '') {
+        if (this.templateUnit.floor != '') {
           this.floorWarning = false;
         }
         this.ChangeFloorPreview();
@@ -436,7 +502,7 @@
         this.templateUnit.unit_mark.width = this.calculateWidth();
         this.templateUnit.unit_mark.height = this.calculateHeight();
         this.templateUnit.unit_mark.font_size = this.calculateFontSize();
-
+        this.markWarning = false;
         this.templateUnit.mark = true;
       },
       uploadImage(e){
@@ -448,7 +514,7 @@
           obj.templateUnit.unitImagePreview = reader.result;
           obj.templateUnit.unitImage = e.target.files[0];
           obj.getUnitImage();
-          obj.templateUnit.unitImageId = e.target.files[0].name + '_'+e.target.files[0].size;
+          obj.templateUnit.unitImageId = e.target.files[0].name + '_' + e.target.files[0].size;
         }.bind(this), false);
         if (this.file) {
           if (/\.(jpe?g|png)$/i.test(this.file.name)) {
@@ -461,7 +527,20 @@
       for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
         this.floorOption.push({ name: i + 1, val: '' });
       }
-     this.resetTemplateUnit();
+      this.templateUnit = JSON.parse(JSON.stringify(this.$parent.templateUnit));
+      this.ChangeFloorPreview();
+      var obj = this;
+      console.log(this.templateUnit);
+      let timer = setTimeout(function () {
+        if (obj.templateUnit.mark != false) {
+          obj.templateUnit.unit_mark.x = obj.calculateX();
+          obj.templateUnit.unit_mark.y = obj.calculateY();
+          obj.templateUnit.unit_mark.width = obj.calculateWidth();
+          obj.templateUnit.unit_mark.height = obj.calculateHeight();
+          obj.templateUnit.unit_mark.font_size = obj.calculateFontSize();
+        }
+
+      }, 200);
     },
   }
 </script>

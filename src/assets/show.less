@@ -112,6 +112,9 @@ main {
   padding-left: 0;
   padding-right: 0;
 }
+.show-project.no__padding {
+  padding-left: 0;
+}
 .show-project {
   display: flex;
   flex-direction: column;
@@ -121,12 +124,14 @@ main {
   overflow: hidden;
   overflow-y: auto;
   .app-head {
+    div {
+      width: 100%;
+    }
     width: 100%;
     padding-left: 20px;
     display: flex;
     justify-content: space-between;
     white-space: nowrap;
-    text-align: left;
     padding-top: 20px;
     padding-bottom: 20px;
     color: white;
@@ -136,14 +141,14 @@ main {
     font-size: 20px;
     & .app-head-name {
       font-family: GaramondRegular, sans-serif;
+      text-align: left;
     }
   }
   .app-head-tab {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    text-align: center;
   }
   .show-floors {
+    height: calc(100% - 65px);
    .image-container {
      position: relative;
    }
@@ -198,7 +203,6 @@ main {
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #fff;
           width: 100%;
         }
         & .unit-point-bedrooms {
@@ -218,7 +222,7 @@ main {
       justify-content: center;
       position: relative;
       margin-top: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 70px;
       & img {
         max-height: 600px;
         -o-object-fit: contain;
@@ -229,6 +233,8 @@ main {
     .show-floors-footer {
       height: 50px;
       display: flex;
+      position: absolute;
+      bottom: 0;
       width: 100%;
       background-color: #F9F9F9;
       justify-content: space-between;
@@ -261,16 +267,24 @@ main {
         }
       }
     }
-    .floor-navigation {
+    .navigation-container {
+      .navigation-block {
+        position: relative;
+      }
       position: absolute;
+      top: 0;
+      right: 40px;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    .floor-navigation {
       padding-top: 20px;
       padding-bottom: 20px;
       background-color: #F7F7F7;
       -webkit-border-radius: 10px;
       -moz-border-radius: 10px;
       border-radius: 10px;
-      right: 20px;
-      top: 100px;
       width: 60px;
       justify-content: center;
       align-items: center;
@@ -341,7 +355,7 @@ main {
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       .unit-status-text {
         color: #AC795C;
@@ -431,7 +445,7 @@ main {
         cursor: pointer;
         background-color: #F8F8F8;
         img {
-          object-fit: cover;
+          object-fit: contain;
           height: 100%;
           width: 100%;
         }

@@ -15,20 +15,14 @@
             <ProjectGalleries v-show="activeTab == 5"></ProjectGalleries>
             <ProjectPublish v-show="activeTab == 6"></ProjectPublish>
         </div>
-        <div class="project-page-controls" v-if="!published && !loaded">
+        <div class="project-page-controls" v-if="!loaded">
             <div class="project-page-button" :class="{invisible: activeTab == 1}" @click="goBack()">Back</div>
             <div class="project-page-subcontrols">
                 <div class="project-page-button" @click="publish" v-if="project.published == 1">Unpublish</div>
                 <div class="project-page-button blue-button" v-if="checkNext()" @click="goNext">Next</div>
                 <div class="project-page-button inactive-button" v-if="!checkNext() && activeTab !== 6">Next</div>
-                <div class="project-page-button blue-button" @click="publish" v-if="checkPublish()">Publish</div>
-                <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab === 6">Publish</div>
-            </div>
-        </div>
-        <div class="project-page-publish" v-if="published">
-            <div class="publish-button">
-                <span class="publish-icon"></span>
-                Published
+                <div class="project-page-button blue-button" @click="publish" v-if="checkPublish() && project.published == 0">Publish</div>
+                <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab === 6 && project.published == 0">Publish</div>
             </div>
         </div>
         <div class="project-page-publish" v-if="loaded && !published">
@@ -178,7 +172,6 @@
         let obj = this;
         if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo) {
           this.loaded = true;
-          console.log(this.project);
           let data = new FormData();
           let user = JSON.parse(localStorage.getItem('maagio_user'));
           let token = localStorage.getItem('token');
@@ -206,6 +199,9 @@
                   /*obj.published = true;*/
                 obj.project.id = respond.project.id;
                 obj.project.logo = respond.project_logo;
+                obj.oldProject.name = respond.project.name;
+                obj.oldProject.logo = respond.project.logo;
+                obj.oldProject.id = respond.project.id;
                 window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
                     var project = JSON.parse(e.value);
                     project.name = respond.project.name;
@@ -306,16 +302,24 @@
             obj.stopSave = false;
             if (respond.ok === 1) {
               obj.project.published = respond.published;
+              window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
+                var project = JSON.parse(e.value);
+                project.published = respond.project.published;
+                window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
+              });
               if(obj.project.published == 1) {
                 let protocol = document.location.protocol;
+                window.db.delValue('draft_projects', Number.parseInt(respond.project.id));
+                window.db.setValue('published_projects', Number.parseInt(respond.project.id), respond.project);
                 let host =  document.location.host;
                 obj.personalLink = protocol + '//' + host+'/#/show?project=' + respond.personal_link;
                 obj.published = true;
               } else {
                 obj.published = false;
+                window.db.delValue('published_projects', Number.parseInt(respond.project.id));
+                window.db.setValue('draft_projects', Number.parseInt(respond.project.id), respond.project);
                 obj.personalLink = '';
               }
-              console.log(obj);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }
