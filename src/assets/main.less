@@ -1617,6 +1617,12 @@ main {
   display: flex;
   justify-content: center;
   padding-top: 80px;
+  .restore-text {
+    max-width: 240px;
+    text-align: center;
+    font-size: 14px;
+    color: #828282;
+  }
   & form {
     display: flex;
     flex-direction: column;
@@ -1626,6 +1632,36 @@ main {
     padding: 80px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
     border-radius: 5px;
+    .form-link {
+      cursor: pointer;
+    }
+    .submit-button {
+      width: 200px;
+      display: flex;
+      button {
+        margin-top: 20px;
+        width: 100%;
+      }
+      .subscribe-cancel-button {
+        width: 100%;
+        background-color: #2F80ED;
+        text-align: center;
+        cursor: pointer;
+        font-size: 16px;
+        display: inline-block;
+        margin-top: 20px;
+        border-radius: 5px;
+        padding-top: 7px;
+        margin-bottom: 0;
+        padding-bottom: 8px;
+        border: none;
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        -ms-transition: all .3s;
+        -o-transition: all .3s;
+        transition: all .3s;
+      }
+    }
     .message {
       width: 100%;
       color: red;
@@ -1665,6 +1701,15 @@ main {
   }
   .form-link:hover {
     color: #318dfe;
+  }
+  .form-link.restore-password-link:hover {
+    color: #bdbdbd;
+  }
+  .form-link.restore-password-link {
+    font-size: 12px;
+    margin-top: -10px;
+    width: 100%;
+    color: #cbcbcb;
   }
   .form-link {
     color: #2F80ED;
@@ -1948,6 +1993,13 @@ main {
   -ms-animation-name: fadeGray;
   -webkit-animation-name: fadeGray;
   -moz-animation-name: fadeGray;
+}
+.submit-button .blockG {
+  animation-name: fadeG;
+  -o-animation-name: fadeG;
+  -ms-animation-name: fadeG;
+  -webkit-animation-name: fadeG;
+  -moz-animation-name: fadeG;
 }
 .blockG {
   position: absolute;

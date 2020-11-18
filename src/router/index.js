@@ -57,6 +57,11 @@ const routes = [
     name: 'confirm',
     component: () => import('../views/Confirm.vue'),
   },
+  {
+    path: '/restore',
+    name: 'restore',
+    component: () => import('../views/Restore.vue'),
+  },
 ];
 
 const router = new VueRouter({

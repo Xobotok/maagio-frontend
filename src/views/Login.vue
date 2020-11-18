@@ -6,6 +6,9 @@
             <input class="login-input" required v-model="email" type="email" placeholder="Email-Address"/>
             <input class="login-input" required v-model="password" type="password" placeholder="Password"/>
             <hr/>
+            <router-link to="/restore" class="form-link restore-password-link">
+                Forgot your password?
+            </router-link>
             <button type="submit">Login</button>
             <router-link to="/register" class="form-link">
                 Registration

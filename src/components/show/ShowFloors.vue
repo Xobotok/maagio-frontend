@@ -231,7 +231,6 @@
           this.floor.units[iter].bedShow = true;
           this.floor.units[iter].statusShow = true;
         }
-        console.log(this);
         for (var iter = 0; iter < this.floor.units.length; iter++) {
           for (var n = 0; n < this.filters.bed.length; n++) {
           if (this.floor.units[iter].bad == this.filters.bed[n]) {
