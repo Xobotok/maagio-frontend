@@ -19,6 +19,17 @@
                     <div class="marker-header">Add new marker</div>
                     <div class="marker-form-field">
                         <div class="marker-form-column">
+                            <div class="marker-field-header">Search</div>
+                            <div class="search-block">
+                                <input type="text" v-model="userMarker.address" v-on:keyup="searchPlace" class="project-input">
+                                <div class="search-icon"></div>
+                                <div class="search-results superscroll" v-if="placePredictions.length > 0">
+                                    <div class="search-element" v-for="(place, key) in placePredictions" @click="searchOnePlace(place)">{{place.description}}</div>
+                                </div>
+                            </div>
+                          
+                        </div>
+                        <div class="marker-form-column">
                             <div class="marker-field-header">Name</div>
                             <input type="text" v-model="userMarker.name" class="project-input">
                         </div>
@@ -47,82 +58,6 @@
                     <div class="marker-block-button cancel-button" v-show="openMarker == true" @click="cancelMarker">
                         Cancel
                     </div>
-                </div>
-            </div>
-            <div class="neardy-marker-buttons">
-                <div>
-                    <div class="overview-checkbox"
-                         :class="{active: $parent.project.markers.culture.length > 0, loading: nearCulturePlaces == 'pause'}">
-                        <label for="show-culture" v-show="nearCulturePlaces != 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near culture places</label>
-                        <label v-show="nearCulturePlaces == 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near culture places</label>
-                        <input type="checkbox" v-on:change="showNearPlaces(1)" v-model="nearCulturePlaces"
-                               id="show-culture"
-                               style="display: none">
-                    </div>
-                    <div class="overview-checkbox-warning" v-if="nearCulturePlaces == 'pause'">Please, wait</div>
-                </div>
-                <div>
-                    <div class="overview-checkbox"
-                         :class="{active: $parent.project.markers.restaurant.length > 0, loading: nearRestaurants == 'pause'}">
-                        <label for="show-restaurants" v-show="nearRestaurants != 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near restaurants</label>
-                        <label v-show="nearRestaurants == 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near restaurants</label>
-                        <input type="checkbox" v-on:change="showNearPlaces(2)" v-model="nearRestaurants"
-                               id="show-restaurants"
-                               style="display: none">
-                    </div>
-                    <div class="overview-checkbox-warning" v-if="nearRestaurants == 'pause'">Please, wait</div>
-                </div>
-                <div>
-                    <div class="overview-checkbox"
-                         :class="{active: $parent.project.markers.sport.length > 0, loading: nearSport == 'pause'}">
-                        <label for="show-sport" v-show="nearSport != 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near sport places</label>
-                        <label v-show="nearSport == 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near sport places</label>
-                        <input type="checkbox" v-on:change="showNearPlaces(3)" v-model="nearSport" id="show-sport"
-                               style="display: none">
-                    </div>
-                    <div class="overview-checkbox-warning" v-if="nearSport == 'pause'">Please, wait</div>
-                </div>
-                <div>
-                    <div class="overview-checkbox"
-                         :class="{active: $parent.project.markers.nature.length > 0, loading: nearNature == 'pause'}">
-                        <label for="show-nature" v-show="nearNature != 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near nature places</label>
-                        <label v-show="nearNature == 'pause'">
-                            <div class="overview-checkbox-mask">
-                                <div class="overview-checkbox-icon"></div>
-                            </div>
-                            Show near nature places</label>
-                        <input type="checkbox" v-on:change="showNearPlaces(4)" v-model="nearNature" id="show-nature"
-                               style="display: none">
-                    </div>
-                    <div class="overview-checkbox-warning" v-if="nearNature == 'pause'">Please, wait</div>
                 </div>
             </div>
         </div>
@@ -160,10 +95,6 @@
       mapActivate: true,
       searchingAddress: '',
       addressList: [],
-      nearCulturePlaces: false,
-      nearRestaurants: false,
-      nearSport: false,
-      nearNature: false,
       searchPause: false,
       addressPredictions: [],
       map: '',
@@ -175,6 +106,7 @@
       natureMarker: [],
       openMarker: false,
       userMarker: {
+        address:'',
         name: '',
         description: '',
         marker: '',
@@ -184,128 +116,33 @@
       userMarkerIcon: '',
       markerPause: false,
       userMarkers: [],
+      placePredictions: [],
     }),
     methods: {
-      showNearPlaces(type) {
-        let res = 1;
-        switch (Number.parseInt(type)) {
-          case 1:
-            if (this.$parent.project.markers.culture.length > 0) {
-              res = 0;
-            }
-            this.nearCulturePlaces = 'pause';
-            break;
-          case 2:
-            if (this.$parent.project.markers.restaurant.length > 0) {
-              res = 0;
-            }
-            this.nearRestaurants = 'pause';
-            break;
-          case 3:
-            if (this.$parent.project.markers.sport.length > 0) {
-              res = 0;
-            }
-            this.nearSport = 'pause';
-            break;
-          case 4:
-            if (this.$parent.project.markers.nature.length > 0) {
-              res = 0;
-            }
-            this.nearNature = 'pause';
-            break;
-        }
-        let data = {};
-        let user = JSON.parse(localStorage.getItem('maagio_user'));
-        let token = localStorage.getItem('token');
-        data.user_id = user.uid;
-        data.token = token;
-        data.project_id = this.$parent.project.id;
-        data.type = type;
-        data.show = res;
-        let obj = this;
-        $.ajax({
-          url: constants.BACKEND_URL + 'marker/get-near-places',
-          type: 'GET', // важно!
-          data: data,
-          cache: false,
-          dataType: 'json',
-          success: function (respond, status, jqXHR) {
-            obj.stopSave = false;
-            if (respond.ok === 1) {
-              if (respond.show == 1) {
-                obj.removeGoogleMarkers(respond.type);
-                obj.createGoogleMarkers(respond.type, respond.places);
-              } else {
-                obj.removeGoogleMarkers(respond.type);
-              }
-            } else {
-              console.log('ОШИБКА: ' + respond.data);
-            }
-          },
-          error: function (jqXHR, status, errorThrown) {
-            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
-          }
-        });
-      },
-      createGoogleMarkers(type, markers){
-        let arr = [];
-        switch (Number.parseInt(type)) {
-          case 1:
-            arr = this.$parent.project.markers.culture;
-            this.nearCulturePlaces = true;
-            break;
-          case 2:
-            arr = this.$parent.project.markers.restaurant;
-            this.nearRestaurants = true;
-            break;
-          case 3:
-            arr = this.$parent.project.markers.sport;
-            this.nearSport = true;
-            break;
-          case 4:
-            this.nearNature = true;
-            arr = this.$parent.project.markers.nature;
-            break;
-        }
-        for (var i = 0; i < markers.length; i++) {
-          let marker = this.$parent.createMarker(markers[i]);
-          arr.push(marker);
-        }
-      },
-      removeGoogleMarkers(type) {
-        switch (Number.parseInt(type)) {
-          case 1:
-            for (var i = 0; i < this.$parent.project.markers.culture.length; i++) {
-              this.$parent.project.markers.culture[i].setMap(null);
-            }
-            this.$parent.project.markers.culture = [];
-            this.nearCulturePlaces = true;
-            break;
-          case 2:
-            for (var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
-              this.$parent.project.markers.restaurant[i].setMap(null);
-            }
-            this.$parent.project.markers.restaurant = [];
-            this.nearRestaurants = true;
-            break;
-          case 3:
-            for (var i = 0; i < this.$parent.project.markers.sport.length; i++) {
-              this.$parent.project.markers.sport[i].setMap(null);
-            }
-            this.$parent.project.markers.sport = [];
-            this.nearSport = true;
-            break;
-          case 4:
-            for (var i = 0; i < this.$parent.project.markers.nature.length; i++) {
-              this.$parent.project.markers.nature[i].setMap(null);
-            }
-            this.$parent.project.markers.nature = [];
-            this.nearNature = true;
-            break;
-        }
-      },
       selectMarkerType(e) {
         this.userMarkerType = e.val;
+        this.actualizeMarkerIcon();
+      },
+      actualizeMarkerIcon() {
+        var icon = '';
+        if(this.userMarker.marker == '') {
+          return false;
+        }
+        switch(Number.parseInt(this.userMarkerType)) {
+          case 1:
+            icon = constants.BACKEND_URL +'/img/Cultural.png';
+            break;
+          case 2:
+            icon = constants.BACKEND_URL +'/img/Restaurants.png';
+            break;
+          case 3:
+            icon = constants.BACKEND_URL +'/img/Sports.png';
+            break;
+          case 4:
+            icon = constants.BACKEND_URL +'/img/Nature.png';
+            break;
+        }
+        this.userMarker.marker.setIcon(icon)
       },
       openAddMarker() {
         if (this.openMarker === false) {
@@ -503,6 +340,92 @@
          obj.addressPredictions = [];
         }, 500)
       },
+      searchOnePlace(place) {
+        let obj = this;
+        let place_id = place.place_id;
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        let data = {
+          user_id: user.uid,
+          token: token,
+          place_id: place_id,
+        };
+        $.ajax({
+          url: constants.BACKEND_URL + 'marker/take-place-by-id',
+          type: 'GET', // важно!
+          data: data,
+          dataType: 'json',
+          success: function (respond, status, jqXHR) {
+            obj.stopSave = false;
+            obj.placePredictions =[];
+            if (respond.ok === 1) {
+              if(respond.place != '') {
+                obj.userMarker.address = respond.place.formatted_address;
+                if(obj.userMarker.marker != '') {
+                  obj.userMarker.marker.setMap(null);
+                }
+                obj.userMarker.marker = new google.maps.Marker({
+                  position: {
+                    lat: Number.parseFloat(respond.place.geometry.location.lat),
+                    lng: Number.parseFloat(respond.place.geometry.location.lng)
+                  },
+                  map: window.map,
+                });
+                obj.actualizeMarkerIcon();
+              }
+
+            }
+          },
+          error: function (jqXHR, status, errorThrown) {
+            obj.stopSave = false;
+            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+          }
+        });
+      },
+      searchPlace() {
+        if (this.userMarker.address.length == 0) {
+          this.placePredictions = [];
+          return false;
+        } else if(this.userMarker.address.length < 3) {
+          return false;
+        }
+
+        var obj = this;
+        if (window.timer) {
+          window.clearTimeout(window.timer);
+        }
+        window.timer = setTimeout(function () {
+          let data = new FormData();
+          let user = JSON.parse(localStorage.getItem('maagio_user'));
+          let token = localStorage.getItem('token');
+          data.append('user_id', user.uid);
+          data.append('token', token);
+          data.append('project_id', obj.$parent.project.id);
+          data.append('address', obj.userMarker.address);
+          $.ajax({
+            url: constants.BACKEND_URL + 'map/search-address',
+            type: 'POST', // важно!
+            data: data,
+            cache: false,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (respond, status, jqXHR) {
+              obj.stopSave = false;
+              if (respond.ok === 1) {
+                for (var i = 0; i < respond.predictions.length; i++) {
+                  obj.placePredictions = respond.predictions;
+                }
+                console.log(obj.placePredictions);
+              }
+            },
+            error: function (jqXHR, status, errorThrown) {
+              obj.stopSave = false;
+              console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            }
+          });
+        }, 500);
+      },
       searchAddress() {
         if (this.$parent.project.map.address.length == 0) {
           this.addressPredictions = [];
@@ -569,10 +492,6 @@
             obj.stopSave = false;
             obj.searchPause = false;
             if (respond.ok === 1) {
-              obj.removeGoogleMarkers(1);
-              obj.removeGoogleMarkers(2);
-              obj.removeGoogleMarkers(3);
-              obj.removeGoogleMarkers(4);
               obj.mapCenter(respond.map.lat, respond.map.lng);
               if (obj.$parent.project.map.marker != undefined) {
                 obj.$parent.project.map.marker.setMap(null);
