@@ -49,6 +49,7 @@
 
 <script>
   import constants from '../../Constants'
+  import MarkerClusterer from "@googlemaps/markerclustererplus/dist/index.esm";
   export default {
     'name': 'ProjectOverview',
     data: ()=>({
@@ -156,18 +157,10 @@
         for(var i = 0; i < this.$parent.project.markers.user_markers.length; i++) {
           this.$parent.project.markers.user_markers[i] = this.$parent.createMarker(this.$parent.project.markers.user_markers[i]);
         }
-        for(var i = 0; i < this.$parent.project.markers.culture.length; i++) {
-          this.$parent.project.markers.culture[i] = this.$parent.createMarker(this.$parent.project.markers.culture[i]);
-        }
-        for(var i = 0; i < this.$parent.project.markers.sport.length; i++) {
-          this.$parent.project.markers.sport[i] = this.$parent.createMarker(this.$parent.project.markers.sport[i]);
-        }
-        for(var i = 0; i < this.$parent.project.markers.nature.length; i++) {
-          this.$parent.project.markers.nature[i] = this.$parent.createMarker(this.$parent.project.markers.nature[i]);
-        }
-        for(var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
-          this.$parent.project.markers.restaurant[i] = this.$parent.createMarker(this.$parent.project.markers.restaurant[i]);
-        }
+        new MarkerClusterer(window.map, this.$parent.project.markers.user_markers, {
+          imagePath:
+            "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+        });
       },
       openPhotoUpload() {
         var container = document.getElementById('overview-logo');

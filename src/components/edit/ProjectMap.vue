@@ -541,6 +541,7 @@
             success: function (respond, status, jqXHR) {
               var center = new google.maps.LatLng(respond.latitude, respond.longitude);
               window.map.panTo(center);
+
             },
             error: function (jqXHR, status, errorThrown) {
               console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
