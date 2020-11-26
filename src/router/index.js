@@ -62,10 +62,16 @@ const routes = [
     name: 'restore',
     component: () => import('../views/Restore.vue'),
   },
+  {
+    path: '/:id',
+    name: 'view',
+    meta: { layout: 'show',  requiresAuth: false },
+    component: () => import('../views/ShowProject.vue'),
+  },
 ];
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes,
 });

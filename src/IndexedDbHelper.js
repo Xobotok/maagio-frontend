@@ -149,6 +149,7 @@ window.db.updateProjectFloors = function (project_id, floors) {
     window.db.getValue('project', Number.parseInt(project_id), function (e) {
       var project = JSON.parse(e.value);
       project.floors = floors;
+      console.log(project.floors);
       window.db.setValue('project', Number.parseInt(project_id), JSON.stringify(project))
     });
   });
@@ -174,6 +175,7 @@ window.db.getAllValues = function (store, callback) {
     }
   });
 };
+
 window.db.setFile = function setFile(file) {
   connectDB(function (db) {
     var request = db.transaction([storeName], "readwrite").objectStore(storeName).put(file);
@@ -183,22 +185,24 @@ window.db.setFile = function setFile(file) {
     }
   });
 }
-window.db.setImage = function (image_id, file) {
-  function toDataURL(url, callback) {
-    $.ajax({
-      type: 'GET',
-      url: file,
-      dataType: 'blob',
-      success: function (data) {
-
-      }
-    });
-  }
-
-  toDataURL(file, function(dataUrl) {
-    console.log('RESULT:', dataUrl)
+window.db.setImage = function (image_id, blob) {
+  connectDB(function (db) {
+    var request = db.transaction(['images'], "readwrite").objectStore('images').put({id: Number.parseInt(image_id), image: blob});
+    request.onerror = logerr;
+    request.onsuccess = function () {
+      return request.result;
+    }
   })
-}
+};
+window.db.removeImage = function (image_id) {
+  connectDB(function (db) {
+    var request = db.transaction(['images'], "readwrite").objectStore('images').delete(Number.parseInt(image_id));
+    request.onerror = logerr;
+    request.onsuccess = function () {
+
+    }
+  })
+};
 
 window.db.delFile = function delFile(file) {
   connectDB(function (db) {

@@ -11,13 +11,22 @@
 
 <script>
   import constants from '../../Constants';
+  import '../../registerServiceWorker';
   export default {
     name: 'show-home',
     data: ()=>({
       logo: '',
     }),
-    mounted(){
-
+    beforeMount(){
+     const manifest = document.querySelector('[rel="manifest"]');
+     var src = window.location.href.split('/');
+     src = src[src.length - 1];
+     src = constants.BACKEND_URL + 'manifests/' + src + '.json';
+      const nextManifest = document.createElement('link');
+      nextManifest.id = 'manifest';
+      nextManifest.rel = 'manifest';
+      nextManifest.href = src;
+      manifest.parentNode.replaceChild(nextManifest, manifest);
     },
   }
 </script>

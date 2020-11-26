@@ -51,8 +51,8 @@
       }
     },
     mounted(){
-      let project = document.location.href;
-      let data = {project: project.split('project=')[1]};
+      let project = document.location.href.split('/');
+      let data = {project: project[project.length - 1]};
       let obj = this;
       $.ajax({
         url         : constants.BACKEND_URL + 'project/show',
@@ -89,7 +89,7 @@
         },
 
         error: function( jqXHR, status, errorThrown ){
-          let project_link = project.split('project=')[1];
+          let project_link = obj.project.split('project=')[1];
           window.db.getAllValues('project', function (e) {
             var projects = e;
             for(var i = 0; i < projects.length; i++) {

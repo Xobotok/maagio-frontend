@@ -10,7 +10,7 @@
             <div class="project-menu">
                 <router-link :to="{path: 'edit', query: {project_id: project.id}}" class="project-menu-text">EDIT</router-link>
                 <div class="menu-delimiter"></div>
-                <router-link :to="{path: 'show', query: {project: project.special_link}}"><div class="project-menu-text">
+                <router-link :to="{path: project.special_link}"><div class="project-menu-text">
                     PREVIEW
                     <span class="menu-link"></span>
                 </div></router-link>

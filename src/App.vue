@@ -10,6 +10,7 @@
   import EmptyLayout from '@/layouts/EmptyLayout';
   import ShowLayout from '@/layouts/ShowLayout';
   import db from './IndexedDbHelper.js'
+  import helper from './VueHelper.js'
 
   var script = document.createElement('script');
   script.src = 'https://js.stripe.com/v3/';

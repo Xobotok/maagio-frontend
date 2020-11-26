@@ -198,14 +198,20 @@
               if (respond.ok === 1) {
                   /*obj.published = true;*/
                 obj.project.id = respond.project.id;
-                obj.project.logo = respond.project_logo;
+                if(obj.oldProject.project_logo != null) {
+                  window.db.removeImage(obj.oldProject.project_logo);
+                }
+                obj.project.logo = respond.project.logo_link;
+                obj.oldProject.logo = respond.project.logo_link;
+                obj.project.project_logo = respond.project.project_logo;
+                obj.oldProject.project_logo = respond.project.project_logo;
                 obj.oldProject.name = respond.project.name;
-                obj.oldProject.logo = respond.project.logo;
                 obj.oldProject.id = respond.project.id;
                 window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
                     var project = JSON.parse(e.value);
                     project.name = respond.project.name;
                     project.logo = respond.project_logo;
+                  window.VueHelper.saveImage(respond.project.project_logo, respond.project.logo_link);
                     window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
                 });
                 if(respond.project.published != 1) {
@@ -312,7 +318,7 @@
                 window.db.delValue('draft_projects', Number.parseInt(respond.project.id));
                 window.db.setValue('published_projects', Number.parseInt(respond.project.id), respond.project);
                 let host =  document.location.host;
-                obj.personalLink = protocol + '//' + host+'/#/show?project=' + respond.personal_link;
+                obj.personalLink = protocol + '//' + host+'/' + respond.personal_link;
                 obj.published = true;
               } else {
                 obj.published = false;

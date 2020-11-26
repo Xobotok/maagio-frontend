@@ -81,6 +81,8 @@
           if(respond.ok === 1) {
             obj.$parent.project = respond.data;
             window.db.setValue('project', Number.parseInt(respond.data.id), JSON.stringify(respond.data));
+            window.VueHelper.saveImage(respond.data.project_logo, respond.data.logo);
+            window.VueHelper.loadFloorsImages(respond.data.floors);
             obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
             if(!obj.$parent.project.map || obj.$parent.project.map == '') {
               obj.showMap = false;

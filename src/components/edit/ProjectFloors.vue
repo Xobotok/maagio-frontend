@@ -124,7 +124,7 @@
           success: function (respond, status, jqXHR) {
             obj.loaded = false;
             if (respond.ok === 1) {
-
+                console.log(respond);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }
