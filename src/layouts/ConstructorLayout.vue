@@ -85,7 +85,12 @@
         },
         formatEndDate: function (seconds) {
           if(seconds > 0) {
-            return  Math.floor(seconds / (60*60*24));
+            if( Math.floor(seconds / (60*60*24)) < 1) {
+              return 'Less then one ';
+            } else {
+              return  Math.floor(seconds / (60*60*24));
+            }
+
           } else {
             return 'Subscription ended';
           }

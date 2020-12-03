@@ -12,6 +12,8 @@
 <script>
   import constants from '../../Constants';
   import '../../registerServiceWorker';
+  import {precacheAndRoute} from 'workbox-precaching';
+  import { register } from 'register-service-worker'
   export default {
     name: 'show-home',
     data: ()=>({

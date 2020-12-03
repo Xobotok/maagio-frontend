@@ -62,6 +62,7 @@
         success     : function( respond, status, jqXHR ){
           if(respond !== null) {
             if(respond.ok === 1) {
+              console.log(this);
               for(var i = 0; i < respond.data.floors.length; i++){
                 for(var n = 0; n < respond.data.floors[i].units.length; n++) {
                   if(respond.data.floors[i].units[n].unit_mark != null) {
@@ -74,6 +75,8 @@
                 }
               }
               obj.project = respond.data;
+              window.db.setValue('published_projects', Number.parseInt(obj.project.id), JSON.stringify(obj.project));
+              window.db.setValue('project', Number.parseInt(obj.project.id), JSON.stringify(obj.project));
               obj.project.markers.culture = [];
               obj.project.markers.restaurant = [];
               obj.project.markers.sport = [];
@@ -87,9 +90,9 @@
           }
 
         },
-
         error: function( jqXHR, status, errorThrown ){
-          let project_link = obj.project.split('project=')[1];
+          let project_link = window.location.href.split('/');
+          project_link = project_link[project_link.length - 1];
           window.db.getAllValues('project', function (e) {
             var projects = e;
             for(var i = 0; i < projects.length; i++) {

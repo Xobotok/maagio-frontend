@@ -30,7 +30,7 @@
             </div>
             <div class="profile-info">
                 <div class="profile-header">Membership</div>
-                <div class="tariff-description" v-if="$parent.end_time != ''" :class="{trial: $parent.subscribe.cancel_at_period_end != false,
+                <div class="tariff-description" v-if="$parent.end_time != '' || $parent.end_time === 0" :class="{trial: $parent.subscribe.cancel_at_period_end != false,
                 subscribe: $parent.subscribe.cancel_at_period_end == false}">
                     <span v-if="$parent.subscribe.cancel_at_period_end != false && $parent.subscribe.status == 'trialing'">You’re currently in free trial. <span
                             class="roboto_bold db pt10">{{$parent.end_time}} days left.</span></span>

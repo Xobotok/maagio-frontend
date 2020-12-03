@@ -63,7 +63,7 @@ const routes = [
     component: () => import('../views/Restore.vue'),
   },
   {
-    path: '/:id',
+    path: '/show/:id',
     name: 'view',
     meta: { layout: 'show',  requiresAuth: false },
     component: () => import('../views/ShowProject.vue'),
