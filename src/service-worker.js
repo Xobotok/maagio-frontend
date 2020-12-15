@@ -10,7 +10,6 @@
  * and re-run your build process.
  * See https://goo.gl/2aRDsh
  */
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 workbox.core.setCacheNameDetails({prefix: "maagio"});
 var CACHE_NAME = 'my-site-cache-v1';
 self.addEventListener('fetch', function(event) {
