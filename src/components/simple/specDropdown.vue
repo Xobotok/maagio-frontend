@@ -72,6 +72,8 @@
         this.selectedOption.val = Number.parseInt(this.selectedOption.val) - 1;
         this.selectedOption.id = this.$el.getAttribute('elementid');
         this.$parent.selectNewFloor(this);
+        this.selectedOption = this.$parent.object;
+        console.log(this.$parent.object);
         this.showMenu = false;
       },
       toggleMenu() {

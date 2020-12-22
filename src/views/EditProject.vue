@@ -2,15 +2,17 @@
     <div class="new-project-page">
         <div class="new-project-progress">
             <div class="progress-tab" v-for="(progress, key) in progresses">
-                <div class="progress-name active" v-if="progress.active == true && published !== true" v-on:click="makeActive(key + 1)">{{key + 1}} {{progress.name}}</div>
-                <div class="progress-name inactive" v-if="progress.active != true || published === true">{{key + 1}} {{progress.name}}</div>
+                <div class="progress-name active" v-if="progress.active == true" v-on:click="makeActive(key + 1)">{{key + 1}}
+                    <span v-if="progress.name == 'Units' && project.house_type == '2'">Lot Info</span>
+                    <span v-else>{{progress.name}}</span></div>
+                <div class="progress-name inactive" v-if="progress.active != true">{{key + 1}} {{progress.name}}</div>
                 <div class="progress-arrow" v-if="progress.arrow"></div>
             </div>
         </div>
         <div class="project-page-content">
             <ProjectOverview v-bind:name="project.name" v-show="activeTab == 1"></ProjectOverview>
             <ProjectFloors v-show="activeTab == 2"></ProjectFloors>
-            <ProjectUnits v-show="activeTab == 3"></ProjectUnits>
+            <ProjectUnits v-if="activeTab == 3"></ProjectUnits>
             <ProjectMap v-show="activeTab == 4"></ProjectMap>
             <ProjectGalleries v-show="activeTab == 5"></ProjectGalleries>
             <ProjectPublish v-show="activeTab == 6"></ProjectPublish>
@@ -21,8 +23,8 @@
                 <div class="project-page-button" @click="publish" v-if="project.published == 1">Unpublish</div>
                 <div class="project-page-button blue-button" v-if="checkNext()" @click="goNext">Next</div>
                 <div class="project-page-button inactive-button" v-if="!checkNext() && activeTab !== 6">Next</div>
-                <div class="project-page-button blue-button" @click="publish" v-if="checkPublish() && project.published == 0">Publish</div>
-                <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab === 6 && project.published == 0">Publish</div>
+                <div class="project-page-button blue-button" @click="publish" v-if="checkPublish() && activeTab == 6 && project.published != 1">Publish</div>
+                <div class="project-page-button inactive-button" v-if="!checkPublish() && activeTab == 6 && project.published != 1">Publish</div>
             </div>
         </div>
         <div class="project-page-publish" v-if="loaded && !published">
@@ -93,6 +95,7 @@
         floors: [],
         unfloor_units: [],
         units: [],
+        lot_info: null,
         mapActivate: true,
         map: {
           address: '',
@@ -100,6 +103,7 @@
           lng: '',
         },
         galleries: [],
+        house_type: 1,
         markers: {
           user_markers: [],
           culture: [],
@@ -109,6 +113,12 @@
         }
       },
     }),
+    watch: {
+      project: function (val) {
+        console.log(project);
+        this.project.name = window.VueHelper.stableInput(val);
+      },
+    },
     mounted() {
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');
@@ -168,20 +178,28 @@
           this.saveOverview();
         }
       },
+      checkActive() {
+        if (this.project.floors != undefined && this.project.floors.length > 0) {
+          this.progresses[2].active = true;
+        } else {
+          this.progresses[2].active = false;
+        }
+      },
       saveOverview() {
         let obj = this;
-        if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo) {
+        if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo || this.oldProject.house_type != this.project.house_type) {
           this.loaded = true;
           let data = new FormData();
           let user = JSON.parse(localStorage.getItem('maagio_user'));
           let token = localStorage.getItem('token');
-          if(this.project.id != '') {
+          if(this.project.id != '' && this.project.id != undefined) {
             data.append('project_id', this.project.id);
           }
           data.append('user_id', user.uid);
           data.append('token', token);
           data.append('name', this.project.name);
           data.append('logo', this.project.logo);
+          data.append('house_type', this.project.house_type);
           $.ajax({
             url: constants.BACKEND_URL + 'project/update-overview',
             type: 'POST', // важно!
@@ -198,27 +216,13 @@
               if (respond.ok === 1) {
                   /*obj.published = true;*/
                 obj.project.id = respond.project.id;
-                if(obj.oldProject.project_logo != null) {
-                  window.db.removeImage(obj.oldProject.project_logo);
-                }
                 obj.project.logo = respond.project.logo_link;
                 obj.oldProject.logo = respond.project.logo_link;
                 obj.project.project_logo = respond.project.project_logo;
                 obj.oldProject.project_logo = respond.project.project_logo;
                 obj.oldProject.name = respond.project.name;
                 obj.oldProject.id = respond.project.id;
-                window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
-                    var project = JSON.parse(e.value);
-                    project.name = respond.project.name;
-                    project.logo = respond.project_logo;
-                  window.VueHelper.saveImage(respond.project.project_logo, respond.project.logo_link);
-                    window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
-                });
-                if(respond.project.published != 1) {
-                  window.db.setValue('draft_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
-                } else {
-                  window.db.setValue('published_projects', Number.parseInt(respond.project.id), JSON.stringify(respond.project))
-                }
+                obj.oldProject.house_type = respond.project.house_type;
               }
               // ОК - файлы загружены
               if (typeof respond.error === 'undefined') {
@@ -267,9 +271,6 @@
       },
       makeActive(e) {
         this.saveDraft();
-        if (this.published === true) {
-          return false;
-        }
         if(e == 6){
           let protocol = document.location.protocol;
           let host =  document.location.host;
@@ -308,22 +309,13 @@
             obj.stopSave = false;
             if (respond.ok === 1) {
               obj.project.published = respond.published;
-              window.db.getValue('project', Number.parseInt(respond.project.id), function (e) {
-                var project = JSON.parse(e.value);
-                project.published = respond.project.published;
-                window.db.setValue('project', Number.parseInt(respond.project.id), JSON.stringify(project))
-              });
               if(obj.project.published == 1) {
                 let protocol = document.location.protocol;
-                window.db.delValue('draft_projects', Number.parseInt(respond.project.id));
-                window.db.setValue('published_projects', Number.parseInt(respond.project.id), respond.project);
                 let host =  document.location.host;
-                obj.personalLink = protocol + '//' + host+'/' + respond.personal_link;
+                obj.personalLink = protocol + '//' + host+'/show/' + respond.personal_link;
                 obj.published = true;
               } else {
                 obj.published = false;
-                window.db.delValue('published_projects', Number.parseInt(respond.project.id));
-                window.db.setValue('draft_projects', Number.parseInt(respond.project.id), respond.project);
                 obj.personalLink = '';
               }
             } else {
@@ -349,7 +341,9 @@
             }
           }
         }
-
+        if(this.project.house_type == 2 && this.project.lot_info != '') {
+          unitsFlag = false;
+        }
         if (this.activeTab === 6) {
           if ((this.progresses[1].active === true && this.project.floors.length < 1) ||
             (this.progresses[2].active === true && unitsFlag) ||
@@ -382,15 +376,22 @@
         }
         if (this.activeTab === 3) {
           let flag = false;
-          for (let i = 0; i < this.project.floors.length; i++) {
-            if (this.project.floors[i].units.length > 0) {
+          if(this.project.house_type == 1) {
+            for (let i = 0; i < this.project.floors.length; i++) {
+              if (this.project.floors[i].units.length > 0) {
+                flag = true;
+              }
+            }
+          } else {
+            if(this.project.lot_info != null) {
               flag = true;
             }
           }
+
           return flag;
         }
         if (this.activeTab === 4) {
-          if (!this.project.mapActivate || (this.project.mapActivate === true && this.project.map !== '')) {
+          if (!this.project.mapActivate || (this.project.mapActivate === true && this.project.map.address !== '')) {
             return true;
           } else {
             return false;

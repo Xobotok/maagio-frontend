@@ -138,7 +138,7 @@ window.db.delValue = function(store, id) {
 window.db.setValue = function (store, id, val) {
   connectDB(function (db) {
     console.log('setValue');
-    var request = db.transaction([store], "readwrite").objectStore(store).put({'id': id, value: val });
+    var request = db.transaction([store], "readwrite").objectStore(store).put({'id': id, value: val});
     request.onerror = logerr;
     request.onsuccess = function () {
       return request.result;

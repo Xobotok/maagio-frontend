@@ -20,6 +20,7 @@
       checkRestaurant: false,
       checkSport: false,
       checkNature: false,
+      markers: [],
     }),
     methods: {
       createMarkers(marker_array) {
@@ -30,70 +31,68 @@
       showType(type) {
         switch (Number.parseInt(type)) {
           case 1 :
-            if (this.$parent.project.markers.culture.length != 0) {
-              for (var i = 0; i < this.$parent.project.markers.culture.length; i++) {
-                this.$parent.project.markers.culture[i].setMap(null);
-              }
-              this.$parent.project.markers.culture = [];
+            if(this.checkCulture == false) {
               this.checkCulture = true;
             } else {
-              for (var i = 0; i < this.$parent.project.markers.automation_marker.length; i++) {
-                if (this.$parent.project.markers.automation_marker[i].type == 1) {
-                  this.createMarker(this.$parent.project.markers.automation_marker[i]);
-                }
-              }
               this.checkCulture = false;
             }
             break;
           case 2 :
-            if (this.$parent.project.markers.restaurant.length != 0) {
-              for (var i = 0; i < this.$parent.project.markers.restaurant.length; i++) {
-                this.$parent.project.markers.restaurant[i].setMap(null);
-              }
-              this.$parent.project.markers.restaurant = [];
+            if(this.checkRestaurant == false) {
               this.checkRestaurant = true;
             } else {
-              for (var i = 0; i < this.$parent.project.markers.automation_marker.length; i++) {
-                if (this.$parent.project.markers.automation_marker[i].type == 2) {
-                  this.createMarker(this.$parent.project.markers.automation_marker[i]);
-                }
-              }
-              this.checkRestaurant = false
+              this.checkRestaurant = false;
             }
             break;
           case 3 :
-            if (this.$parent.project.markers.sport.length != 0) {
-              for (var i = 0; i < this.$parent.project.markers.sport.length; i++) {
-                this.$parent.project.markers.sport[i].setMap(null);
-              }
-              this.$parent.project.markers.sport = [];
+            if(this.checkSport == false) {
               this.checkSport = true;
             } else {
-              for (var i = 0; i < this.$parent.project.markers.automation_marker.length; i++) {
-                if (this.$parent.project.markers.automation_marker[i].type == 3) {
-                  this.createMarker(this.$parent.project.markers.automation_marker[i]);
-                }
-              }
               this.checkSport = false;
             }
             break;
           case 4 :
-            if (this.$parent.project.markers.nature.length != 0) {
-              for (var i = 0; i < this.$parent.project.markers.nature.length; i++) {
-                this.$parent.project.markers.nature[i].setMap(null);
-              }
-              this.$parent.project.markers.nature = [];
+            if(this.checkNature == false) {
               this.checkNature = true;
             } else {
-              for (var i = 0; i < this.$parent.project.markers.automation_marker.length; i++) {
-                if (this.$parent.project.markers.automation_marker[i].type == 4) {
-                  this.createMarker(this.$parent.project.markers.automation_marker[i]);
-                }
-              }
               this.checkNature = false;
             }
             break;
         }
+        this.appendFilters();
+      },
+      appendFilters() {
+        var filters = [];
+        if(this.checkNature) {
+          filters.push(4)
+        }
+        if(this.checkSport) {
+          filters.push(3)
+        }
+        if(this.checkRestaurant) {
+          filters.push(2)
+        }
+        if(this.checkCulture) {
+          filters.push(1)
+        }
+        for(var i = 0; i < this.markers.length; i++) {
+          this.markers[i].setMap(null);
+          this.markers.splice(i,1);
+          i--;
+        }
+        var new_markers = [];
+        for(var i = 0; i < this.$parent.project.markers.user_marker.length; i++) {
+          var flag = false;
+          for(var n = 0; n < filters.length; n++) {
+           if(filters[n] == this.$parent.project.markers.user_marker[i].type) {
+             flag = true;
+           }
+          }
+          if(flag == false) {
+            new_markers.push(this.$parent.project.markers.user_marker[i]);
+          }
+        }
+        this.createMarkers(new_markers);
       },
       createInfoWindowDom(info) {
         var container = document.createElement('div');
@@ -113,32 +112,35 @@
         return container;
       },
       createMarker(marker) {
+        var icon = '';
+        switch(Number.parseInt(marker.type)) {
+          case 1:
+            icon = constants.BACKEND_URL +'/img/Cultural.png';
+            break;
+          case 2:
+            icon = constants.BACKEND_URL +'/img/Restaurants.png';
+            break;
+          case 3:
+            icon = constants.BACKEND_URL +'/img/Sports.png';
+            break;
+          case 4:
+            icon = constants.BACKEND_URL +'/img/Nature.png';
+            break;
+        }
         var mark = new google.maps.Marker({
           position: { lat: Number.parseFloat(marker.lat), lng: Number.parseFloat(marker.lng) },
           name: marker.name,
-          map: window.map
+          map: window.map,
+          icon: icon,
         });
+
         let infowindow = new google.maps.InfoWindow();
         let content = this.createInfoWindowDom(marker);
         infowindow.setContent(content);
         mark.addListener("click", ()=> {
           infowindow.open(window.map, mark);
         });
-        switch (Number.parseInt(marker.type)) {
-          case 1 :
-            this.$parent.project.markers.culture.push(mark);
-            break;
-          case 2 :
-            this.$parent.project.markers.restaurant.push(mark);
-            break;
-          case 3 :
-            this.$parent.project.markers.sport.push(mark);
-            break;
-          case 4 :
-            this.$parent.project.markers.nature.push(mark);
-            break;
-        }
-
+        this.markers.push(mark);
       },
     },
     mounted(){
@@ -150,7 +152,7 @@
         var styledMapType = new google.maps.StyledMapType(constants.MAP_OPTIONS, { name: 'styled_map' });
         window.map = new google.maps.Map(document.getElementById('map'), {
           center: { lat: lat, lng: lng },
-          zoom: 18,
+          zoom: 15,
           fullscreenControl: false,
           streetViewControl: false,
           mapTypeControl: false,
@@ -162,10 +164,10 @@
         window.map.setMapTypeId('styled_map');
         var marker = new google.maps.Marker({
           position: { lat: Number.parseFloat(lat), lng: Number.parseFloat(lng) },
-          map: window.map
+          map: window.map,
+          icon: constants.BACKEND_URL + '/img/Home.png'
         });
         obj.createMarkers(obj.$parent.project.markers.user_marker);
-        obj.createMarkers(obj.$parent.project.markers.automation_marker);
       };
       window.initMap();
     },

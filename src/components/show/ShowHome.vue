@@ -1,7 +1,7 @@
 <template>
     <div class="start-show">
         <div class="start-show-content">
-            <img v-if="this.$parent.project.project_logo" :src="this.$parent.project.project_logo" alt="">
+            <img v-if="$parent.project.project_logo" :src="$parent.project.project_logo" alt="">
             <div class="start-button" @click="this.$parent.startShow">
                 START
             </div>
@@ -11,7 +11,6 @@
 
 <script>
   import constants from '../../Constants';
-  import '../../registerServiceWorker';
   import {precacheAndRoute} from 'workbox-precaching';
   import { register } from 'register-service-worker'
   export default {

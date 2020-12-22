@@ -25,6 +25,32 @@
                            style="display: none">
                 </div>
             </div>
+            <div class="overview-header" style="margin-top: 60px">
+                PLEASE CHECK YOUR PROJECT TYPE
+            </div>
+            <form action="">
+                <div class="overview-checkboxes">
+                    <div class="overview-checkbox" :class="{active: apartmentType == 1}">
+                        <label for="projectType1">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Apartment house</label>
+                        <input type="radio" name="projectType" value="1" id="projectType1" v-model="apartmentType"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox" :class="{active: apartmentType == 2}">
+                        <label for="projectType2">
+                            <div class="overview-checkbox-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Single Family house</label>
+                        <input type="radio" name="projectType" value="2" id="projectType2"
+                               v-model="apartmentType"
+                               style="display: none">
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="overview-container">
             <div class="overview-header">
@@ -38,7 +64,8 @@
                     PROJECT LOGO
                 </div>
                 <div class="overview-description">The graphics will appear on the splash screen</div>
-                <div class="logo-preview"><img v-if="this.$parent.logoPreview != ''" :src="this.$parent.logoPreview" alt=""></div>
+                <div class="logo-preview"><img v-if="this.$parent.logoPreview != ''" :src="this.$parent.logoPreview"
+                                               alt=""></div>
                 <div class="logo-upload" v-on:click="openPhotoUpload()">Click to upload</div>
                 <input type="file" v-on:change="renderPreview" id="overview-logo" style="display: none"
                        accept="image/png, image/jpeg">
@@ -53,6 +80,7 @@
     data: ()=>({
       projectName: '',
       projectLogo: '',
+      apartmentType: 1,
       showMap: true,
       showGallery: true,
       logoPreview: '',
@@ -75,14 +103,14 @@
         container.click();
       },
       renderPreview: function (e) {
-        let reader  = new FileReader();
+        let reader = new FileReader();
         reader.addEventListener("load", function () {
           this.$parent.logoPreview = reader.result;
           this.$parent.project.logo = e.target.files[0];
         }.bind(this), false);
-        if( e.target.files[0] ){
-          if ( /\.(jpe?g|png)$/i.test( e.target.files[0].name ) ) {
-            reader.readAsDataURL( e.target.files[0] );
+        if (e.target.files[0]) {
+          if (/\.(jpe?g|png)$/i.test(e.target.files[0].name)) {
+            reader.readAsDataURL(e.target.files[0]);
           }
         }
       },
@@ -126,7 +154,7 @@
         }
       },
       changeMap() {
-        this.$parent.project.map = {lat: '', lng: '', address: ''};
+        this.$parent.project.map = { lat: '', lng: '', address: '' };
         if (this.showMap === true && this.projectName.length > 0) {
           this.$parent.progresses[3].active = true;
         } else {

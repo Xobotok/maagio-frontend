@@ -76,7 +76,6 @@
               if (respond.ok == 1) {
                 obj.end_time = obj.formatEndDate(respond.end_time);
                 obj.subscribe = respond.subscribe;
-                window.db.setValue('subscribe', 1, respond.subscribe);
               }
             },
             error: function () {
@@ -118,36 +117,11 @@
                 obj.old_profile.company = respond.user.company;
                 obj.user.company = respond.user.company;
                 obj.user.email = respond.user.email;
-                window.db.setValue('subscribe', 1, respond.subscribe);
-                window.db.setValue('actual_tariff', 1,respond.actual_tariff);
-                window.db.setValue('tariffs', 1, respond.tariffs);
-                window.db.setValue('user', 1, respond.user);
-                window.db.actualProjects();
               } else {
 
               }
             },
             error: function (jqXHR, status, errorThrown) {
-              var user = '';
-                window.db.getValue('user', 1, function (e) {
-                  user = e.value;
-                  obj.old_profile.name = user.name;
-                  obj.user.name = user.name;
-                  obj.old_profile.last_name =user.last_name;
-                  obj.user.last_name = user.last_name;
-                  obj.old_profile.company = user.company;
-                  obj.user.company = user.company;
-                  obj.user.email = user.email;
-              });
-              window.db.getValue('tariffs', 1, function (e) {
-                obj.tariffs = e.value;
-              });
-              window.db.getValue('subscribe', 1, function (e) {
-                obj.subscribe = e.value;
-              });
-              window.db.getValue('actual_tariff', 1, function (e) {
-                obj.actual_tariff = e.value;
-              });
               obj.payment_pause = false;
               console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
             }

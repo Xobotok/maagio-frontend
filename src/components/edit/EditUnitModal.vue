@@ -2,16 +2,18 @@
     <div class="fullscreen-modal">
         <div class="project-unit">
             <div class="close-modal" @click="cancel">+</div>
-            <div class="unit-create-header">Unit Info</div>
+            <div class="unit-create-header">
+                <span v-if="$parent.$parent.project.house_type == 1">Unit Info</span>
+                <span v-if="$parent.$parent.project.house_type == 2">Lot Info</span></div>
             <div class="project-unit-create">
                 <div class="project-unit-left">
                     <div class="project-unit-line">
                         <div class="unit-subcomponent">
-                            <div class="subcomponent-label">Units Number<span class="red" v-if="templateUnit.unit_number == ''">*</span></div>
+                            <div class="subcomponent-label"><span  v-if="$parent.$parent.project.house_type == 1">Units Number</span><span  v-if="$parent.$parent.project.house_type == 2">House Number</span><span class="red" v-if="templateUnit.unit_number == ''">*</span></div>
                             <div class=""><input type="text" @keyup="numberWarning = false" v-model="templateUnit.unit_number" class="project-input" :class="{warning: numberWarning}">
                             </div>
                         </div>
-                        <div class="unit-subcomponent">
+                        <div class="unit-subcomponent"  v-if="$parent.$parent.project.house_type == 1">
                             <div class="subcomponent-label">Floor<span class="red" v-if="this.templateUnit.floor == ''">*</span></div>
                             <dropdown :options="floorOption"
                                       :selected="{val: '', name: this.$parent.templateUnit.floor}"
@@ -101,10 +103,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="unit-image">
+                    <div class="unit-image"  v-if="$parent.$parent.project.house_type == 1">
                         <div class="unit-image-header">Unit plan</div>
                         <div class="unit-image-preview">
-                            <img :src="getUnitImage()" id="unit-preview" alt="">
+                            <img :src="templateUnit.unitImagePreview" alt="" id="unit-preview">
                         </div>
                         <div class="unit-image-buttons">
                             <div class="button-container">
@@ -112,7 +114,27 @@
                                     photo
                                 </div>
                             </div>
-                            <input type="file" name="image" @change="uploadImage" style="display: none" multiple
+                            <input type="file" name="image" @change="uploadImage" style="display: none"
+                                   accept="image/png, image/jpeg" id="image">
+                            <div class="remove-image" v-if="this.templateUnit.unitImagePreview != ''"
+                                 @click="removeImage">Remove
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-unit-right" v-if="$parent.$parent.project.house_type == 2">
+                    <div class="unit-image">
+                        <div class="unit-image-header">Lot Plan</div>
+                        <div class="unit-image-preview">
+                            <img :src="templateUnit.unitImagePreview" id="unit-preview" alt="">
+                        </div>
+                        <div class="unit-image-buttons">
+                            <div class="button-container">
+                                <div class="logo-upload" onclick="document.getElementById('image').click()">Upload
+                                    photo
+                                </div>
+                            </div>
+                            <input type="file" name="image" @change="uploadImage" style="display: none"
                                    accept="image/png, image/jpeg" id="image">
                             <div class="remove-image" v-if="templateUnit.unitImagePreview != ''"
                                  @click="removeImage">Remove
@@ -121,7 +143,7 @@
                     </div>
                 </div>
                 <!--  -->
-                <div class="project-unit-right">
+                <div class="project-unit-right" v-if="$parent.$parent.project.house_type == 1">
                     <div class="unit-image-header" :class="{red: this.markWarning == true}"
                          v-if="this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null">
                         <span>Unit Location<span class="red"
@@ -137,9 +159,9 @@
                         </div>
                     </div>
                     <div class="unit-image-container">
-                        <vue-draggable-resizable v-if="templateUnit.mark == true" :x="Number.parseInt(templateUnit.unit_mark.x)" :y="Number.parseInt(templateUnit.unit_mark.y)"
+                        <vue-draggable-resizable v-if="templateUnit.mark == true && this.templateUnit.unit_mark != null" :x="Number.parseInt(templateUnit.unit_mark.x)" :y="Number.parseInt(templateUnit.unit_mark.y)"
                                                  :w="Number.parseInt(templateUnit.unit_mark.width)" :h="Number.parseInt(templateUnit.unit_mark.height)" @dragging="onDrag" @resizing="onResize" :parent="true">
-                            <div class="unit-point">
+                            <div class="unit-point" v-if="this.templateUnit.unit_mark != null">
                                 <div class="unit-point-bedrooms" :style="{fontSize: this.templateUnit.unit_mark.font_size + 'px'}"
                                      v-if="templateUnit.bad >= 0 && templateUnit.bad != ''">{{templateUnit.bad}}
                                     bedroom
@@ -157,8 +179,8 @@
                 </div>
             </div>
             <div class="unit-create-controls">
-                <div class="project-page-button blue-button" @click="saveUnit" v-if="checkSave()">Save</div>
-                <div class="project-page-button blue-button" @click="makeWarnings" v-if="!checkSave()">Save</div>
+                <div class="project-page-button inactive-button"  v-if="this.stopSave == true">Save</div>
+                <div class="project-page-button blue-button" v-if="this.stopSave == false" @click="makeWarnings">Save</div>
                 <div class="project-page-button" @click="cancel">Cancel</div>
             </div>
         </div>
@@ -195,6 +217,9 @@
       intWarning: false,
     }),
     methods: {
+      makeMore() {
+        console.log(this)
+      },
       makeWarnings() {
         this.numberWarning = false;
         this.floorWarning = false;
@@ -204,33 +229,73 @@
         this.statusWarning = false;
         this.intWarning = false;
         this.markWarning = false;
-        if (this.templateUnit.unit_number === 0) {
-          this.numberWarning = true;
-        }
-        if (this.templateUnit.floor == '') {
-          this.floorWarning = true;
-        }
-        if (this.templateUnit.bad === '') {
-          this.bedWarning = true;
-        }
-        if (this.templateUnit.bath === '') {
-          this.bathWarning = true;
-        }
-        if (this.templateUnit.price === '') {
-          this.priceWarning = true;
-        }
-        if (this.templateUnit.status === '') {
-          this.statusWarning = true;
-        }
-        if (this.templateUnit.int_sq === '') {
-          this.intWarning = true;
-        }
-        if (this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null && this.templateUnit.mark == true) {
-          this.markWarning = false;
+        var result = true;
+        if(this.$parent.$parent.project.house_type == 1) {
+          if (this.templateUnit.unit_number === 0) {
+            this.numberWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.floor == '') {
+            this.floorWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.bad === '') {
+            this.bedWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.bath === '') {
+            this.bathWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.price === '') {
+            this.priceWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.status === '') {
+            this.statusWarning = true;
+            result = false;
+          }
+          if (this.templateUnit.int_sq === '') {
+            this.intWarning = true;
+            result = false;
+          }
+          if ((this.templateUnit.floorImage != null && this.templateUnit.floorImage != '') && this.templateUnit.mark != true) {
+            this.markWarning = true;
+            result = false;
+          } else {
+            this.markWarning = false;
+          }
         } else {
-          this.markWarning = true;
+          if (this.templateUnit.unit_number === 0) {
+            this.numberWarning = true;
+              result = false;
+          }
+          if (this.templateUnit.bad === '') {
+            this.bedWarning = true;
+              result = false;
+          }
+          if (this.templateUnit.bath === '') {
+            this.bathWarning = true;
+              result = false;
+          }
+          if (this.templateUnit.price === '') {
+            this.priceWarning = true;
+              result = false;
+          }
+          if (this.templateUnit.status === '') {
+            this.statusWarning = true;
+              result = false;
+          }
+          if (this.templateUnit.int_sq === '') {
+            this.intWarning = true;
+              result = false;
+          }
         }
-        $(this.$el).animate({ scrollTop: 0 }, 600);
+        if(!result) {
+          $(this.$el).animate({ scrollTop: 0 }, 600);
+        } else {
+          this.saveUnit();
+        }
       },
       calculateFontSize(){
         let fontSize = this.templateUnit.unit_mark.height / 3 / 2;
@@ -247,7 +312,7 @@
         }
       },
       calculateX() {
-        if(this.templateUnit.unit_mark.x == undefined) {
+        if(this.templateUnit.unit_mark == null || this.templateUnit.unit_mark.x == undefined) {
           return;
         }
         var imageContainer = $('#floor-image');
@@ -257,7 +322,7 @@
         return Number.parseInt(mark_x);
       },
       calculateY() {
-        if(this.templateUnit.unit_mark.y == undefined) {
+        if(this.templateUnit.unit_mark == null || this.templateUnit.unit_mark.y == undefined) {
           return;
         }
         var imageContainer = $('#floor-image');
@@ -267,7 +332,7 @@
         return Number.parseInt(mark_y);
       },
       calculateWidth() {
-        if(this.templateUnit.unit_mark.width == undefined) {
+        if(this.templateUnit.unit_mark == null || this.templateUnit.unit_mark.width == undefined) {
           return;
         }
         var imageContainer = $('#floor-image');
@@ -277,7 +342,7 @@
         return Number.parseInt(mark_width);
       },
       calculateHeight() {
-        if(this.templateUnit.unit_mark.height == undefined) {
+        if(this.templateUnit.unit_mark == null || this.templateUnit.unit_mark.height == undefined) {
           return;
         }
         var imageContainer = $('#floor-image');
@@ -337,18 +402,26 @@
         this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
       },
       ChangeFloorPreview() {
-        if(this.templateUnit.floor > 0) {
-          this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
-          this.templateUnit.floorImage = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
-          this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
+        if(this.$parent.$parent.project.house_type == 1) {
+          if(this.templateUnit.floor > 0) {
+            this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
+            this.templateUnit.floorImage = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].image;
+            this.floorPreview = this.$parent.$parent.project.floors[this.templateUnit.floor - 1].preview;
+          }
+        } else {
+          if(this.$parent.$parent.project.lot_info != null) {
+            this.templateUnit.unitImagePreview = this.$parent.$parent.project.lot_info.image;
+          }
         }
       },
       removeImage(){
         this.templateUnit.image = '';
         this.templateUnit.unitImage = '';
         this.templateUnit.image_id = '';
+        this.templateUnit.unitImagePreview ='';
         let file = document.getElementById('image');
         file.value = '';
+        this.getUnitImage();
       },
       getUnitImage(){
         let img = document.getElementById('unit-preview');
@@ -372,8 +445,11 @@
         this.templateUnit.mark = true;
       },
       saveUnit() {
-        if (this.checkSave()) {
+        if(this.stopSave == true) {
+          return;
+        }
           this.stopSave = true;
+
           let data = new FormData();
           let user = JSON.parse(localStorage.getItem('maagio_user'));
           let token = localStorage.getItem('token');
@@ -390,6 +466,7 @@
           data.append('user_id', user.uid);
           data.append('token', token);
           data.append('project_id', this.$parent.$parent.project.id);
+          data.append('house_type', this.$parent.$parent.project.house_type);
           data.append('unit', JSON.stringify(unit));
           let obj = this;
           $.ajax({
@@ -403,6 +480,15 @@
             success: function (respond, status, jqXHR) {
               obj.stopSave = false;
               if (respond.ok === 1) {
+                if(obj.$parent.$parent.project.house_type == 2) {
+                  obj.$parent.$parent.project.lot_info = respond.unit;
+                  obj.resetTemplateUnit();
+                  obj.$parent.openEditUnit = false;
+                  if(respond.new_image) {
+                    obj.$parent.$parent.project.lot_info.image = respond.new_image;
+                  }
+                  return;
+                }
                 if(respond.unit.newFloor != undefined) {
                   for (var i = 0; i < obj.$parent.$parent.project.floors.length; i++) {
                     for(var n = 0; n < obj.$parent.$parent.project.floors[i].units.length; n++) {
@@ -429,7 +515,6 @@
                 }
                 obj.resetTemplateUnit();
                 obj.$parent.openEditUnit = false;
-                window.db.updateProjectFloors(obj.$parent.$parent.project.id, obj.$parent.$parent.project.floors);
               } else {
                 console.log('ОШИБКА: ' + respond.data);
               }
@@ -439,10 +524,9 @@
               console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
             }
           });
-        }
       },
       checkSave() {
-        if (this.templateUnit.unit_number !== 0 && this.templateUnit.floor != '' && this.templateUnit.bad !== ''
+        if (this.templateUnit.unit_number !== 0 && (this.templateUnit.house_type == 2 || this.templateUnit.floor != '') && this.templateUnit.bad !== ''
           && this.templateUnit.price !== '' && this.templateUnit.status !== '' && this.templateUnit.bath !== ''
           && this.templateUnit.int_sq !== '' && this.stopSave === false) {
           if ((this.templateUnit.floorImage != '' && this.templateUnit.floorImage != null)) {
@@ -526,7 +610,7 @@
           obj.templateUnit.image = '';
           obj.templateUnit.unitImagePreview = reader.result;
           obj.templateUnit.unitImage = e.target.files[0];
-          obj.getUnitImage();
+          document.getElementById('unit-preview').setAttribute('src', obj.templateUnit.unitImagePreview);
           obj.templateUnit.unitImageId = e.target.files[0].name + '_'+e.target.files[0].size;
         }.bind(this), false);
         if (this.file) {
@@ -540,18 +624,20 @@
       for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
         this.floorOption.push({ name: i + 1, val: '' });
       }
+      console.log( this.$parent.$parent.project);
       this.templateUnit = JSON.parse(JSON.stringify(this.$parent.templateUnit));
+      this.templateUnit.unitImagePreview = this.$parent.templateUnit.image;
       this.ChangeFloorPreview();
       var obj = this;
-      let timer = setTimeout(function () {
-        obj.templateUnit.unit_mark.x = obj.calculateX();
-        obj.templateUnit.unit_mark.y = obj.calculateY();
-        obj.templateUnit.unit_mark.width = obj.calculateWidth();
-        obj.templateUnit.unit_mark.height = obj.calculateHeight();
-        obj.templateUnit.unit_mark.font_size = obj.calculateFontSize();
-      }, 200);
-    },
-    mounted(){
+      if(obj.$parent.$parent.project.house_type == 1) {
+        let timer = setTimeout(function () {
+          obj.templateUnit.unit_mark.x = obj.calculateX();
+          obj.templateUnit.unit_mark.y = obj.calculateY();
+          obj.templateUnit.unit_mark.width = obj.calculateWidth();
+          obj.templateUnit.unit_mark.height = obj.calculateHeight();
+          obj.templateUnit.unit_mark.font_size = obj.calculateFontSize();
+        }, 400);
+      }
 
     },
   }

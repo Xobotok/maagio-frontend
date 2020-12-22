@@ -1,35 +1,41 @@
 <template>
     <div class="gallery-show">
         <div class="gallery-list">
-            <div class="gallery-tab" v-if="activeTab == key"  v-for="(tab, key) in galleries">
-                <div class="gallery-content" v-for="gallery in galleries[key]">
-                    <div class="gallery-art" @click="openGallery(gallery)">
-                        <img :src="gallery.photos[0]" alt="">
-                        <div class="gallery-name">{{gallery.name}}</div>
+            <div class="gallery-tab">
+                <div class="gallery-content" v-for="(tab, key) in $parent.project.galleries">
+                    <div class="gallery-art" @click="openGallery(key)">
+                        <img :src="tab.photos[0]" alt="">
+                        <div class="gallery-name">{{tab.name}}</div>
                     </div>
                 </div>
             </div>
-            <div class="gallery-control" v-if="galleries.length > 1">
-                <div class="control-arrow-left inactive" v-if="activeTab == 0"></div>
-                <div class="control-arrow-left" @click="activeTab--" v-if="activeTab != 0"></div>
-                <div class="control-number">{{activeTab + 1}} / {{galleries.length}} </div>
-                <div class="control-arrow-right inactive" v-if="activeTab == galleries.length - 1"></div>
-                <div class="control-arrow-right" v-if="activeTab < galleries.length - 1" @click="activeTab++"></div>
+        </div>
+        <div class="open-gallery" v-for="(gallery, index) in $parent.project.galleries" v-show="actualGallery === index">
+            <div class="return" @click="actualGallery = false; galleryActivePhoto = 0;"></div>
+            <div class="image-list" v-for="(photos, key) in gallery.photos">
+                <img :src="photos" alt="" v-show="key === galleryActivePhoto">
+            </div>
+            <div class="gallery-control" v-if="actualGallery !== false" v-show="$parent.project.galleries[actualGallery].photos.length > 1">
+                <div class="control-arrow-left inactive" v-if="galleryActivePhoto == 0"></div>
+                <div class="control-arrow-left" @click="galleryActivePhoto--" v-if="galleryActivePhoto != 0"></div>
+                <div class="control-number">{{galleryActivePhoto + 1}} / {{$parent.project.galleries[actualGallery].photos.length}} </div>
+                <div class="control-arrow-right inactive" v-if="galleryActivePhoto == $parent.project.galleries[actualGallery].photos.length - 1"></div>
+                <div class="control-arrow-right" v-if="galleryActivePhoto < $parent.project.galleries[actualGallery].photos.length - 1" @click="galleryActivePhoto++"></div>
             </div>
         </div>
-        <div class="open-gallery" v-if="actualGallery != false">
+        <!--<div class="open-gallery" v-if="$parent.project.galleries.length > 0" v-show="galleryOpened != false">
             <div class="return" @click="actualGallery = false; galleryActivePhoto = 0;"></div>
             <div class="image-list" v-for="(photos, key) in actualGallery.photos">
                 <img :src="photos" alt="" v-if="key === galleryActivePhoto">
             </div>
-            <div class="gallery-control" v-if="actualGallery.photos.length > 1">
+            <div class="gallery-control" v-show="$parent.project.galleries[actualGallery].photos.length > 1">
                 <div class="control-arrow-left inactive" v-if="galleryActivePhoto == 0"></div>
-                <div class="control-arrow-left" @click="galleryActivePhoto--" v-if="galleryActivePhoto != 0"></div>
+                <div class="control-arrow-left" @click="galleryActivePhoto&#45;&#45;" v-if="galleryActivePhoto != 0"></div>
                 <div class="control-number">{{galleryActivePhoto + 1}} / {{actualGallery.photos.length}} </div>
                 <div class="control-arrow-right inactive" v-if="galleryActivePhoto == actualGallery.photos.length - 1"></div>
                 <div class="control-arrow-right" v-if="galleryActivePhoto < actualGallery.photos.length - 1" @click="galleryActivePhoto++"></div>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -47,6 +53,7 @@
     methods: {
       openGallery(gallery){
         this.actualGallery = gallery;
+        console.log(this.$parent.project.galleries[this.actualGallery].photos)
       }
     },
     created(){

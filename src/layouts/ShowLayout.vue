@@ -5,7 +5,7 @@
                 <div class="show-nav" v-if="activeTab != 'home'">
                     <div class="show-nav-tab" @click="activeTab = 'home'"> <div class="home-icon"></div></div>
                     <!--<div class="show-nav-tab"> <div class="welcome-icon"></div></div>-->
-                    <div class="show-nav-tab" v-if="tabs.floors === true" @click="activeTab = 'Floor plates'" :class="{active: activeTab === 'Floor plates'}"> <div class="floor-icon"></div></div>
+                    <div class="show-nav-tab" v-if="tabs.floors === true" @click="openFloors" :class="{active: activeTab === 'Floor plates'}"> <div class="floor-icon"></div></div>
                     <div class="show-nav-tab inactive" v-if="tabs.floors !== true"> <div class="floor-icon"></div></div>
                     <div class="show-nav-tab" v-if="tabs.galleries === true" @click="activeTab = 'Gallery'" :class="{active: activeTab === 'Gallery'}"> <div class="image-icon"></div></div>
                     <div class="show-nav-tab inactive" v-if="tabs.galleries !== true"> <div class="image-icon"></div></div>
@@ -33,6 +33,15 @@
     }),
     mounted(){
 
+    },
+    methods: {
+      openFloors() {
+        this.activeTab = 'Floor plates';
+        $(document).ready(function () {
+          $('#floor-image').css('display', 'none');
+          $('#floor-image').css('display', 'inline-block');
+        })
+      }
     }
   }
 </script>

@@ -12,10 +12,10 @@
                                                                                                alt=""></div>
             <div class="floor-header">Floor {{key + 1}} Image {{floor.imageName}}</div>
             <div class="floor-controls">
-                <div class="floor-button" v-if="$parent.project.floors.length > 1" onclick="this.style.display = 'none';
+                <div class="floor-button" data-id="replaceButton" v-if="$parent.project.floors.length > 1" onclick="this.style.display = 'none';
                 this.parentNode.getElementsByClassName('dropdown-container')[0].style.display = 'block';">Replace
                 </div>
-                <div class="dropdown-container" style="display: none">
+                <div class="dropdown-container" data-id="replaceList" style="display: none">
                     <specDropdown
                             :selected="object"
                             :elementid="key"
@@ -66,6 +66,35 @@
           this.arrayOfObjects.push({ name: 'Floor ' + (i + 1), val: i });
         }
       }
+      function closeReplases(evt) {
+        var path = (evt.composedPath && evt.composedPath()) || evt.path,
+          target = evt.target;
+        var replaceLists = $('[data-id="replaceList"]');
+        var replaceButtons = $('[data-id="replaceButton"]');
+        for(var i = 0; i < path.length; i++) {
+          for(var n = 0; n < replaceButtons.length; n++) {
+            var attr = $(path[i]).attr('data-id');
+            if(attr === 'replaceButton') {
+              replaceLists.css('display', 'none');
+              replaceButtons.css('display', 'flex');
+              $(target).parent().find('[data-id="replaceList"]').css('display', 'block');
+              $(target).parent().find('[data-id="replaceButton"]').css('display', 'none');
+            }
+            if(attr === 'replaceButton' || attr === 'replaceList') {
+              return;
+            }
+          }
+        }
+
+        for(var i = 0; i < replaceLists.length; i++) {
+          $(replaceLists[i]).css('display', 'none')
+        }
+        for(var i = 0; i < replaceButtons.length; i++) {
+          $(replaceButtons[i]).css('display', 'flex')
+        }
+      }
+      window.removeEventListener('click', closeReplases)
+      window.addEventListener('click', closeReplases)
     },
     methods: {
       removeThisFloor(floor_id) {
@@ -91,7 +120,6 @@
           success: function (respond, status, jqXHR) {
             obj.loaded = false;
             if (respond.ok === 1) {
-              window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
             } else {
               console.log('ОШИБКА: ' + respond.data);
             }
@@ -172,6 +200,8 @@
           data.append('token', token);
           data.append('floor_1', JSON.stringify(floor_1));
           data.append('floor_2', JSON.stringify(floor_2));
+          this.object = {
+            name: 'Select floor'};
           let obj = this;
           $.ajax({
             url: constants.BACKEND_URL + 'floor/update-number',
@@ -184,7 +214,6 @@
             success: function (respond, status, jqXHR) {
               obj.loaded = false;
               if (respond.ok === 1) {
-                window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
               } else {
                 console.log('ОШИБКА: ' + respond.data);
               }
@@ -239,11 +268,9 @@
           success: function (respond, status, jqXHR) {
             obj.loaded = false;
             if (respond.ok === 1) {
-              console.log(1);
                 /*obj.published = true;*/
               floor.id = respond.floor.id;
               floor.number = respond.floor.number;
-             window.db.updateProjectFloors(obj.$parent.project.id, obj.$parent.project.floors);
             }
             else {
               console.log('ОШИБКА: ' + respond.data);

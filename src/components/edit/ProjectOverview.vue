@@ -25,13 +25,39 @@
                            style="display: none">
                 </div>
             </div>
+            <div class="overview-header" style="margin-top: 30px">
+                PLEASE CHECK YOUR PROJECT TYPE
+            </div>
+            <form action="">
+                <div class="overview-checkboxes">
+                    <div class="overview-checkbox" :class="{active: $parent.project.house_type == 1}">
+                        <label for="projectType1">
+                            <div class="overview-checkbox-mask radio-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Apartments</label>
+                        <input type="radio" name="projectType" value="1" id="projectType1" v-model="$parent.project.house_type"
+                               style="display: none">
+                    </div>
+                    <div class="overview-checkbox" :class="{active: $parent.project.house_type == 2}">
+                        <label for="projectType2">
+                            <div class="overview-checkbox-mask radio-mask">
+                                <div class="overview-checkbox-icon"></div>
+                            </div>
+                            Single family house</label>
+                        <input type="radio" name="projectType" value="2" id="projectType2"
+                               v-model="$parent.project.house_type"
+                               style="display: none">
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="overview-container">
             <div class="overview-header">
                 PROJECT TITLE *
             </div>
             <div class="overview-description">This is the name that the user will see in the app.</div>
-            <input class="overview-input" :class="{warning: this.$parent.project.name.length < 1}" type="text" v-model="$parent.project.name"
+            <input class="overview-input" :class="{warning: this.$parent.project.name.length < 1}" type="text" v-model="projectName"
                    @keyup="enterName()">
             <div class="overview-logo">
                 <div class="overview-header">
@@ -59,81 +85,19 @@
       showGallery: true,
       logoPreview: '',
     }),
+    watch: {
+      projectName: function (val) {
+        this.projectName = window.VueHelper.stableInput(val);
+        this.$parent.project.name = this.projectName;
+      },
+    },
     mounted() {
-      let obj = this;
-      let user = JSON.parse(localStorage.getItem('maagio_user'));
-      let token = localStorage.getItem('token');
-      let project_id  = window.location.href.split('project_id=');
-      project_id = project_id[project_id.length - 1];
-      let data = {
-        user_id: user.uid,
-        token: token,
-        project_id: project_id,
-      };
-
-      $.ajax({
-        url         : constants.BACKEND_URL + 'project/take',
-        type        : 'GET', // важно!
-        data        : data,
-        cache       : false,
-        dataType    : 'json',
-        success     : function( respond, status, jqXHR ){
-          if(respond.ok === 1) {
-            obj.$parent.project = respond.data;
-            window.db.setValue('project', Number.parseInt(respond.data.id), JSON.stringify(respond.data));
-            window.VueHelper.saveImage(respond.data.project_logo, respond.data.logo);
-            window.VueHelper.loadFloorsImages(respond.data.floors);
-            obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
-            if(!obj.$parent.project.map || obj.$parent.project.map == '') {
-              obj.showMap = false;
-            }
-            if(obj.$parent.project.galleries.length === 0) {
-              obj.showGallery = false;
-            }
-            if(obj.$parent.project.logo != null) {
-              obj.$parent.logoPreview = obj.$parent.project.logo;
-            }
-            obj.enterName();
-            obj.loadMap();
-          }
-          // ОК - файлы загружены
-          if( typeof respond.error === 'undefined' ){
-            // выведем пути загруженных файлов в блок '.ajax-reply'
-            var files_path = respond.files;
-            var html = '';
-            $.each( files_path, function( key, val ){
-              html += val +'<br>';
-            } )
-
-            $('.ajax-reply').html( html );
-          }
-          // ошибка
-          else {
-            console.log('ОШИБКА: ' + respond.data );
-          }
-        },
-        // функция ошибки ответа сервера
-        error: function( jqXHR, status, errorThrown ){
-          let project_id  = window.location.href.split('project_id=');
-          project_id = project_id[project_id.length - 1];
-          window.db.getValue('project', Number.parseInt(project_id), function (e) {
-            obj.$parent.project = JSON.parse(e.value);
-            obj.$parent.oldProject = JSON.parse(e.value);
-            if(!obj.$parent.project.map || obj.$parent.project.map == '') {
-              obj.showMap = false;
-            }
-            if(obj.$parent.project.galleries.length === 0) {
-              obj.showGallery = false;
-            }
-            if(obj.$parent.project.logo != null) {
-              obj.$parent.logoPreview = obj.$parent.project.logo;
-            }
-            obj.enterName();
-            obj.loadMap();
-          });
-          console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
-        }
-      });
+      var href = window.location.href;
+      href = href.split('/');
+      href = href[href.length - 1];
+      if(href != 'new') {
+        this.takeProject();
+      }
       this.projectName = this.$parent.project.name;
       this.projectLogo = this.$parent.project.logo;
       if (this.projectName.length > 0) {
@@ -141,10 +105,81 @@
       } else {
         this.$parent.progresses[5].active = false;
       }
+      this.changeUnits();
       this.changeMap();
       this.changeGallery();
     },
     methods: {
+      changeUnits() {
+        this.$parent.project.floors = [];
+        if (this.projectName.length > 0) {
+          this.$parent.progresses[1].active = true;
+          if (this.$parent.project.floors.length > 0) {
+            this.$parent.progresses[2].active = true;
+          }
+        } else {
+          this.$parent.progresses[1].active = false;
+          this.$parent.progresses[2].active = false;
+        }
+      },
+      takeProject(){
+        let obj = this;
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        let project_id  = window.location.href.split('project_id=');
+        project_id = project_id[project_id.length - 1];
+        let data = {
+          user_id: user.uid,
+          token: token,
+          project_id: project_id,
+        };
+
+        $.ajax({
+          url         : constants.BACKEND_URL + 'project/take',
+          type        : 'GET', // важно!
+          data        : data,
+          cache       : false,
+          dataType    : 'json',
+          success     : function( respond, status, jqXHR ){
+            if(respond.ok === 1) {
+              obj.$parent.project = respond.data;
+              obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
+              if(!obj.$parent.project.map || obj.$parent.project.map == '') {
+                obj.showMap = false;
+              }
+              if(obj.$parent.project.galleries.length === 0) {
+                obj.showGallery = false;
+              }
+              if(obj.$parent.project.logo != null) {
+                obj.$parent.logoPreview = obj.$parent.project.logo;
+              }
+              obj.enterName();
+              obj.loadMap();
+            }
+            // ОК - файлы загружены
+            if( typeof respond.error === 'undefined' ){
+              // выведем пути загруженных файлов в блок '.ajax-reply'
+              var files_path = respond.files;
+              var html = '';
+              $.each( files_path, function( key, val ){
+                html += val +'<br>';
+              } )
+
+              $('.ajax-reply').html( html );
+            }
+            // ошибка
+            else {
+              console.log('ОШИБКА: ' + respond.data );
+            }
+          },
+          // функция ошибки ответа сервера
+          error: function( jqXHR, status, errorThrown ){
+            let project_id  = window.location.href.split('project_id=');
+            project_id = project_id[project_id.length - 1];
+            console.log( 'ОШИБКА AJAX запроса: ' + status, jqXHR );
+          }
+        });
+      },
       loadMap(){
         if(this.$parent.project.map.lng != undefined && this.$parent.project.map.lat != undefined) {
           var center = new google.maps.LatLng(this.$parent.project.map.lat, this.$parent.project.map.lng);

@@ -1,76 +1,98 @@
 <template>
-    <div class="show-floors">
-        <div class="unit-content" v-if="openUnitPage">
-            <div class="unit-info">
-                <div class="unit-back" @click="closeUnitPage"></div>
-                <div class="unit-common-info">
-                    <div class="unit-header">{{this.$parent.project.name}}</div>
-                    <div class="unit-number">{{this.openedUnit.unit_number}}</div>
-                    <div class="unit-number">Floor {{this.activeFloor + 1}}</div>
-                    <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
-                        {{this.openedUnit.int_sq}} Sq.Ft. Interior
+    <div class="">
+        <div class="show-floors">
+            <div class="unit-content" v-if="openUnitPage">
+                <div class="unit-info">
+                    <div class="unit-back" @click="closeUnitPage"></div>
+                    <div class="unit-common-info">
+                        <div class="unit-header">{{this.$parent.project.name}}</div>
+                        <div class="unit-number">{{this.openedUnit.unit_number}}</div>
+                        <div class="unit-number" v-if="$parent.project.house_type == 1">Floor {{this.activeFloor + 1}}</div>
+                        <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
+                            {{this.openedUnit.int_sq}} Sq.Ft. Interior
+                        </div>
+                        <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
+                            Exterior
+                        </div>
+                        <div class="unit-extra-info" v-if="this.openedUnit.bad != 0">{{this.openedUnit.bad}} Bedroom</div>
+                        <div class="unit-extra-info" v-if="this.openedUnit.bad == 0">STUDIO</div>
+                        <div class="unit-extra-info">{{this.openedUnit.bath}} Bathroom</div>
+                        <div class="unit-extra-info" v-if="this.openedUnit.parking == 1">Parking</div>
                     </div>
-                    <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
-                        Exterior
+                    <div class="unit-status-info">
+                        <div class="unit-status-text">{{this.statuses[this.openedUnit.status]}}</div>
+                        <div class="unit-status-text">$ {{this.openedUnit.price}}</div>
                     </div>
-                    <div class="unit-extra-info" v-if="this.openedUnit.bad != 0">{{this.openedUnit.bad}} Bedroom</div>
-                    <div class="unit-extra-info" v-if="this.openedUnit.bad == 0">STUDIO</div>
-                    <div class="unit-extra-info">{{this.openedUnit.bath}} Bathroom</div>
-                    <div class="unit-extra-info" v-if="this.openedUnit.parking == 1">Parking</div>
                 </div>
-                <div class="unit-status-info">
-                    <div class="unit-status-text">{{this.statuses[this.openedUnit.status]}}</div>
-                    <div class="unit-status-text">$ {{this.openedUnit.price}}</div>
+                <div class="unit-image">
+                    <div class="" v-show="$parent.project.house_type == 1" v-for="floor in $parent.project.floors">
+                        <img :src="unit.image" alt=""
+                             v-show="openedUnit.image != undefined && unit.image === openedUnit.image"
+                             v-for="unit in floor.units">
+                    </div>
+                    <div class="" v-show="$parent.project.house_type == 2">
+                        <img :src="openedUnit.image" alt=""
+                             v-show="openedUnit.image != undefined">
+                    </div>
                 </div>
             </div>
-            <div class="unit-image">
-                <img :src="this.openedUnit.image" alt="">
-            </div>
-        </div>
-        <div class="floors-content">
             <div class="floor-image">
-                <div class="units-list" v-if="floorImage == ''">
+                <div class="units-list" v-if="floorImage == '' && $parent.project.house_type == 1">
                     <div class="no-units" v-if="this.floor != '' && this.floor.units.length === 0">No units</div>
                     <div class="units-item" v-for="unit in this.floor.units" @click="openUnit(unit)">Unit number
                         {{unit.unit_number}}
                     </div>
                 </div>
                 <div class="image-container" v-if="floorImage != ''">
-                    <img :src="floorImage" id="floor-image" alt="">
+                    <img :src="temp.image" v-show="temp.image == floor.image" v-for="temp in $parent.project.floors"
+                         :id="'floor-image' + temp.id" alt="">
                     <div v-for="unit in floor.units" @click="openUnit(unit)" class="unit-point"
                          v-if="unit.unit_mark != null && unit.show != false"
                          :style="{left: unit.unit_mark.x + '%', top: unit.unit_mark.y + '%', width: unit.unit_mark.natural_width + 'px',
                          height: unit.unit_mark.natural_height + 'px', fontSize: unit.unit_mark.font_size + 'px'}">
-                        <div class="unit-point-bedrooms" v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
+                        <div class="unit-point-bedrooms"
+                             v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
                         </div>
                         <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
                         <div class="unit-point-number">
                             {{unit.unit_number}}
                         </div>
-                        <div class="unit-point-status" v-if="unit.status !== '' && unit.statusShow !== false">{{statuses[unit.status]}}</div>
+                        <div class="unit-point-status" v-if="unit.status !== '' && unit.statusShow !== false">
+                            {{statuses[unit.status]}}
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="navigation-container">
+            <div class="navigation-container" v-if="$parent.project.floors.length > 1">
                 <div class="navigation-block">
                     <div class="floor-navigation">
                         <div class="floor-navigation-tab" @click="openFloor(index)"
-                             :class="{active: index === activeFloor}" v-for="(floor, index) in this.$parent.project.floors">
+                             :class="{active: index === activeFloor}"
+                             v-for="(floor, index) in this.$parent.project.floors">
                             {{(index + 1)}}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="show-floors-footer">
-                <div class="bedrooms-list">
-                    <div class="bedrooms-list-item" v-for="(bedroom, key) in bedroomList">
+                <div class="bedrooms-list"
+                     style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                    <div class="status-list lot-info" v-show="$parent.project.house_type == 2">
+                        <div class="status-item" @click="openUnit($parent.project.lot_info)">
+                            <div class="status-item-title">
+                                Lot Info
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bedrooms-list-item" v-for="(bedroom, key) in bedroomList"
+                         v-if="$parent.project.house_type == 1">
                         <input checked type="checkbox" style="display: none" @change="makeBedFilter"
                                :id="bedroom.bed+'_'+key">
                         <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed != 0">{{bedroom.bed}} bedroom</label>
                         <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed == 0">STUDIO</label>
                     </div>
                 </div>
-                <div class="status-list">
+                <div class="status-list" v-if="$parent.project.house_type == 1">
                     <div class="status-item" v-for="(status, key) in statusList">
                         <input checked type="checkbox" style="display: none" @change="makeStatusFilter"
                                :id="key+'_status'">
@@ -89,7 +111,7 @@
     name: 'show-floors',
     data: ()=>({
       activeFloor: 0,
-      floor: { units: [{ bedShow: true, statusShow: true }] },
+      floor: { units: [{ bedShow: true, statusShow: true, unit_mark: { natural_width: 100, natural_height: 50 } }] },
       reserveFloor: '',
       floorImage: '',
       bedroomList: [],
@@ -106,12 +128,11 @@
         status: [],
       },
     }),
-    beforeMount(){
+    mounted(){
       this.floor = this.$parent.project.floors[0];
       if (this.$parent.project.floors[0].image != '' && this.$parent.project.floors[0].image != null) {
         this.floorImage = this.$parent.project.floors[0].image;
       }
-
       for (let i = 0; i < this.floor.units.length; i++) {
         let flag = true;
         this.floor.units[i].visible = true;
@@ -128,37 +149,38 @@
         this.statusList[this.floor.units[i].status] = true;
       }
       var obj = this;
-      setTimeout(function () {
-        for (var i = 0; i < obj.floor.units.length; i++) {
-          if (obj.floor.units[i].unit_mark != null) {
-            obj.floor.units[i].unit_mark.natural_width = obj.calculateWidth(obj.floor.units[i]);
-            obj.floor.units[i].unit_mark.natural_height = obj.calculateHeight(obj.floor.units[i]);
-            obj.floor.units[i].unit_mark.font_size = obj.calculateFontSize(obj.floor.units[i]);
-          }
-        }
-      }, 200)
     },
     methods: {
       calculateFontSize(unit){
         let fontSize = unit.unit_mark.natural_height / 3 / 2;
         let fontSize2 = unit.unit_mark.natural_width / 8;
-        if(fontSize < fontSize2) {
+        if (fontSize < fontSize2) {
           var min = fontSize;
         } else {
-          var  min = fontSize2;
+          var min = fontSize2;
         }
-        if(min > 14) {
+        if (min > 5) {
           return Number.parseInt(min);
         } else {
-          return 14;
+          return 5;
         }
       },
       calculateWidth(unit) {
-        var imageContainer = $('#floor-image');
-        var width = imageContainer.width();
-        var percent = width / 100;
-        var mark_width = unit.unit_mark.width * percent;
-        return Number.parseInt(mark_width);
+        var imageMask = document.createElement('img');
+        imageMask.setAttribute('src', document.getElementById('floor-image').getAttribute('src'));
+        imageMask.style.objectFit = 'contain';
+        imageMask.style.maxWidth = '830px';
+        imageMask.style.maxHeight = '600px';
+        imageMask.style.opacity = '0';
+        imageMask.style.position = 'absolute';
+        document.body.append(imageMask);
+        $(imageMask).ready(function () {
+          var width = $(imageMask)[0].width;
+          imageMask.remove();
+          var percent = width / 100;
+          var mark_width = unit.unit_mark.width * percent;
+          return Number.parseInt(mark_width);
+        });
       },
       calculateHeight(unit) {
         var imageContainer = $('#floor-image');
@@ -176,8 +198,9 @@
         } else {
           this.floorImage = '';
         }
-
-        this.renderFilters();
+        if (this.$parent.project.house_type == 1) {
+          this.renderFilters();
+        }
       },
       renderFilters(){
         this.bedroomList = [];
@@ -233,7 +256,7 @@
         }
         for (var iter = 0; iter < this.floor.units.length; iter++) {
           for (var n = 0; n < this.filters.bed.length; n++) {
-          if (this.floor.units[iter].bad == this.filters.bed[n]) {
+            if (this.floor.units[iter].bad == this.filters.bed[n]) {
               this.floor.units[iter].bedShow = false;
             }
           }

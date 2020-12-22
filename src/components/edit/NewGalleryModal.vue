@@ -8,7 +8,7 @@
                         <span>Name*</span>
                         <span style="color: red; display: block; font-size: 12px;" v-if="!checkName()">Name already exist. Choose another name</span>
                     </div>
-                    <div class=""><input type="text" class="project-input" v-model="gallery.name">
+                    <div class=""><input type="text" class="project-input" v-model="galleryName">
                     </div>
                 </div>
                 <div class="photos-container">
@@ -17,7 +17,6 @@
                         <div class="gallery-photo" v-for="preview in gallery.previews">
                             <img :src="preview.image_link" alt="">
                             <div class="photo-controls">
-                                <div class="photo-controls-button">REPLACE</div>
                                 <div class="photo-controls-button" @click="removePreview(preview)">REMOVE</div>
                             </div>
                         </div>
@@ -49,6 +48,7 @@
       uploadedFiles: [],
       stopSave: false,
       oldGallery: {},
+      galleryName: '',
       gallery: {
         changed: false,
         previews: [],
@@ -58,6 +58,12 @@
         name: '',
       },
     }),
+    watch: {
+      galleryName: function (val) {
+        this.galleryName = window.VueHelper.stableInput(val);
+        this.gallery.name = this.galleryName;
+      },
+    },
     methods: {
       checkSave() {
         if(this.checkName() !== false && this.gallery.photos.length > 0 && this.gallery.name !== '') {

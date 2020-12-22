@@ -26,6 +26,11 @@
         message: '',
       }
     },
+    watch: {
+      password: function (val) {
+        this.password = window.VueHelper.stablePassword(val);
+      },
+    },
     methods: {
       login: function () {
         let email = this.email;

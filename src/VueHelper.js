@@ -19,6 +19,48 @@ window.VueHelper.saveImage = function (id, url) {
     window.db.setImage(id, res);
   })
 };
+window.VueHelper.stablePassword = function () {
+  var entityMap = {
+    '#': '№',
+    '&': '*',
+  };
+  function escapeHtml(string) {
+    return String(string).replace(/[&#]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+  return escapeHtml(val);
+};
+window.VueHelper.stablePassword = function (val) {
+  var entityMap = {
+    '#': '№',
+    '&': '*',
+  };
+  function escapeHtml(string) {
+    return String(string).replace(/[&#]/g, function (s) {
+      return entityMap[s];
+    });
+  }
+  return escapeHtml(val);
+};
+window.VueHelper.stableInput = function (val) {
+    var entityMap = {
+      '"': '`',
+      "'": '`',
+      '/': '/',
+      '<': '',
+      '>': '',
+      '`': '`',
+      '#': '№',
+      '&': '',
+    };
+    function escapeHtml(string) {
+      return String(string).replace(/[<>&#"'`\/]/g, function (s) {
+        return entityMap[s];
+      });
+    }
+    return escapeHtml(val);
+};
 window.VueHelper.changeManifest = function () {
   var man = document.querySelector('[rel="manifest"]');
   var href = window.location.href;

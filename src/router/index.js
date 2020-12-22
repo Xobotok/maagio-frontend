@@ -34,7 +34,7 @@ const routes = [
     path: '/new',
     name: 'NewProject',
     meta: { layout: 'constructor',  requiresAuth: true },
-    component: () => import('../views/NewProject.vue'),
+    component: () => import('../views/EditProject.vue'),
   },
   {
     path: '/show',

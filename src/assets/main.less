@@ -573,10 +573,16 @@ main {
     padding-top: 10px;
     padding-bottom: 20px;
   }
+  form {
+    width: 100%;
+    max-width: 300px;
+  }
   & .overview-checkboxes {
-    padding-top: 60px;
+    padding-top: 30px;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 300px;
   }
   & .overview-logo {
     padding-top: 60px;
@@ -612,15 +618,31 @@ main {
   &.active label {
     color: #2F80ED;
   }
+  &.active .overview-checkbox-mask.radio-mask .overview-checkbox-icon {
+    background-image: none;
+    background-color: #2F80ED;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+  }
+  & .overview-checkbox-mask.radio-mask {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    width: 21px;
+    height: 21px;
+  }
   & .overview-checkbox-mask {
     display: flex;
     width: 24px;
     height: 24px;
     align-items: center;
     justify-content: center;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
     border: 1px solid #BDBDBD;
     margin-right: 20px;
   }
@@ -944,6 +966,30 @@ main {
           }
         }
         & .project-unit-right {
+          .unit-image {
+            .remove-image {
+              cursor: pointer;
+              color: red;
+            }
+            width: 100%;
+            .unit-image-buttons {
+              display: flex;
+              padding-top: 40px;
+              padding-bottom: 20px;
+              align-items: center;
+            }
+            .unit-image-header {
+              font-size: 24px;
+              font-family: RobotoMedium, sans-serif;
+            }
+            .unit-image-preview {
+              img {
+                max-width: 600px;
+                max-height: 600px;
+                object-fit: contain;
+              }
+            }
+          }
           width: 75%;
           display: flex;
           flex-direction: column;
@@ -1030,6 +1076,7 @@ main {
       }
     }
   }
+
   & .project-units-list {
     & .units-list {
       & .units-list-blocks.warning {
@@ -1118,7 +1165,16 @@ main {
 .project-page-button:hover {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
-
+.unit-create-controls {
+  padding-top: 40px;
+  padding-left: 40px;
+  margin-left: -40px;
+  margin-right: -40px;
+  border-top: 1px solid #828282;
+  & .project-page-button {
+    margin-right: 20px;
+  }
+}
 .project-page-button {
   display: inline-block;
   cursor: pointer;
@@ -1255,12 +1311,9 @@ main {
           display: flex;
           font-size: 20px;
           color: #4F4F4F;
-          justify-content: space-between;
+          justify-content: center;
           width: 100%;
           padding-top: 40px;
-          & .photo-controls-button:first-child {
-            border-right: 1px solid black;
-          }
           & .photo-controls-button:hover {
             color: #747474;
           }

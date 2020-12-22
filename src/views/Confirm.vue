@@ -20,6 +20,7 @@
     methods: {
       confirmMail(){
         const request = new XMLHttpRequest();
+        console.log(this.$route.query.confirm_token)
         const url = constants.BACKEND_URL + "/authorisation/confirm/?confirm_token=" + this.$route.query.confirm_token;
         request.open('GET', url);
         request.setRequestHeader('Accept', 'application/json, text/plain, */*');

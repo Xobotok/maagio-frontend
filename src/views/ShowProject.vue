@@ -1,13 +1,17 @@
+<script src="../../prod/img/service-worker.js"></script>
 <template>
     <div class="show-project" :class="{no__padding: this.$parent.activeTab == 'home'}">
         <div class="app-head" v-if="this.$parent.activeTab !== 'home'">
             <div class="app-head-name">{{project.name}}</div>
-            <div class="app-head-tab">{{this.$parent.activeTab}}</div>
+            <div class="app-head-tab" v-if="this.project.house_type == 2 && this.$parent.activeTab == 'Floor plates'">
+                Lot Info</div>
+            <div class="app-head-tab" v-else>
+                {{this.$parent.activeTab}}</div>
             <div></div>
         </div>
             <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
-            <Floors v-if="this.$parent.activeTab === 'Floor plates'"></Floors>
-            <Gallery v-if="this.$parent.activeTab === 'Gallery'"></Gallery>
+            <Floors v-if="project.floors.length > 0" v-show="this.$parent.activeTab === 'Floor plates'"></Floors>
+            <Gallery v-if="project.galleries.length > 0" v-show="this.$parent.activeTab === 'Gallery'"></Gallery>
             <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
     </div>
 </template>
@@ -24,10 +28,54 @@
     },
     name: 'show',
     data: ()=>({
-      project: '',
+      project: {
+        galleries: [],
+        project_logo: '',
+        house_type: '',
+        map: '',
+        markers: [],
+        name: '',
+        floors: [],
+        published: true,
+        special_link: '',
+        id: '',
+        user_id: '',
+        lot_info: {image: ''},
+      },
       tabsName:[]
     }),
     methods: {
+      actualizeMarkers(){
+        var obj = this;
+        $(document).ready(()=> {
+          for(var i = 0; i < obj.project.floors.length; i++) {
+            var floor = obj.project.floors[i];
+            var container = $('#floor-image' + floor.id);
+            var height = container.parent().height();
+            container.height(height);
+            for(var n = 0; n < obj.project.floors[i].units.length; n++) {
+              var unit = obj.project.floors[i].units[n];
+              if(unit.mark == 1) {
+                unit.unit_mark.natural_width = container.width() / 100 * unit.unit_mark.width;
+                unit.unit_mark.natural_height = container.height() / 100 * unit.unit_mark.height;
+                let fontSize = unit.unit_mark.natural_height / 3 / 2;
+                let fontSize2 = unit.unit_mark.natural_width / 8;
+                if (fontSize < fontSize2) {
+                  var min = fontSize;
+                } else {
+                  var min = fontSize2;
+                }
+                if (min > 5) {
+                  unit.unit_mark.font_size = Number.parseInt(min);
+                } else {
+                  unit.unit_mark.font_size = 5;
+                }
+              }
+            }
+          }
+
+        });
+      },
       checkTabStatus(){
         this.$parent.tabs.home = true;
         if(this.project.floors.length > 0) {
@@ -43,6 +91,7 @@
       startShow() {
         if(this.$parent.tabs.floors === true) {
           this.$parent.activeTab = 'Floor plates';
+          this.actualizeMarkers();
         } else if(this.$parent.tabs.galleries === true){
           this.$parent.activeTab = 'Gallery';
         } else if(this.$parent.tabs.map === true){
@@ -74,14 +123,40 @@
                   }
                 }
               }
-              obj.project = respond.data;
-              window.db.setValue('published_projects', Number.parseInt(obj.project.id), JSON.stringify(obj.project));
-              window.db.setValue('project', Number.parseInt(obj.project.id), JSON.stringify(obj.project));
+              console.log(respond.data);
+              for(var i = 0; i < respond.data.galleries.length; i++) {
+                obj.project.galleries.push(respond.data.galleries[i]);
+              }
+              if(respond.data.house_type == 2) {
+                obj.project.lot_info = respond.data.lot_info;
+              }
+              obj.project.floors = respond.data.floors;
+              obj.project.house_type = respond.data.house_type;
+              obj.project.map = respond.data.map;
+              obj.project.markers = respond.data.markers;
+              obj.project.name = respond.data.name;
+              obj.project.project_logo = respond.data.project_logo;
+              obj.project.published = respond.data.published;
+              obj.project.special_link = respond.data.special_link;
+              obj.project.id = respond.data.id;
+              obj.project.user_id = respond.data.user_id;
               obj.project.markers.culture = [];
               obj.project.markers.restaurant = [];
               obj.project.markers.sport = [];
               obj.project.markers.nature = [];
               obj.checkTabStatus();
+              window.db.getAllValues('project', function (e) {
+                var projects = e;
+                if(projects.length > 20) {
+                    projects.sort(function(a, b) {
+                      return a.value.date - b.value.date;
+                    });
+                  window.db.delValue('project', projects[0].id)
+                }
+              });
+              var proj =JSON.parse(JSON.stringify(obj.project));
+              proj.date = new Date().getTime();
+              window.db.setValue('project', Number.parseInt(obj.project.id), proj);
             } else {
 
             }
@@ -96,10 +171,10 @@
           window.db.getAllValues('project', function (e) {
             var projects = e;
             for(var i = 0; i < projects.length; i++) {
-              var proj = JSON.parse(projects[i].value);
+              var proj = projects[i].value;
               if(proj.special_link == project_link) {
                 window.db.getValue('project', Number.parseInt(proj.id), function (e) {
-                  var project_template = JSON.parse(e.value);
+                  var project_template = e.value;
                   project_template.markers.culture = [];
                   project_template.markers.restaurant = [];
                   project_template.markers.sport = [];
