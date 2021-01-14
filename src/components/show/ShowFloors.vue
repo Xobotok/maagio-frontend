@@ -2,26 +2,42 @@
     <div class="">
         <div class="show-floors">
             <div class="unit-content" v-if="openUnitPage">
-                <div class="unit-info">
+                <div class="unit-info" :class="{'with-photos': this.openedUnit.photos.length > 0}">
                     <div class="unit-back" @click="closeUnitPage"></div>
                     <div class="unit-common-info">
-                        <div class="unit-header">{{this.$parent.project.name}}</div>
-                        <div class="unit-number">{{this.openedUnit.unit_number}}</div>
-                        <div class="unit-number" v-if="$parent.project.house_type == 1">Floor {{this.activeFloor + 1}}</div>
-                        <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
-                            {{this.openedUnit.int_sq}} Sq.Ft. Interior
+                        <div class="common-block">
+                            <div class="unit-header">{{this.$parent.project.name}}</div>
+                            <div class="unit-number">{{this.openedUnit.unit_number}}</div>
+                            <div class="unit-number" v-if="$parent.project.house_type == 1">Floor {{this.activeFloor + 1}}</div>
                         </div>
-                        <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
-                            Exterior
-                        </div>
-                        <div class="unit-extra-info" v-if="this.openedUnit.bad != 0">{{this.openedUnit.bad}} Bedroom</div>
-                        <div class="unit-extra-info" v-if="this.openedUnit.bad == 0">STUDIO</div>
-                        <div class="unit-extra-info">{{this.openedUnit.bath}} Bathroom</div>
-                        <div class="unit-extra-info" v-if="this.openedUnit.parking == 1">Parking</div>
+                       <div class="common-block">
+                           <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
+                               {{this.openedUnit.int_sq}} Sq.Ft. Interior
+                           </div>
+                           <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
+                               Exterior
+                           </div>
+                           <div class="unit-extra-info" v-if="this.openedUnit.bad != 0">{{this.openedUnit.bad}} Bedroom</div>
+                           <div class="unit-extra-info" v-if="this.openedUnit.bad == 0">STUDIO</div>
+                           <div class="unit-extra-info">{{this.openedUnit.bath}} Bathroom</div>
+                           <div class="unit-extra-info" v-if="this.openedUnit.parking == 1">Parking</div>
+                       </div>
                     </div>
                     <div class="unit-status-info">
                         <div class="unit-status-text">{{this.statuses[this.openedUnit.status]}}</div>
                         <div class="unit-status-text">$ {{this.openedUnit.price}}</div>
+                    </div>
+                    <div class="unit-gallery" v-if="this.openedUnit.photos.length > 0">
+                        <div class="carousel">
+                            <div class="carousel-images" :style="{left: '-' + activePhoto * 300 + 'px'}">
+                                <img :src="image.image_link" alt="" v-for="image in this.openedUnit.photos" @click="openUnitGallery">
+                            </div>
+                        </div>
+                        <div class="carousel-buttons">
+                            <div class="button" @click="carouselGoLeft"><</div>
+                            <div class="" style="font-size: 18px">{{activePhoto + 1}} / {{openedUnit.photos.length}}</div>
+                            <div class="button" @click="carouselGoRight">></div>
+                        </div>
                     </div>
                 </div>
                 <div class="unit-image">
@@ -35,6 +51,9 @@
                              v-show="openedUnit.image != undefined">
                     </div>
                 </div>
+                <Gallery v-show="this.openedUnit.photos.length > 0 && openedUnitGallery == true"
+                         :images="this.openedUnit.photos"
+                :backButtonClick="closeUnitGallery"></Gallery>
             </div>
             <div class="floor-image">
                 <div class="units-list" v-if="floorImage == '' && $parent.project.house_type == 1">
@@ -107,7 +126,11 @@
 
 <script>
   import constants from '../../Constants';
+  import Gallery from '@/components/app/Gallery.vue'
   export default {
+    components: {
+      Gallery
+    },
     name: 'show-floors',
     data: ()=>({
       activeFloor: 0,
@@ -118,6 +141,10 @@
       statuses: ['Available', 'Reserved', 'Sold', 'Unreleased'],
       statusList: [],
       openedUnit: '',
+      activePhoto: 0,
+      openedUnitGallery: false,
+      galleryActivePhoto: 0,
+      unitGalleryOpened: false,
       openUnitPage: false,
       filters: {
         bed: [],
@@ -151,6 +178,26 @@
       var obj = this;
     },
     methods: {
+      openUnitGallery() {
+        this.openedUnitGallery = true;
+      },
+      closeUnitGallery() {
+        this.openedUnitGallery = false;
+      },
+      carouselGoLeft(e) {
+        if(this.activePhoto == 0) {
+          return false;
+        } else {
+          this.activePhoto--;
+        }
+      },
+      carouselGoRight(e) {
+        if(this.activePhoto == this.openedUnit.photos.length - 1) {
+          return false;
+        } else {
+          this.activePhoto++;
+        }
+      },
       calculateFontSize(unit){
         let fontSize = unit.unit_mark.natural_height / 3 / 2;
         let fontSize2 = unit.unit_mark.natural_width / 8;

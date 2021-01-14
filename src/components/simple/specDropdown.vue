@@ -35,7 +35,6 @@
       }
     },
     props: {
-      id: 'id',
       selected: {},
       placeholder: [String],
       closeOnOutsideClick: {

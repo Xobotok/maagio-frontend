@@ -113,12 +113,6 @@
         }
       },
     }),
-    watch: {
-      project: function (val) {
-        console.log(project);
-        this.project.name = window.VueHelper.stableInput(val);
-      },
-    },
     mounted() {
       let tabs = document.getElementsByClassName('progress-tab');
       tabs[this.activeTab - 1].classList.add('active');

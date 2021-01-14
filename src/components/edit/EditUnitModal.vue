@@ -121,6 +121,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="unit-gallery">
+                        <div class="unit-gallery-button" @click="openUnitGallery">
+                            <span v-if="templateUnit.photos.length == 0">Create gallery</span>
+                            <span v-else>Edit gallery</span></div>
+                    </div>
                 </div>
                 <div class="project-unit-right" v-if="$parent.$parent.project.house_type == 2">
                     <div class="unit-image">
@@ -183,11 +188,13 @@
                 <div class="project-page-button blue-button" v-if="this.stopSave == false" @click="makeWarnings">Save</div>
                 <div class="project-page-button" @click="cancel">Cancel</div>
             </div>
+            <UnitGalleryModal v-if="unitGalleryModal == true"></UnitGalleryModal>
         </div>
     </div>
 </template>
 
 <script>
+  import UnitGalleryModal from '@/components/edit/UnitGalleryModal.vue'
   import dropdown from '@/components/simple/dropdown.vue'
   import constants from "../../Constants";
   import VueDraggableResizable from 'vue-draggable-resizable'
@@ -197,7 +204,7 @@
   export default {
     name: 'EditUnitModal',
     components: {
-      dropdown, VueDraggableResizable
+      dropdown, VueDraggableResizable,UnitGalleryModal
     },
     data: ()=>({
       floorOption: [],
@@ -215,10 +222,14 @@
       bathWarning: false,
       markWarning: false,
       intWarning: false,
+      unitGalleryModal: false,
     }),
     methods: {
       makeMore() {
         console.log(this)
+      },
+      openUnitGallery() {
+        this.unitGalleryModal = true;
       },
       makeWarnings() {
         this.numberWarning = false;

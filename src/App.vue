@@ -20,6 +20,10 @@
 script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDEzKHEUbk3ocLvIgBGMOsJjguHEj0LR4s';
   script.defer = true;
   document.head.appendChild(script);
+  var script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js';
+  script.defer = true;
+  document.head.appendChild(script);
   export default {
     computed: {
       layout() {

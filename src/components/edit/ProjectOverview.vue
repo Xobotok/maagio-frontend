@@ -143,6 +143,7 @@
           success     : function( respond, status, jqXHR ){
             if(respond.ok === 1) {
               obj.$parent.project = respond.data;
+              obj.projectName = obj.$parent.project.name;
               obj.$parent.oldProject = JSON.parse(JSON.stringify(obj.$parent.project));
               if(!obj.$parent.project.map || obj.$parent.project.map == '') {
                 obj.showMap = false;
