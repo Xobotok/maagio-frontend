@@ -11,6 +11,7 @@
         </div>
             <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
             <Floors v-if="project.floors.length > 0" v-show="this.$parent.activeTab === 'Floor plates'"></Floors>
+            <ShowUnits v-show="this.$parent.activeTab === 'Units'"></ShowUnits>
             <Gallery v-if="project.galleries.length > 0" v-show="this.$parent.activeTab === 'Gallery'"></Gallery>
             <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
     </div>
@@ -22,9 +23,10 @@
   import Floors from '@/components/show/ShowFloors.vue'
   import Gallery from '@/components/show/ShowGallery.vue'
   import ShowMap from '@/components/show/ShowMap.vue'
+  import ShowUnits from '@/components/show/ShowUnits.vue'
   export default {
     components: {
-      ShowHome,Floors, Gallery, ShowMap
+      ShowHome,Floors, Gallery, ShowMap, ShowUnits
     },
     name: 'show',
     data: ()=>({
@@ -84,6 +86,9 @@
         if(this.project.galleries.length > 0) {
           this.$parent.tabs.galleries = true;
         }
+       if(this.project.house_type == 1) {
+         this.$parent.tabs.units = true;
+       }
         if(this.project.map != '') {
           this.$parent.tabs.map = true;
         }
@@ -92,6 +97,8 @@
         if(this.$parent.tabs.floors === true) {
           this.$parent.activeTab = 'Floor plates';
           this.actualizeMarkers();
+        } else if(this.$parent.tabs.units === true){
+          this.$parent.activeTab = 'Units';
         } else if(this.$parent.tabs.galleries === true){
           this.$parent.activeTab = 'Gallery';
         } else if(this.$parent.tabs.map === true){

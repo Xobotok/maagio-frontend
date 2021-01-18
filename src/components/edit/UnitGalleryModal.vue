@@ -83,42 +83,8 @@
         this.$parent.unitGalleryModal = false;
       },
       saveGallery() {
-        this.stopSave = true;
-        let data = new FormData();
-        let user = JSON.parse(localStorage.getItem('maagio_user'));
-        let token = localStorage.getItem('token');
-        data.append('user_id', user.uid);
-        data.append('token', token);
-        data.append('unit_id', this.$parent.templateUnit.id);
-        data.append('project_id', this.$parent.$parent.$parent.project.id);
-        data.append('photos', JSON.stringify(this.photos));
-        for (var i = 0; i < this.photos.length; i++) {
-          if (this.photos[i].id == undefined && this.photos[i].image_link != '') {
-            data.append('' + i, this.photos[i]);
-          }
-        }
-        let obj = this;
-        $.ajax({
-          url: constants.BACKEND_URL + 'unit/update-photos',
-          type: 'POST',
-          data: data,
-          cache: false,
-          dataType: 'json',
-          processData: false,
-          contentType: false,
-          success: function (respond, status, jqXHR) {
-            obj.stopSave = false;
-            if (respond.ok == 1) {
-              obj.photos = respond.unit_photos;
-              obj.$parent.templateUnit.photos = respond.unit_photos;
-              obj.$parent.unitGalleryModal = false;
-            }
-          },
-          error: function (jqXHR, status, errorThrown) {
-            obj.stopSave = false;
-            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
-          }
-        });
+        this.$parent.templateUnit.photos = this.photos;
+      this.$parent.unitGalleryModal = false;
       },
     },
   }

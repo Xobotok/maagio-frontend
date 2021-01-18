@@ -195,6 +195,7 @@ export default {
     mark: false,
     unitImage: '',
     image: '',
+    photos: [],
     unit_mark: {
       id: '',
       x: 0,

@@ -5,7 +5,9 @@
                 <div class="progress-name active" v-if="progress.active == true" v-on:click="makeActive(key + 1)">{{key + 1}}
                     <span v-if="progress.name == 'Units' && project.house_type == '2'">Lot Info</span>
                     <span v-else>{{progress.name}}</span></div>
-                <div class="progress-name inactive" v-if="progress.active != true">{{key + 1}} {{progress.name}}</div>
+                <div class="progress-name inactive" v-if="progress.active != true">{{key + 1}}
+                    <span v-if="progress.name == 'Units' && project.house_type == '2'">Lot Info</span>
+                    <span v-else>{{progress.name}}</span></div>
                 <div class="progress-arrow" v-if="progress.arrow"></div>
             </div>
         </div>

@@ -121,10 +121,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="unit-gallery">
+                    <div class="unit-gallery" v-if="templateUnit.photos != undefined">
                         <div class="unit-gallery-button" @click="openUnitGallery">
-                            <span v-if="templateUnit.photos.length == 0">Create gallery</span>
-                            <span v-else>Edit gallery</span></div>
+                            <span v-if="templateUnit.photos != undefined && templateUnit.photos.length == 0">Create gallery</span>
+                            <span v-if="templateUnit.photos != undefined && templateUnit.photos.length != 0">Edit gallery</span></div>
                     </div>
                 </div>
                 <div class="project-unit-right" v-if="$parent.$parent.project.house_type == 2">
@@ -225,6 +225,61 @@
       unitGalleryModal: false,
     }),
     methods: {
+      saveGallery() {
+        var link = '';
+        if(this.$parent.$parent.project.house_type == 1) {
+          link = constants.BACKEND_URL + 'unit/update-photos';
+        } else {
+          link = constants.BACKEND_URL + 'lot-info/update-photos';
+        }
+        this.stopSave = true;
+        let data = new FormData();
+        let user = JSON.parse(localStorage.getItem('maagio_user'));
+        let token = localStorage.getItem('token');
+        data.append('user_id', user.uid);
+        data.append('token', token);
+        data.append('unit_id', this.templateUnit.id);
+        data.append('project_id', this.$parent.$parent.project.id);
+        data.append('photos', JSON.stringify(this.templateUnit.photos));
+        for (var i = 0; i < this.templateUnit.photos.length; i++) {
+          if (this.templateUnit.photos[i].id == undefined && this.templateUnit.photos[i].image_link != '') {
+            data.append('' + i, this.templateUnit.photos[i]);
+          }
+        }
+        let obj = this;
+        $.ajax({
+          url: link,
+          type: 'POST',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          processData: false,
+          contentType: false,
+          success: function (respond, status, jqXHR) {
+            obj.stopSave = false;
+            if (respond.ok == 1) {
+              obj.photos = respond.unit_photos;
+              if(obj.$parent.$parent.project.house_type == 1) {
+                for(var i = 0; i < obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units.length; i++) {
+                  if(obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units[i].id == obj.templateUnit.id) {
+                    obj.$parent.$parent.project.floors[obj.templateUnit.floor - 1].units[i].photos = respond.unit_photos;
+                  }
+                }
+              } else {
+                obj.$parent.$parent.project.lot_info.photos = respond.unit_photos;
+              }
+              obj.resetTemplateUnit();
+              obj.$parent.openEditUnit = false;
+            }
+          },
+          error: function (jqXHR, status, errorThrown) {
+            obj.stopSave = false;
+            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+            obj.resetTemplateUnit();
+            obj.$parent.openEditUnit = false;
+          }
+        });
+      },
       makeMore() {
         console.log(this)
       },
@@ -490,11 +545,10 @@
             contentType: false,
             success: function (respond, status, jqXHR) {
               obj.stopSave = false;
+              obj.templateUnit.id = respond.unit.id;
               if (respond.ok === 1) {
                 if(obj.$parent.$parent.project.house_type == 2) {
                   obj.$parent.$parent.project.lot_info = respond.unit;
-                  obj.resetTemplateUnit();
-                  obj.$parent.openEditUnit = false;
                   if(respond.new_image) {
                     obj.$parent.$parent.project.lot_info.image = respond.new_image;
                   }
@@ -524,8 +578,7 @@
                     obj.$parent.$parent.project.unfloor_units.splice(i, 1);
                   }
                 }
-                obj.resetTemplateUnit();
-                obj.$parent.openEditUnit = false;
+                obj.saveGallery();
               } else {
                 console.log('ОШИБКА: ' + respond.data);
               }
@@ -635,7 +688,7 @@
       for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
         this.floorOption.push({ name: i + 1, val: '' });
       }
-      console.log( this.$parent.$parent.project);
+
       this.templateUnit = JSON.parse(JSON.stringify(this.$parent.templateUnit));
       this.templateUnit.unitImagePreview = this.$parent.templateUnit.image;
       this.ChangeFloorPreview();
