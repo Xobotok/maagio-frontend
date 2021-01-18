@@ -1,60 +1,11 @@
 <template>
     <div class="">
         <div class="show-floors">
-            <div class="unit-content" v-if="openUnitPage">
-                <div class="unit-info" :class="{'with-photos': this.openedUnit.photos.length > 0}">
-                    <div class="unit-back" @click="closeUnitPage"></div>
-                    <div class="unit-common-info">
-                        <div class="common-block">
-                            <div class="unit-header">{{this.$parent.project.name}}</div>
-                            <div class="unit-number">{{this.openedUnit.unit_number}}</div>
-                            <div class="unit-number" v-if="$parent.project.house_type == 1">Floor {{this.activeFloor + 1}}</div>
-                        </div>
-                       <div class="common-block">
-                           <div class="unit-extra-info" style="padding-bottom: 20px; padding-top: 20px;">
-                               {{this.openedUnit.int_sq}} Sq.Ft. Interior
-                           </div>
-                           <div class="unit-extra-info" v-if="this.openedUnit.ext_sq != null">{{this.openedUnit.ext_sq}} Sq.Ft.
-                               Exterior
-                           </div>
-                           <div class="unit-extra-info" v-if="this.openedUnit.bad != 0">{{this.openedUnit.bad}} Bedroom</div>
-                           <div class="unit-extra-info" v-if="this.openedUnit.bad == 0">STUDIO</div>
-                           <div class="unit-extra-info">{{this.openedUnit.bath}} Bathroom</div>
-                           <div class="unit-extra-info" v-if="this.openedUnit.parking == 1">Parking</div>
-                       </div>
-                    </div>
-                    <div class="unit-status-info">
-                        <div class="unit-status-text">{{this.statuses[this.openedUnit.status]}}</div>
-                        <div class="unit-status-text">$ {{this.openedUnit.price}}</div>
-                    </div>
-                    <div class="unit-gallery" v-if="this.openedUnit.photos.length > 0">
-                        <div class="carousel">
-                            <div class="carousel-images" :style="{left: '-' + activePhoto * 300 + 'px'}">
-                                <img :src="image.image_link" alt="" v-for="image in this.openedUnit.photos" @click="openUnitGallery">
-                            </div>
-                        </div>
-                        <div class="carousel-buttons">
-                            <div class="button" @click="carouselGoLeft"><</div>
-                            <div class="" style="font-size: 18px">{{activePhoto + 1}} / {{openedUnit.photos.length}}</div>
-                            <div class="button" @click="carouselGoRight">></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="unit-image">
-                    <div class="" v-show="$parent.project.house_type == 1" v-for="floor in $parent.project.floors">
-                        <img :src="unit.image" alt=""
-                             v-show="openedUnit.image != undefined && unit.image === openedUnit.image"
-                             v-for="unit in floor.units">
-                    </div>
-                    <div class="" v-show="$parent.project.house_type == 2">
-                        <img :src="openedUnit.image" alt=""
-                             v-show="openedUnit.image != undefined">
-                    </div>
-                </div>
-                <Gallery v-show="this.openedUnit.photos.length > 0 && openedUnitGallery == true"
-                         :images="this.openedUnit.photos"
-                :backButtonClick="closeUnitGallery"></Gallery>
-            </div>
+            <OpenedUnitShow v-if="openUnitPage"
+                            :unit="openedUnit"
+                            :callback="closeUnitShow"
+                            :project="$parent.project">
+            </OpenedUnitShow>
             <div class="floor-image">
                 <div class="units-list" v-if="floorImage == '' && $parent.project.house_type == 1">
                     <div class="no-units" v-if="this.floor != '' && this.floor.units.length === 0">No units</div>
@@ -126,10 +77,10 @@
 
 <script>
   import constants from '../../Constants';
-  import Gallery from '@/components/app/Gallery.vue'
+  import OpenedUnitShow from '@/components/project/OpenedUnitShow.vue'
   export default {
     components: {
-      Gallery
+      OpenedUnitShow
     },
     name: 'show-floors',
     data: ()=>({
@@ -178,6 +129,9 @@
       var obj = this;
     },
     methods: {
+      closeUnitShow() {
+        this.openUnitPage = false;
+      },
       openUnitGallery() {
         this.openedUnitGallery = true;
       },

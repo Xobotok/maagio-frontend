@@ -89,6 +89,94 @@
     }
   }
 }
+.units-list {
+  & .units-list-blocks.warning {
+    color: rgba(0, 0, 0, 0.31);
+  }
+  & .units-list-blocks {
+    position: relative;
+    & .units-block-warning {
+      position: absolute;
+      top: 4px;
+      font-size: 12px;
+      width: 100%;
+      text-align: center;
+      color: red;
+    }
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #828282;
+    & .units-list-value {
+      display: flex;
+      justify-content: center;
+      width: 9%;
+      flex: none;
+    }
+    & .units-list-header {
+      display: flex;
+      justify-content: center;
+      width: 9%;
+    }
+    & .units-list-value.units-icons {
+      position: relative;
+      display: flex;
+      .delete-controls {
+        position: absolute;
+        margin-top: -12px;
+        width: 100%;
+        flex-direction: column;
+        height: 50px;
+        background-color: white;
+        .delete-message {
+          color: red;
+          font-size: 12px;
+          text-align: center;
+        }
+        .control-buttons {
+          display: flex;
+          justify-content: space-between;
+        }
+        .control-button {
+          margin-left: 20px;
+          margin-right: 20px;
+          cursor: pointer;
+        }
+        .delete-accept {
+          color: red;
+        }
+        .delete-decline {
+          color: green;
+        }
+      }
+      & .units-remove-icon {
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2218%22%20height%3D%2223%22%20viewBox%3D%220%200%2018%2023%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M1.25%2020C1.25%2021.375%202.375%2022.5%203.75%2022.5H13.75C15.125%2022.5%2016.25%2021.375%2016.25%2020V5H1.25V20ZM3.75%207.5H13.75V20H3.75V7.5ZM13.125%201.25L11.875%200H5.625L4.375%201.25H0V3.75H17.5V1.25H13.125Z%22%20fill%3D%22%23EB5757%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        width: 22px;
+        height: 17px;
+        background-size: contain;
+        cursor: pointer;
+      }
+      & .units-edit-icon {
+        width: 15px;
+        height: 15px;
+        margin-right: 20px;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M0.5%2012.3749V15.4999H3.625L12.8417%206.28322L9.71667%203.15822L0.5%2012.3749ZM15.2583%203.86655C15.5833%203.54155%2015.5833%203.01655%2015.2583%202.69155L13.3083%200.741553C12.9833%200.416553%2012.4583%200.416553%2012.1333%200.741553L10.6083%202.26655L13.7333%205.39155L15.2583%203.86655Z%22%20fill%3D%22%232F80ED%22/%3E%0A%3C/svg%3E%0A');
+        background-repeat: no-repeat;
+        background-size: contain;
+        cursor: pointer;
+      }
+      .show-button:hover {
+        color: #3ca1ff;
+      }
+      .show-button {
+        color: #006cff;
+        cursor: pointer;
+      }
+    }
+  }
+}
 .fullscreen-preloader {
   position: fixed;
   width: 100vw;
@@ -318,7 +406,7 @@ main {
   padding-left: 0;
   padding-right: 0;
 }
-.show-floors .unit-info.with-photos {
+.show-floors, .unit-content .unit-info.with-photos {
   .unit-common-info {
     display: flex;
     width: 100%;
@@ -714,9 +802,13 @@ main {
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
+      .unit-status-text:first-child {
+        border-right: none;
+      }
       .unit-status-text {
         color: #AC795C;
         padding-bottom: 30px;
+        margin-left: 0;
       }
     }
   }

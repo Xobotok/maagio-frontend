@@ -231,7 +231,6 @@
         });
       },
       addUnit() {
-        console.log('123');
         this.templateUnit = JSON.parse(JSON.stringify(constants.STANDART_UNIT));
         this.openEditUnit = true;
       },
