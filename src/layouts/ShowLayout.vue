@@ -7,7 +7,7 @@
                     <!--<div class="show-nav-tab"> <div class="welcome-icon"></div></div>-->
                     <div class="show-nav-tab" v-if="tabs.floors === true" @click="openFloors" :class="{active: activeTab === 'Floor plates'}"> <div class="floor-icon"></div></div>
                     <div class="show-nav-tab inactive" v-if="tabs.floors !== true"> <div class="floor-icon"></div></div>
-                    <div class="show-nav-tab" v-if="tabs.units === true" @click="activeTab = 'Units'" :class="{active: activeTab === 'Units'}"> <div class="info-icon"></div></div>
+                    <div class="show-nav-tab" v-if="tabs.units === true" @click="activeTab = 'Units'" :class="{active: activeTab === 'Units'}"> <div class="floor-icon reverse"></div></div>
                     <div class="show-nav-tab" v-if="tabs.galleries === true" @click="activeTab = 'Gallery'" :class="{active: activeTab === 'Gallery'}"> <div class="image-icon"></div></div>
                     <div class="show-nav-tab inactive" v-if="tabs.galleries !== true"> <div class="image-icon"></div></div>
                     <div class="show-nav-tab" v-if="tabs.map === true" @click="activeTab = 'Contact'" :class="{active: activeTab === 'Contact'}"> <div class="map-icon"></div></div>

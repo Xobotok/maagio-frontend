@@ -58,6 +58,13 @@
         background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2228%22%20height%3D%2234%22%20viewBox%3D%220%200%2028%2034%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cpath%20d%3D%22M26%202H2V32H26V2Z%22%20fill%3D%22%23A72A39%22%20stroke%3D%22%23A72A39%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cline%20x1%3D%2215%22%20y1%3D%221%22%20x2%3D%2215%22%20y2%3D%2216%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cline%20x1%3D%2211%22%20y1%3D%2224%22%20x2%3D%2211%22%20y2%3D%2233%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cpath%20d%3D%22M10.998%2024.055L26.9996%2024.055%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cpath%20d%3D%22M1%2016.9L9.00496%2016.9001%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3C/svg%3E%0A');
         background-repeat: no-repeat;
       }
+      & .floor-icon.reverse {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
       & .floor-icon {
         background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2228%22%20height%3D%2234%22%20viewBox%3D%220%200%2028%2034%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%0A%3Cg%20opacity%3D%220.27%22%3E%0A%3Cpath%20d%3D%22M26%202H2V32H26V2Z%22%20fill%3D%22black%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cline%20x1%3D%2215%22%20y1%3D%221%22%20x2%3D%2215%22%20y2%3D%2216%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cline%20x1%3D%2211%22%20y1%3D%2224%22%20x2%3D%2211%22%20y2%3D%2233%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cpath%20d%3D%22M10.9984%2024.0555L26.9999%2024.0555%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3Cpath%20d%3D%22M1%2016.9005L9.00496%2016.9006%22%20stroke%3D%22%23F4F4F4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%0A%3C/g%3E%0A%3C/svg%3E%0A');
         background-repeat: no-repeat;
@@ -828,6 +835,13 @@ main {
 .gallery-show {
   height: calc(100% - 68px);
   .gallery-list {
+    .multiple-galleries {
+      flex-wrap: wrap;
+      .gallery-content .gallery-art {
+        height: 50vh;
+        max-height: 400px;
+      }
+    }
     display: flex;
     height: 100%;
     .gallery-control {

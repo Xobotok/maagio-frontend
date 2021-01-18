@@ -1,8 +1,14 @@
 <template>
     <div class="gallery-show">
         <div class="gallery-list">
-            <div class="gallery-tab">
-                <div class="gallery-content" v-for="(tab, key) in $parent.project.galleries">
+            <div class="gallery-tab" :class="{'multiple-galleries': $parent.project.galleries.length > 3}">
+                <div class="gallery-content" v-if="$parent.project.galleries.length <= 3" :style="{width: 100/$parent.project.galleries.length + '%'}" v-for="(tab, key) in $parent.project.galleries">
+                    <div class="gallery-art" @click="openGallery(key)">
+                        <img :src="tab.photos[0]" alt="">
+                        <div class="gallery-name">{{tab.name}}</div>
+                    </div>
+                </div>
+                <div class="gallery-content" v-if="$parent.project.galleries.length > 3" :style="{width: '50%'}" v-for="(tab, key) in $parent.project.galleries">
                     <div class="gallery-art" @click="openGallery(key)">
                         <img :src="tab.photos[0]" alt="">
                         <div class="gallery-name">{{tab.name}}</div>
@@ -104,13 +110,13 @@
     methods: {
       previousImageClick() {
         if(this.currentImageIndex == 0) {
-          this.currentImageIndex = this.galleries[0][this.actualGallery].photos.length - 1;
+          this.currentImageIndex = this.galleries[this.actualGallery].photos.length - 1;
         } else {
           this.currentImageIndex--;
         }
       },
       nextImageClick() {
-        if(this.currentImageIndex == this.galleries[0][this.actualGallery].photos.length - 1) {
+        if(this.currentImageIndex == this.galleries[this.actualGallery].photos.length - 1) {
           this.currentImageIndex = 0;
         } else {
           this.currentImageIndex++;
@@ -254,17 +260,7 @@
       }
     },
     created(){
-      let iter = 0;
-      this.galleries[iter] = [];
-      for (let i = 0; i < this.$parent.project.galleries.length; i++) {
-        this.galleries[iter].push(this.$parent.project.galleries[i]);
-        if (this.$parent.project.galleries.length > i + 1) {
-          if ((i + 1) % 3 === 0) {
-            iter++;
-            this.galleries[iter] = [];
-          }
-        }
-      }
+      this.galleries = this.$parent.project.galleries;
     },
   }
 </script>
