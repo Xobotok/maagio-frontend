@@ -552,6 +552,7 @@
                   if(respond.new_image) {
                     obj.$parent.$parent.project.lot_info.image = respond.new_image;
                   }
+                  obj.saveGallery();
                   return;
                 }
                 if(respond.unit.newFloor != undefined) {
