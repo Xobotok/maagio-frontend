@@ -8,8 +8,8 @@
             </div>
             <div class="menu-header">{{project.name}}</div>
         </div>
-        <div class="app-head">
-            <div class="app-open-menu" v-if="this.$parent.activeTab != 'home'">
+        <div class="app-head" v-if="this.$parent.activeTab != 'home'">
+            <div class="app-open-menu">
                 <div class="menu-icon"></div>
                 <div class="project-name">{{project.name}}</div>
             </div>

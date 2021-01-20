@@ -24,11 +24,11 @@
                              v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
                         </div>
                         <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
+                        <div class="unit-point-status" :class="'status_' + unit.status" v-if="unit.status !== '' && unit.statusShow !== false">
+                            {{statuses[unit.status]}}
+                        </div>
                         <div class="unit-point-number">
                             {{unit.unit_number}}
-                        </div>
-                        <div class="unit-point-status" v-if="unit.status !== '' && unit.statusShow !== false">
-                            {{statuses[unit.status]}}
                         </div>
                     </div>
                 </div>
@@ -44,31 +44,31 @@
                     </div>
                 </div>
             </div>
-            <div class="show-floors-footer">
-                <div class="bedrooms-list"
-                     style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                    <div class="status-list lot-info" v-show="$parent.project.house_type == 2">
-                        <div class="status-item" @click="openUnit($parent.project.lot_info)">
-                            <div class="status-item-title">
-                                Lot Info
-                            </div>
+        </div>
+        <div class="show-floors-footer">
+            <div class="bedrooms-list"
+                 style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                <div class="status-list lot-info" v-show="$parent.project.house_type == 2">
+                    <div class="status-item" @click="openUnit($parent.project.lot_info)">
+                        <div class="status-item-title">
+                            Lot Info
                         </div>
                     </div>
-                    <div class="bedrooms-list-item" v-for="(bedroom, key) in bedroomList"
-                         v-if="$parent.project.house_type == 1">
-                        <input checked type="checkbox" style="display: none" @change="makeBedFilter"
-                               :id="bedroom.bed+'_'+key">
-                        <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed != 0">{{bedroom.bed}} bedroom</label>
-                        <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed == 0">STUDIO</label>
-                    </div>
                 </div>
-                <div class="status-list" v-if="$parent.project.house_type == 1">
-                    <div class="status-item" v-for="(status, key) in statusList">
-                        <input checked type="checkbox" style="display: none" @change="makeStatusFilter"
-                               :id="key+'_status'">
-                        <label :for="key+'_status'" class="status-item-title"
-                               v-if="status !== false">{{statuses[key]}}</label>
-                    </div>
+                <div class="bedrooms-list-item" v-for="(bedroom, key) in bedroomList"
+                     v-if="$parent.project.house_type == 1">
+                    <input checked type="checkbox" style="display: none" @change="makeBedFilter"
+                           :id="bedroom.bed+'_'+key">
+                    <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed != 0">{{bedroom.bed}} bedroom</label>
+                    <label :for="bedroom.bed+'_'+key" v-if="bedroom.bed == 0">STUDIO</label>
+                </div>
+            </div>
+            <div class="status-list" v-if="$parent.project.house_type == 1">
+                <div class="status-item" v-for="(status, key) in statusList">
+                    <input checked type="checkbox" style="display: none" @change="makeStatusFilter"
+                           :id="key+'_status'">
+                    <label :for="key+'_status'" class="status-item-title"
+                           v-if="status !== false">{{statuses[key]}}</label>
                 </div>
             </div>
         </div>

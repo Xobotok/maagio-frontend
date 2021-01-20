@@ -497,6 +497,9 @@ main {
     }
   }
 }
+.hidden-menu {
+  display: none;
+}
 .show-project.no__padding {
   padding-left: 0;
 }
@@ -510,7 +513,6 @@ main {
   background-color: white;
   height: 100vh;
   overflow: hidden;
-  overflow-y: auto;
   .app-head {
     div {
       width: 100%;
@@ -536,9 +538,57 @@ main {
     text-align: center;
     margin-left: -90px;
   }
+  .show-floors-footer {
+    height: 50px;
+    display: flex;
+    bottom: 0;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-color: #F9F9F9;
+    justify-content: space-between;
+    input[type="checkbox"]:checked+label{
+      font-family: RobotoBold, sans-serif;
+      color: #AC795C;
+    }
+    .status-list.lot-info {
+      position: static !important;
+      padding-right: 0 !important;
+    }
+    .status-list:last-child {
+      padding-right: 40px;
+      position: absolute;
+      right: 40px;
+      top: 0;
+      height: 100%;
+    }
+    .status-list {
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      & .status-item {
+        & .status-item-title {
+          margin-left: 10px;
+          margin-right: 10px;
+          cursor: pointer;
+        }
+      }
+    }
+    .bedrooms-list {
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      label {
+        margin-left: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    }
+  }
   .show-floors {
-    height: calc(100% - 65px);
-    min-height: calc(100vh - 65px);
+    height: calc(100% - 115px);
+    min-height: calc(100vh - 115px);
+    position: relative;
     padding-right: 80px;
     display: flex;
     align-items: center;
@@ -557,12 +607,12 @@ main {
    }
     .floor-image {
       position: absolute;
-      height: 100vh;
-      width: calc(100vw - 160px);
+      height: 100%;
+      width: 100%;
       display: flex;
-      top: 64px;
-      left: 80px;
-      padding-bottom: 50px;
+      top: 0;
+      left: 0;
+      padding-right: 80px;
       justify-content: center;
       align-items: center;
       & .units-list {
@@ -596,9 +646,19 @@ main {
         flex-direction: column;
         align-items: center;
         cursor: pointer;
+        text-transform: uppercase;
+        & .unit-point-status.status_2 {
+          color: #EB5757;
+        }
+        & .unit-point-status.status_1 {
+          color: #eb7400;
+        }
+        & .unit-point-status.status_0 {
+          color: #0096D6;
+          font-style: italic;
+        }
         & .unit-point-status {
-          background-color: #EB5757;
-          color: white;
+          font-family: RobotoBold, sans-serif;
           padding: 5px;
           width: 100%;
           text-align: center;
@@ -617,8 +677,8 @@ main {
           width: 100%;
         }
         & .unit-point-bedrooms {
-          background-color: #2F80ED;
-          color: white;
+          color: black;
+          font-family: RobotoBold, sans-serif;
           padding: 5px;
           width: 100%;
           text-align: center;
@@ -633,54 +693,6 @@ main {
         -o-object-fit: contain;
         object-fit: contain;
         max-width: 100%;
-      }
-    }
-    .show-floors-footer {
-      height: 50px;
-      display: flex;
-      bottom: 0;
-      position: absolute;
-      left: 0;
-      width: 100%;
-      background-color: #F9F9F9;
-      justify-content: space-between;
-      input[type="checkbox"]:checked+label{
-        font-family: RobotoBold, sans-serif;
-        color: #AC795C;
-      }
-      .status-list.lot-info {
-        margin-left: -80px;
-        position: static !important;
-        padding-right: 0 !important;
-      }
-      .status-list:last-child {
-        padding-right: 40px;
-        position: absolute;
-        right: 40px;
-        top: 0;
-        height: 100%;
-      }
-      .status-list {
-        display: flex;
-        align-items: center;
-        text-transform: uppercase;
-        & .status-item {
-          & .status-item-title {
-            margin-left: 10px;
-            margin-right: 10px;
-            cursor: pointer;
-          }
-        }
-      }
-      .bedrooms-list {
-        display: flex;
-        align-items: center;
-        text-transform: uppercase;
-        label {
-          margin-left: 10px;
-          margin-right: 10px;
-          cursor: pointer;
-        }
       }
     }
     .navigation-container {
