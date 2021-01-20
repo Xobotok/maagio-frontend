@@ -2,6 +2,17 @@
     <div class="project-overview">
         <div class="overview-container">
             <div class="overview-header">
+                PLEASE SELECT THEME FOR YOUR PROJECT
+            </div>
+            <div class="overview-checkboxes">
+                <dropdown v-if="$parent.project.template.id != null"
+                          :options="$parent.project.all_templates"
+                          :selected="{val: $parent.project.template.id, name: $parent.project.template.name}"
+                          v-on:updateOption="selectNewTemplate"
+                          :placeholder="'Select theme'"
+                          :closeOnOutsideClick="true"></dropdown>
+            </div>
+            <div class="overview-header" style="margin-top: 30px;">
                 PLEASE CHECK THE CATEGORIES
                 YOU WANT TO SHOW
             </div>
@@ -76,8 +87,13 @@
 <script>
   import constants from '../../Constants'
   import MarkerClusterer from "@googlemaps/markerclustererplus/dist/index.esm";
+  import dropdown from '@/components/simple/dropdown.vue'
+
   export default {
     'name': 'ProjectOverview',
+    components: {
+      dropdown,
+    },
     data: ()=>({
       projectName: '',
       projectLogo: '',
@@ -110,6 +126,9 @@
       this.changeGallery();
     },
     methods: {
+      selectNewTemplate(e) {
+        this.$parent.project.template = e;
+      },
       changeUnits() {
         this.$parent.project.floors = [];
         if (this.projectName.length > 0) {

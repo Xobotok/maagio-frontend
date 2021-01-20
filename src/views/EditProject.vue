@@ -97,6 +97,7 @@
         floors: [],
         unfloor_units: [],
         units: [],
+        template: {},
         lot_info: null,
         mapActivate: true,
         map: {
@@ -183,7 +184,8 @@
       },
       saveOverview() {
         let obj = this;
-        if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo || this.oldProject.house_type != this.project.house_type) {
+        if (this.oldProject.name != this.project.name || this.oldProject.logo != this.project.logo
+          || this.oldProject.house_type != this.project.house_type || this.project.template.id != this.oldProject.template.id) {
           this.loaded = true;
           let data = new FormData();
           let user = JSON.parse(localStorage.getItem('maagio_user'));
@@ -196,6 +198,7 @@
           data.append('name', this.project.name);
           data.append('logo', this.project.logo);
           data.append('house_type', this.project.house_type);
+          data.append('template_id', this.project.template.id);
           $.ajax({
             url: constants.BACKEND_URL + 'project/update-overview',
             type: 'POST', // важно!
@@ -219,6 +222,7 @@
                 obj.oldProject.name = respond.project.name;
                 obj.oldProject.id = respond.project.id;
                 obj.oldProject.house_type = respond.project.house_type;
+                obj.oldProject.template.id = respond.project.template_id;
               }
               // ОК - файлы загружены
               if (typeof respond.error === 'undefined') {

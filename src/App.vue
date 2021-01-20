@@ -38,4 +38,6 @@ script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDEzKHEUbk3ocLvIg
 
 <style lang="less">
   @import 'assets/normalize.css';
+  @import 'assets/brown_template.less';
+  @import 'assets/green_template.less';
 </style>
