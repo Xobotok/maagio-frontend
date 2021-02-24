@@ -20,7 +20,7 @@
     }),
     beforeMount(){
      const manifest = document.querySelector('[rel="manifest"]');
-     var src = window.location.href.split('/');
+     var src = window.location.href.split('project=');
      src = src[src.length - 1];
      src = constants.BACKEND_URL + 'manifests/' + src + '.json';
       const nextManifest = document.createElement('link');

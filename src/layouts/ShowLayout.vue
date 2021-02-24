@@ -62,7 +62,7 @@
       activeTab: 'home',
     }),
     mounted(){
-      let project = document.location.href.split('/');
+      let project = document.location.href.split('project=');
       let data = {project: project[project.length - 1]};
       let obj = this;
       $.ajax({
