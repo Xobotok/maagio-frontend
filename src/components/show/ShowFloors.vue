@@ -24,11 +24,11 @@
                              v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
                         </div>
                         <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
+                      <div class="unit-point-number">
+                        {{unit.unit_number}}
+                      </div>
                         <div class="unit-point-status" :class="'status_' + unit.status" v-if="unit.status !== '' && unit.statusShow !== false">
                             {{statuses[unit.status]}}
-                        </div>
-                        <div class="unit-point-number">
-                            {{unit.unit_number}}
                         </div>
                     </div>
                 </div>
