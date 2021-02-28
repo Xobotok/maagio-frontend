@@ -275,7 +275,7 @@
           let protocol = document.location.protocol;
           let host =  document.location.host;
           if(this.project.special_link != undefined) {
-            this.personalLink = protocol + '//' + host+'/show?project=' + this.project.special_link;
+            this.personalLink = protocol + '//' + host+'/show/' + this.project.special_link;
           } else {
             this.personalLink = '';
           }
