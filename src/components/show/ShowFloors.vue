@@ -166,30 +166,6 @@
           return 5;
         }
       },
-      calculateWidth(unit) {
-        var imageMask = document.createElement('img');
-        imageMask.setAttribute('src', document.getElementById('floor-image').getAttribute('src'));
-        imageMask.style.objectFit = 'contain';
-        imageMask.style.maxWidth = '830px';
-        imageMask.style.maxHeight = '600px';
-        imageMask.style.opacity = '0';
-        imageMask.style.position = 'absolute';
-        document.body.append(imageMask);
-        $(imageMask).ready(function () {
-          var width = $(imageMask)[0].width;
-          imageMask.remove();
-          var percent = width / 100;
-          var mark_width = unit.unit_mark.width * percent;
-          return Number.parseInt(mark_width);
-        });
-      },
-      calculateHeight(unit) {
-        var imageContainer = $('#floor-image');
-        var width = imageContainer.height();
-        var percent = width / 100;
-        var mark_height = unit.unit_mark.height * percent;
-        return Number.parseInt(mark_height);
-      },
       openFloor(index) {
         this.activeFloor = index;
         this.floor = this.$parent.project.floors[index];

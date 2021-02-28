@@ -43,7 +43,7 @@
     data () {
       return {
         project: this.$parent.project,
-        tabsName:[]
+        tabsName:[],
       }
     },
     methods: {
@@ -78,8 +78,34 @@
               }
             }
           }
-
         });
+        window.onresize = function () {
+          for(var i = 0; i < obj.project.floors.length; i++) {
+            var floor = obj.project.floors[i];
+            var container = $('#floor-image' + floor.id);
+            var height = container.parent().height();
+            container.height(height);
+            for(var n = 0; n < obj.project.floors[i].units.length; n++) {
+              var unit = obj.project.floors[i].units[n];
+              if(unit.mark == 1) {
+                unit.unit_mark.natural_width = container.width() / 100 * unit.unit_mark.width;
+                unit.unit_mark.natural_height = container.height() / 100 * unit.unit_mark.height;
+                let fontSize = unit.unit_mark.natural_height / 3 / 2;
+                let fontSize2 = unit.unit_mark.natural_width / 8;
+                if (fontSize < fontSize2) {
+                  var min = fontSize;
+                } else {
+                  var min = fontSize2;
+                }
+                if (min > 5) {
+                  unit.unit_mark.font_size = Number.parseInt(min);
+                } else {
+                  unit.unit_mark.font_size = 5;
+                }
+              }
+            }
+          }
+        }
       },
       startShow() {
         if(this.$parent.tabs.floors === true) {
