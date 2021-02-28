@@ -2,7 +2,7 @@
     <div class="">
         <nav class="navbar">
             <div class="navbar__left">
-                <router-link to="/projects" class="logo">MAAGIO</router-link>
+                <router-link to="/projects" class="logo">MAGGIO</router-link>
             </div>
             <div class="navbar__middle">
                 <router-link to="/projects" class="active-link">MY APPS</router-link>

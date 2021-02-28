@@ -2,7 +2,7 @@
     <div class="authorise-form">
         <form class="login" @submit.prevent="login">
             <div class="message" v-if="message.length > 0">{{message}}</div>
-            <h1>MAAGIO</h1>
+            <h1>MAGGIO</h1>
             <input class="login-input" required v-model="email" type="email" placeholder="Email-Address"/>
             <input class="login-input" required v-model="password" type="password" placeholder="Password"/>
             <hr/>

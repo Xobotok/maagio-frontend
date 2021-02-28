@@ -2,7 +2,7 @@
     <div class="authorise-form">
         <form class="login" @submit.prevent="send" v-if="restoreToken == '' && !backToLogin">
             <div class="message" v-if="message.length > 0">{{message}}</div>
-            <h1>MAAGIO</h1>
+            <h1>MAGGIO</h1>
             <div class="restore-text">Enter your email address and we will send you instructions on how to reset your
                 password.
             </div>
@@ -30,7 +30,7 @@
         </form>
         <form class="login" @submit.prevent="restore" v-if="restoreToken != '' && !backToLogin">
             <div class="message" v-if="message.length > 0">{{message}}</div>
-            <h1>MAAGIO</h1>
+            <h1>MAGGIO</h1>
             <div class="restore-text">Enter new password.</div>
             <input class="login-input" required v-model="newPass" type="password" placeholder="Password"/>
             <hr/>
