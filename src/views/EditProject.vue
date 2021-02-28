@@ -98,6 +98,7 @@
         unfloor_units: [],
         units: [],
         template: {},
+        all_templates: [],
         lot_info: null,
         mapActivate: true,
         map: {
@@ -222,6 +223,7 @@
                 obj.oldProject.name = respond.project.name;
                 obj.oldProject.id = respond.project.id;
                 obj.oldProject.house_type = respond.project.house_type;
+                obj.oldProject.template = {};
                 obj.oldProject.template.id = respond.project.template_id;
               }
               // ОК - файлы загружены

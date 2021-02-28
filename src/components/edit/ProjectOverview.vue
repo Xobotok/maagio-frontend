@@ -5,7 +5,7 @@
                 PLEASE SELECT THEME FOR YOUR PROJECT
             </div>
             <div class="overview-checkboxes">
-                <dropdown v-if="$parent.project.template.id != null"
+                <dropdown v-if="$parent.project.template.id != undefined"
                           :options="$parent.project.all_templates"
                           :selected="{val: $parent.project.template.id, name: $parent.project.template.name}"
                           v-on:updateOption="selectNewTemplate"
@@ -113,6 +113,26 @@
       href = href[href.length - 1];
       if(href != 'new') {
         this.takeProject();
+      } else {
+        let obj = this;
+        $.ajax({
+          url: constants.BACKEND_URL + 'template/take-templates',
+          type: 'GET', // важно!
+          cache: false,
+          dataType: 'json',
+          success: function (respond, status, jqXHR) {
+            if (respond.ok === 1) {
+              if(obj.$parent.project.template.id == undefined) {
+                obj.$parent.project.template = respond.templates[0];
+              }
+              obj.$parent.project.all_templates = respond.templates;
+            }
+          },
+          // функция ошибки ответа сервера
+          error: function (jqXHR, status, errorThrown) {
+            console.log('ОШИБКА AJAX запроса: ' + status, jqXHR);
+          }
+        });
       }
       this.projectName = this.$parent.project.name;
       this.projectLogo = this.$parent.project.logo;
