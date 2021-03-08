@@ -1,5 +1,4 @@
 <template>
-    <div class="fullscreen-modal unit-gallery-modal">
         <div class="new-gallery">
             <div>
                 <div class="unit-create-header">Unit Photos</div>
@@ -33,7 +32,6 @@
                 <div class="project-page-button" @click="cancel">Cancel</div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -58,7 +56,6 @@
         }
       },
       uploadImage(e) {
-        console.log(e.target.files);
         for (let i = 0; i < e.target.files.length; i++) {
           this.file = e.target.files[i];
           let reader = new FileReader();

@@ -1,6 +1,7 @@
 <template>
     <div class="fullscreen-modal">
-        <div class="project-unit">
+      <UnitGalleryModal v-if="unitGalleryModal == true"></UnitGalleryModal>
+        <div class="project-unit" v-else>
             <div class="close-modal" @click="cancel">+</div>
             <div class="unit-create-header">
                 <span v-if="$parent.$parent.project.house_type == 1">Unit Info</span>
@@ -188,7 +189,6 @@
                 <div class="project-page-button blue-button" v-if="this.stopSave == false" @click="makeWarnings">Save</div>
                 <div class="project-page-button" @click="cancel">Cancel</div>
             </div>
-            <UnitGalleryModal v-if="unitGalleryModal == true"></UnitGalleryModal>
         </div>
     </div>
 </template>
@@ -685,6 +685,13 @@
         }
       }
     },
+    beforeDestroy() {
+      document.body.parentNode.style.overflow = '';
+    },
+    mounted(){
+      console.log('11')
+      document.body.parentNode.style.overflow = 'hidden';
+      },
     beforeMount() {
       for (var i = 0; i < this.$parent.$parent.project.floors.length; i++) {
         this.floorOption.push({ name: i + 1, val: '' });
