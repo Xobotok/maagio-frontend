@@ -36,10 +36,10 @@
             <div class="navigation-container" v-if="$parent.project.floors.length > 1">
                 <div class="navigation-block">
                     <div class="floor-navigation">
-                        <div class="floor-navigation-tab" @click="openFloor(index)"
-                             :class="{active: index === activeFloor}"
+                        <div class="floor-navigation-tab" @click="openFloor($parent.project.floors.length - index - 1)"
+                             :class="{active: $parent.project.floors.length - index - 1 === activeFloor}"
                              v-for="(floor, index) in this.$parent.project.floors">
-                            {{(index + 1)}}
+                            {{$parent.project.floors.length - index}}
                         </div>
                     </div>
                 </div>
@@ -167,6 +167,7 @@
         }
       },
       openFloor(index) {
+        console.log(index);
         this.activeFloor = index;
         this.floor = this.$parent.project.floors[index];
         this.reserveFloor = this.$parent.project.floors[index];
