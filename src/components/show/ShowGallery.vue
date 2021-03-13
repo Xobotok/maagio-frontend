@@ -16,79 +16,22 @@
                 </div>
             </div>
         </div>
-        <div class="open-gallery" id="gallery-container" v-for="(gallery, index) in $parent.project.galleries"
-             v-show="actualGallery === index">
-            <div class="return" @click="actualGallery = false; galleryActivePhoto = 0;"></div>
-            <div class="image-list" id="gallery" style="display: none">
-                <div class="gallery-carousel">
-                    <img @mousedown.prevent="startDrag"
-                         @touchstart="startDrag"
-                         :src="photos" alt="" :key="index + photos" v-for="(photos, index) in gallery.photos">
-                </div>
-                     <!--v-show="index === galleryActivePhoto"-->
-            </div>
-            <div data-id="image-container" class="mobile-container relative overflow-hidden"  @mousemove="drag"
-                 @touchmove="drag"
-                 @mouseup="stopDrag"
-                 @touchend="stopDrag">
-                <img class="absolute h-full z-0"
-                     :style="prevImageStyle"
-                     :src="previousImage">
-                <img class="absolute h-full z-10"
-                     @mousedown.prevent="startDrag"
-                     @touchstart="startDrag"
-                     :style="currentImageStyle"
-                     :src="currentImage">
-                <img class="absolute h-full z-20"
-                     :style="nextImageStyle"
-                     :src="nextImage">
-            </div>
-            <div class="gallery-control" v-if="images.length > 0">
-                <div class="" @click="previousImageClick">Prevent</div>
-                <div class="">{{currentImageIndex + 1}} / <span v-if="images.length > 0">{{images.length}}</span></div>
-                <div class="" @click="nextImageClick">Next</div>
-            </div>
-        </div>
+        <Gallery v-for="(gallery, index) in $parent.project.galleries" v-show="actualGallery !== false && actualGallery == index"
+                 :images="gallery.photos"
+                 :backButtonClick="closeGallery"></Gallery>
+
+
     </div>
 </template>
 
 <script>
   import constants from '../../Constants';
-  var width = document.body.clientWidth / 100 * 90;
-  if(width > 1200) {
-    width = 1200;
-  }
-  const DEVICE_WIDTH = width;
-  const HALF_WIDTH = DEVICE_WIDTH / 2
-  const DRAGGING_SPEED = 1.2
-  const MAX_BLUR = 8
-  var images = [];
-  const getCursorX = (event) => {
-    if(event.touches && event.touches.length) {
-      // touch
-      return event.touches[0].pageX
-    }
-
-    if(event.pageX && event.pageY) {
-      // mouse
-      return event.pageX
-    }
-
-    return 0
-  }
-
-  const clampPosition = (position) => {
-    // constrain image to be between 0 and device width
-    return Math.max(Math.min(position, DEVICE_WIDTH), 0)
-  }
-
-  const calculateBlur = (position) => {
-    return MAX_BLUR * (1 - (position / DEVICE_WIDTH));
-  }
+  import Slider from '../../widgets/wyhaya-slider/index';
+  import Gallery from '../../components/app/Gallery';
   export default {
     name: 'gallery',
     components: {
-
+      Gallery,Slider
     },
     data: ()=>({
       galleries: [],
@@ -104,93 +47,15 @@
       cursorCurrentX: 0,
       currentImageIndex: 0,
       currentImageAnimatedX: 0,
-      nextImageAnimatedX: DEVICE_WIDTH
     }),
     watch: {},
     methods: {
-      previousImageClick() {
-        if(this.currentImageIndex == 0) {
-          this.currentImageIndex = this.galleries[this.actualGallery].photos.length - 1;
-        } else {
-          this.currentImageIndex--;
-        }
-      },
-      nextImageClick() {
-        if(this.currentImageIndex == this.galleries[this.actualGallery].photos.length - 1) {
-          this.currentImageIndex = 0;
-        } else {
-          this.currentImageIndex++;
-        }
-      },
-      startDrag(e) {
-        if(this.animating) {
-          // avoid dragging when animation is running
-          return
-        }
-        this.dragging = true
-        this.cursorStartX = getCursorX(e)
-        this.cursorCurrentX = this.cursorStartX
-      },
-      drag(e) {
-        if(!this.dragging) {
-          // avoid updating if not dragging
-          return
-        }
-        this.cursorCurrentX = getCursorX(e)
-      },
-      stopDrag(e) {
-        let animationProps = this.createReleaseAnimation()
-        this.dragging = false
-        this.animating = true
-        TweenLite.to(this, 0.2, {
-          ...animationProps,
-          onComplete: () => {this.animating = false}
-        })
-      },
-      createReleaseAnimation() {
-        if(this.swipingLeft) {
-          if(this.nextImagePosition > HALF_WIDTH) {
-            // next image should be animated back to be offscreen
-            this.nextImageAnimatedX = this.nextImagePosition
-            return {nextImageAnimatedX: DEVICE_WIDTH}
-          }
-
-          // current image "copies" the nextImage position
-          this.currentImageAnimatedX = this.nextImagePosition
-          // the nextImage is sent offscreen
-          this.nextImageAnimatedX = DEVICE_WIDTH
-
-          // Change the image index to become the next image in the array
-          // images src attribute will update accordingly
-          this.currentImageIndex = this.nextImageIndex
-          return {currentImageAnimatedX: 0}
-        }
-
-        // swipe right
-        if(this.currentImagePosition < HALF_WIDTH) {
-          // current image should be animated back to center position
-          this.currentImageAnimatedX = this.currentImagePosition
-          return {currentImageAnimatedX: 0}
-        }
-
-        // the nextImage "copies" the currentImage position
-        this.nextImageAnimatedX = this.currentImagePosition
-        // the currentImage gets centered to become the prevImage
-        this.currentImageAnimatedX = 0
-
-        // Change the image index to become the previous image in the array
-        this.currentImageIndex = this.previousImageIndex
-        return {nextImageAnimatedX: DEVICE_WIDTH}
+      closeGallery() {
+        this.actualGallery = false
       },
       openGallery(gallery){
-        this.actualGallery = gallery;
-        var cont = $('[data-id=image-container]');
-        cont.css('width', DEVICE_WIDTH + 'px');
-        images = this.$parent.project.galleries[this.actualGallery].photos;
-        this.images = [];
-        for(var i = 0; i < images.length; i++) {
-          this.images.push(images[i]);
-        }
+        console.log(this.$parent.project.galleries[gallery].photos)
+        this.actualGallery = gallery
         this.currentImageIndex = 0;
       },
     },
@@ -261,6 +126,7 @@
     },
     created(){
       this.galleries = this.$parent.project.galleries;
+      console.log(this.galleries);
     },
   }
 </script>

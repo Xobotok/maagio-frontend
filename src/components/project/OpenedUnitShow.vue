@@ -1,6 +1,6 @@
 <template>
     <div class="unit-content">
-        <div class="unit-info" :class="{'with-photos': unit.photos.length > 0}">
+        <div class="unit-info" v-show="openedUnitGallery == false" :class="{'with-photos': unit.photos.length > 0}">
             <div class="unit-back" @click="callback"></div>
             <div class="unit-common-info">
                 <div class="common-block">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <Gallery v-show="unit.photos.length > 0 && openedUnitGallery == true"
-                 :images="unit.photos"
+                 :images="unit.photos.map( image => image.image_link)"
                  :backButtonClick="closeUnitGallery"></Gallery>
     </div>
 </template>

@@ -1,0 +1,56 @@
+.vue-slide .gallery-control .control-button {
+  cursor: pointer;
+}
+.vue-slide .gallery-control {
+  position: absolute;
+  bottom: -10px;
+  justify-content: center;
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+}
+.vue-slide {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+.vue-slide .content {
+  display: flex;
+  width: 300%;
+  height: 100%;
+}
+.vue-slide .content > div {
+  width: 33.33333%;
+  position: relative;
+}
+.vue-slide .content > div:first-child {
+  margin-left: -33.33333%;
+}
+.vue-slide .content img {
+  display: block;
+  width: 100%;
+  object-fit: contain;
+  height: 100%;
+}
+.vue-slide .spot {
+  width: 100%;
+  position: absolute;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+.vue-slide .spot > div {
+  width: 5px;
+  height: 5px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  margin: 0 4px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  transition: width 0.2s linear;
+}
+.vue-slide .spot > div.cur {
+  width: 12px;
+  border-radius: 6px;
+  background-color: #fff;
+}
