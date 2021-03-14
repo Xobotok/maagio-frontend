@@ -195,6 +195,7 @@
               }
               obj.enterName();
               obj.loadMap();
+              obj.$parent.checkPublish();
             }
             // ОК - файлы загружены
             if( typeof respond.error === 'undefined' ){
@@ -281,6 +282,7 @@
         } else {
           this.$parent.progresses[4].active = false;
         }
+        this.$parent.checkPublish()
       },
       changeMap() {
         this.$parent.project.map = {lat: '', lng: '', address: ''};
