@@ -238,6 +238,7 @@
           this.tabs.map = true;
         }
       },
+
       openFloors() {
         this.activeTab = 'Floor plates';
         $(document).ready(function () {
