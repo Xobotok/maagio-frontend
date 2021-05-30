@@ -11,23 +11,23 @@
         </div>
         <div class="unit-bad-bath">
           <div class="unit-extra-info right-delimiter" v-if="unit.bad != 0">{{ unit.bad }} Bed</div>
-          <div class="unit-extra-info">{{ unit.bath }} Bath</div>
+          <div class="unit-extra-info" v-if="unit.bad != 0">{{ unit.bath }} Bath</div>
           <div class="unit-extra-info" v-if="unit.bad == 0">STUDIO</div>
         </div>
         <div class="common-block" style="line-height: 25px; padding-bottom: 40px;">
           <div class="unit-extra-info" style="">
-            Interior: {{ unit.int_sq }} Sq.Ft.
+            Interior: {{ interior_text }} Sq.Ft.
           </div>
-          <div class="unit-extra-info" v-if="unit.ext_sq != null">
-            Exterior: {{ unit.ext_sq }} Sq.Ft.
+          <div class="unit-extra-info" v-if="unit.ext_sq != '' && unit.ext_sq != null">
+            Exterior: {{ exterior_text }} Sq.Ft.
           </div>
         </div>
         <div class="common-block" style="line-height: 25px; padding-bottom: 40px;">
           <div class="unit-extra-info" style="" v-if="unit.parking != 0">
            Parking
           </div>
-          <div class="unit-extra-info" v-if="unit.ext_sq != null">
-            HOA: {{ unit.hoa }}$
+          <div class="unit-extra-info">
+            HOA: ${{ hoa_text }}
           </div>
           <div class="unit-extra-info" style="" v-if="unit.bmr != 0">
             BMR
@@ -36,7 +36,7 @@
       </div>
       <div class="unit-status-info">
         <div class="unit-status-text">{{ this.statuses[unit.status] }}</div>
-        <div class="unit-status-text">$ {{ unit.price }}</div>
+        <div class="unit-status-text">$ {{ Intl.NumberFormat('en-US').format(unit.price) }}</div>
       </div>
       <div class="unit-gallery" v-if="unit.photos.length > 0">
         <div class="carousel">
@@ -87,7 +87,17 @@ export default {
   beforeDestroy() {
 
   },
-  computed: {},
+  computed: {
+    interior_text() {
+      return new Intl.NumberFormat('en-US').format(this.unit.int_sq);
+    },
+    exterior_text() {
+      return new Intl.NumberFormat('en-US').format(this.unit.ext_sq);
+    },
+    hoa_text() {
+      return new Intl.NumberFormat('en-US').format(this.unit.hoa);
+    }
+  },
   methods: {
     carouselGoLeft(e) {
       if (this.activePhoto == 0) {
