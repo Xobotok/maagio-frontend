@@ -131,6 +131,56 @@ main {
   opacity: 0;
   z-index: -1;
 }
+.update-container {
+  position: relative;
+  min-width: 30px;
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: center;
+  align-items: center;
+  .update-list {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    top: 100%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+    .update-item {
+      font-size: 14px;
+      white-space: nowrap;
+      color: #2f80ed;
+      cursor: pointer;
+    }
+
+  }
+  .update-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='Capa_1' x='0px' y='0px' viewBox='0 0 512.171 512.171' style='enable-background:new 0 0 512.171 512.171;' fill='%232f80ed' xml:space='preserve'%3E%3Cg%3E%3Cg%3E%3Cpath d='M479.046,283.925c-1.664-3.989-5.547-6.592-9.856-6.592H352.305V10.667C352.305,4.779,347.526,0,341.638,0H170.971 c-5.888,0-10.667,4.779-10.667,10.667v266.667H42.971c-4.309,0-8.192,2.603-9.856,6.571c-1.643,3.989-0.747,8.576,2.304,11.627 l212.8,213.504c2.005,2.005,4.715,3.136,7.552,3.136s5.547-1.131,7.552-3.115l213.419-213.504 C479.793,292.501,480.71,287.915,479.046,283.925z'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E");      width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transform: rotate(180deg);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .dots-icon:hover {
+    opacity: 1;
+  }
+  .dots-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='4' viewBox='0 0 16 4' fill='none'%3E%3Cpath d='M2 0C0.9 0 0 0.9 0 2C0 3.1 0.9 4 2 4C3.1 4 4 3.1 4 2C4 0.9 3.1 0 2 0ZM14 0C12.9 0 12 0.9 12 2C12 3.1 12.9 4 14 4C15.1 4 16 3.1 16 2C16 0.9 15.1 0 14 0ZM8 0C6.9 0 6 0.9 6 2C6 3.1 6.9 4 8 4C9.1 4 10 3.1 10 2C10 0.9 9.1 0 8 0Z' fill='%23828282'/%3E%3C/svg%3E");
+    width: 100%;
+    opacity: .7;
+    cursor: pointer;
+    z-index: 9999;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
 .app-constructor-layout .navbar {
   height: 64px;
   display: flex;
@@ -138,6 +188,29 @@ main {
   padding-left: 3%;
   padding-right: 3%;
   background-color: #fff;
+  .profile-popup {
+    .profile {
+      cursor: pointer;
+    }
+    .profile__list {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      top: 100%;
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+      .subscribe-block {
+        margin-left: 0;
+      }
+      .new-project {
+        padding-bottom: 8px;
+      }
+  }
+  }
   & .logo {
     color: #333333;
     font-size: 30px;

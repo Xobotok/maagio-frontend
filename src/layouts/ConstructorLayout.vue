@@ -29,6 +29,7 @@
         end_time: '',
         subscribe: {},
         tariffs: [],
+        heartBeatVariable: '',
         old_profile: {
           last_name: '',
           company: '',
@@ -48,20 +49,25 @@
         },
       }),
       mounted(){
+        this.heartBeatVariable = this.heartBeat();
         this.takeUserInfo();
-        let obj = this;
-        if(this.interval != undefined) {
-          clearInterval(this.interval)
-        }
-        this.interval = setInterval(function () {
-          obj.takeEndTariff();
-        }, 360000)
       },
-
+      beforeDestroy() {
+        clearInterval(this.heartBeatVariable);
+        this.heartBeatVariable = '';
+      },
       updated() {
 
       },
       methods: {
+        heartBeat() {
+          this.checkUpdate();
+          return setInterval(this.checkUpdate, 360000)
+        },
+        checkUpdate() {
+          this.$store.dispatch('checkUpdate')
+          this.takeEndTariff();
+        },
         takeEndTariff() {
           let obj = this;
           let user = JSON.parse(localStorage.getItem('maagio_user'));

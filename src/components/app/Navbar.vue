@@ -26,16 +26,27 @@
                         <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
                     </div>
                 </div>-->
-
-                <router-link to="/profile" class="new-project">
-                    <div class="profile">
-                        <div class="profile-icon"></div>
-                        <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
-                    </div>
-                </router-link>
-                <div class="subscribe-block">
-                    <span v-if="isLoggedIn" style="padding-right: 10px; cursor: pointer;"><a @click="logout">Logout</a></span>
+              <div class="new-project relative profile-popup" data-id="profile-container">
+                <div class="profile" @click="profileOpen = !profileOpen">
+                  <div class="profile-icon"></div>
+                  <div class="profile-name">{{user_name + ' ' + user_lastname}}</div>
                 </div>
+                <div class="profile__list" v-show="profileOpen">
+                  <router-link to="/profile" class="new-project">
+                    Profile
+                  </router-link>
+                  <div class="subscribe-block">
+                    <span v-if="isLoggedIn" style="padding-right: 10px; cursor: pointer;"><a @click="logout">Logout</a></span>
+                  </div>
+                </div>
+              </div>
+              <div class="update-container" v-if="$store.getters.needUpdate == 1" data-id="update-container">
+                <div class="dots-icon" v-if="$store.getters.needUpdate == 0"></div>
+                <div class="update-icon" v-if="$store.getters.needUpdate == 1" @click="updateOpen = !updateOpen"></div>
+                <div class="update-list" v-show="updateOpen">
+                    <div class="update-item" v-if="$store.getters.needUpdate == 1" @click="update">Update application</div>
+                </div>
+              </div>
             </div>
         </nav>
     </div>
@@ -54,6 +65,8 @@
         cardObject, dropdown
       },
       data: ()=>({
+        profileOpen: false,
+        updateOpen: false,
         user_name: '',
         user_lastname: '',
         end_time: 0,
@@ -63,6 +76,29 @@
         tariffs: [],
         }),
       methods: {
+        update() {
+          this.$store.dispatch('updateVersion');
+        },
+        openUpdateContainer(evt) {
+          var path = (evt.composedPath && evt.composedPath()) || evt.path;
+          for(var i = 0; i < path.length; i++) {
+            var dataId = $(path[i]).attr('data-id');
+            if(dataId === 'update-container') {
+              return;
+            }
+          }
+          this.updateOpen = false;
+        },
+        openProfileContainer(evt) {
+          var path = (evt.composedPath && evt.composedPath()) || evt.path;
+          for(var i = 0; i < path.length; i++) {
+            var dataId = $(path[i]).attr('data-id');
+            if(dataId === 'profile-container') {
+              return;
+            }
+          }
+          this.profileOpen = false;
+        },
         logout: function () {
           this.$store.dispatch('logout')
           .then(() => {
@@ -73,12 +109,18 @@
           this.actual_tariff = e;
         },
       },
+      beforeDestroy() {
+        document.removeEventListener('click', this.openProfileContainer);
+        document.removeEventListener('click', this.openUpdateContainer);
+      },
       mounted(){
         let user = JSON.parse(localStorage.getItem('maagio_user'));
         this.user_name = user.name;
         if(this.user_lastname != ''){
           this.user_lastname = user.last_name;
         }
+        document.addEventListener('click', this.openProfileContainer);
+        document.addEventListener('click', this.openUpdateContainer);
       }
     }
 </script>

@@ -26,11 +26,11 @@
                 <div class="units-list-value" v-if="unit.bmr == 1">Yes</div>
                 <div class="units-list-value" v-if="unit.bmr == 0">No</div>
                 <div class="units-list-value units-icons">
-                    <div class="show-button" @click="openedUnit = unit, openUnit = true">Show</div>
+                    <div class="show-button" @click="openUnit(unit, index)">Show</div>
                 </div>
             </div>
         </div>
-        <OpenedUnitShow v-if="openUnit"
+        <OpenedUnitShow v-if="openUnitPage"
         :unit="openedUnit"
         :callback="closeUnitShow"
         :project="$parent.project"></OpenedUnitShow>
@@ -46,14 +46,19 @@
     data: ()=>({
       statusNames: constants.STATUS_OPTIONS,
       openedUnit: {},
-      openUnit: false,
+      openUnitPage: false,
     }),
     mounted(){
 
     },
     methods: {
+      openUnit: function (unit, floor) {
+        this.floor = this.$parent.$parent.project.floors[floor];
+        this.openedUnit = unit;
+        this.openUnitPage = true;
+      },
       closeUnitShow: function () {
-        this.openUnit = false;
+        this.openUnitPage = false;
       }
     }
   }

@@ -414,37 +414,53 @@ main {
   padding-right: 0;
 }
 .show-floors, .unit-content .unit-info.with-photos {
-  .unit-common-info {
+  .carousel-dots {
+    position: absolute;
+    bottom: -40px;
     display: flex;
+    font-size: 38px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    .carousel-dots__container {
+      width: auto;
+      display: flex;
+    }
+    .carousel-dot.active {
+      opacity: 1;
+    }
+    .carousel-dot {
+      cursor: pointer;
+      margin-left: 8px;
+      margin-right: 8px;
+      opacity: .4;
+      width: 8px;
+      height: 8px;
+      background-color: gray;
+      border-radius: 50%;
+    }
+  }
+  .unit-common-info {
     width: 100%;
     padding-bottom: 0;
-    .common-block:last-child {
-      margin-left: 20px;
-    }
     .common-block:first-child {
-      border-right: 1px solid black;
-      padding-bottom: 20px;
+      padding-bottom: 40px;
     }
     .common-block {
-      width: 50%;
+      width: 100%;
       .unit-header {
         text-align: left;
       }
     }
   }
   .unit-status-info {
-    flex-direction: row;
-    border-bottom: 1px solid black;
-    .unit-status-text:first-child {
-      border-right: 1px solid black;
-    }
-    .unit-status-text:last-child {
-      margin-left: 20px;
-    }
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     .unit-status-text {
-      width: 50%;
-      padding-bottom: 0;
-      margin-bottom: 50px;
+      font-size: 24px;
+      line-height: 28px;
+      padding-bottom: 28px;
     }
   }
   .unit-gallery {
@@ -514,6 +530,7 @@ main {
   height: 100vh;
   overflow: hidden;
   .app-head {
+    flex: none;
     div {
       width: 100%;
     }
@@ -749,7 +766,6 @@ main {
 .z-20 {
   z-index: 20;
 }
-
 .absolute {
   position: absolute;
 }
@@ -778,13 +794,25 @@ main {
   height: 100vh;
   top: 0;
   z-index: 99999;
+  .unit-info .unit-bad-bath {
+    display: flex;
+    font-size: 24px;
+    line-height: 28px;
+    padding-bottom: 40px;
+  }
+  .right-delimiter {
+    border-right: 2px solid black;
+    padding-right: 10px;
+    margin-right: 10px;
+  }
   .unit-info {
+    overflow: auto;
     padding-left: 40px;
     padding-right: 40px;
     position: relative;
     width: 30%;
+    padding-top: 10vh;
     background-color: #F8F8F8;
-    display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -804,13 +832,13 @@ main {
       padding-bottom: 80px;
       & .unit-header {
         font-size: 30px;
-        font-family: GaramondMedium, sans-serif;
+        font-family: RobotoMedium, sans-serif;
         text-align: center;
-        padding-bottom: 40px;
+        padding-bottom: 10px;
       }
       & .unit-number {
         font-size: 20px;
-        font-family: GaramondMedium, sans-serif;
+        font-family: RobotoMedium, sans-serif;
       }
       & .unit-extra-info {
         font-family: RobotoMedium, sans-serif;

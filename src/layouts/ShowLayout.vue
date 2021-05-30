@@ -1,9 +1,19 @@
-<template>
+<template :key="forced_key">
     <div class="app-show-layout" :class="project.template.template_class">
         <main class="app-content">
             <div class="app-page">
                 <div class="hidden-menu" id="brown-hidden-menu" v-if="activeTab != 'home'">
-                    <div class="app-head-name"><span class="close-menu" @click="closeMenu">+</span><span class="project-name">{{project.name}}</span></div>
+                    <div class="header">
+                      <div class="app-head-name"><span class="close-menu" @click="closeMenu">+</span><span class="project-name">{{project.name}}</span></div>
+                      <div class="app-head-update">
+                        <div class="app-head-update__button" @click="$parent.forced_key = !$parent.forced_key">
+                          Update content
+                        </div>
+                        <div class="app-head-update__button" v-if="$store.getters.needUpdate">
+                          Update application
+                        </div>
+                      </div>
+                    </div>
                     <div class="show-nav-tab" @click="activeTab = 'home'"> <div class="home-icon"></div><span class="home-text">Home</span></div>
                     <!--<div class="show-nav-tab"> <div class="welcome-icon"></div></div>-->
                     <div class="show-nav-tab" v-if="tabs.floors === true" @click="openFloors" :class="{active: activeTab === 'Floor plates'}"><div class="floor-icon"></div><span class="home-text">Floor plates</span></div>
@@ -36,10 +46,12 @@
   export default {
     name: 'show-layout',
     data: ()=>({
+      forced_key: 0,
       project: {
         galleries: [],
         project_logo: '',
         house_type: '',
+        heartBeatInterval: '',
         map: '',
         markers: [],
         template: {},
@@ -62,108 +74,154 @@
       activeTab: 'home',
     }),
     mounted(){
-      let project = document.location.href.split('show/');
-      console.log(project);
-      let data = {project: project[project.length - 1]};
-      let obj = this;
-      $.ajax({
-        url         : constants.BACKEND_URL + 'project/show',
-        type        : 'GET',
-        data        : data,
-        dataType    : 'json',
-        success     : function( respond, status, jqXHR ){
-          if(respond !== null) {
-            if(respond.ok === 1) {
-              console.log(this);
-              for(var i = 0; i < respond.data.floors.length; i++){
-                for(var n = 0; n < respond.data.floors[i].units.length; n++) {
-                  if(respond.data.floors[i].units[n].unit_mark != null) {
-                    respond.data.floors[i].units[n].show = true;
-                    respond.data.floors[i].units[n].bedShow = true;
-                    respond.data.floors[i].units[n].statusShow = true;
-                    respond.data.floors[i].units[n].unit_mark.natural_width = 0;
-                    respond.data.floors[i].units[n].unit_mark.natural_height = 0;
+      this.updateProject();
+      this.heartBeat();
+      this.heartBeatInterval = setInterval(this.heartBeat, 360000)
+    },
+    beforeDestroy() {
+      clearInterval(this.heartBeatInterval);
+    },
+    methods: {
+      heartBeat() {
+        let project = document.location.href.split('show/');
+        let data = {project: project[project.length - 1]};
+        var obj = this;
+        $.ajax({
+          url: constants.BACKEND_URL + 'project/take-version',
+          type: 'GET',
+          data: data,
+          dataType: 'json',
+          success: function (respond, status, jqXHR) {
+            if(respond.ok == 1) {
+              obj.checkVersion(respond.project_id, respond.version);
+            }
+          },
+          error: function (error) {
+            console.log(error);
+          }
+        })
+      },
+      checkVersion(project_id, version) {
+        var obj = this;
+        window.db.getAllValues('project', function (e) {
+          var projects = e;
+          if(projects.length > 20) {
+            projects.sort(function(a, b) {
+              return a.value.date - b.value.date;
+            });
+          }
+          for(var i = 0; i < projects.length; i++) {
+            if(projects[i].id == project_id) {
+              if(projects[i].value.version != version) {
+                obj.updateProject();
+              }
+            }
+          }
+          return false;
+        });
+      },
+      updateProject(){
+        let project = document.location.href.split('show/');
+        let data = {project: project[project.length - 1]};
+        let obj = this;
+        $.ajax({
+          url         : constants.BACKEND_URL + 'project/show',
+          type        : 'GET',
+          data        : data,
+          dataType    : 'json',
+          success     : function( respond, status, jqXHR ){
+            if(respond !== null) {
+              if(respond.ok === 1) {
+                console.log(this);
+                for(var i = 0; i < respond.data.floors.length; i++){
+                  for(var n = 0; n < respond.data.floors[i].units.length; n++) {
+                    if(respond.data.floors[i].units[n].unit_mark != null) {
+                      respond.data.floors[i].units[n].show = true;
+                      respond.data.floors[i].units[n].bedShow = true;
+                      respond.data.floors[i].units[n].statusShow = true;
+                      respond.data.floors[i].units[n].unit_mark.natural_width = 0;
+                      respond.data.floors[i].units[n].unit_mark.natural_height = 0;
+                    }
                   }
                 }
-              }
-              for(var i = 0; i < respond.data.galleries.length; i++) {
-                obj.project.galleries.push(respond.data.galleries[i]);
-              }
-              if(respond.data.house_type == 2) {
-                obj.project.lot_info = respond.data.lot_info;
-              }
-              obj.project.floors = respond.data.floors;
-              obj.project.house_type = respond.data.house_type;
-              obj.project.map = respond.data.map;
-              obj.project.markers = respond.data.markers;
-              obj.project.name = respond.data.name;
-              obj.project.project_logo = respond.data.project_logo;
-              obj.project.published = respond.data.published;
-              obj.project.special_link = respond.data.special_link;
-              obj.project.id = respond.data.id;
-              obj.project.user_id = respond.data.user_id;
-              obj.project.markers.culture = [];
-              obj.project.markers.restaurant = [];
-              obj.project.markers.sport = [];
-              obj.project.markers.nature = [];
-              obj.project.template = respond.data.template;
-              obj.checkTabStatus();
-              window.db.getAllValues('project', function (e) {
-                var projects = e;
-                if(projects.length > 20) {
-                  projects.sort(function(a, b) {
-                    return a.value.date - b.value.date;
-                  });
-                  window.db.delValue('project', projects[0].id)
+                for(var i = 0; i < respond.data.galleries.length; i++) {
+                  obj.project.galleries.push(respond.data.galleries[i]);
                 }
-              });
-              var proj =JSON.parse(JSON.stringify(obj.project));
-              proj.date = new Date().getTime();
-              window.db.setValue('project', Number.parseInt(obj.project.id), proj);
+                if(respond.data.house_type == 2) {
+                  obj.project.lot_info = respond.data.lot_info;
+                }
+                obj.project.floors = respond.data.floors;
+                obj.project.house_type = respond.data.house_type;
+                obj.project.map = respond.data.map;
+                obj.project.markers = respond.data.markers;
+                obj.project.name = respond.data.name;
+                obj.project.project_logo = respond.data.project_logo;
+                obj.project.published = respond.data.published;
+                obj.project.special_link = respond.data.special_link;
+                obj.project.id = respond.data.id;
+                obj.project.user_id = respond.data.user_id;
+                obj.project.markers.culture = [];
+                obj.project.markers.restaurant = [];
+                obj.project.markers.sport = [];
+                obj.project.markers.nature = [];
+                obj.project.version = respond.data.version;
+                obj.project.template = respond.data.template;
+                obj.checkTabStatus();
+                window.db.getAllValues('project', function (e) {
+                  var projects = e;
+                  if(projects.length > 20) {
+                    projects.sort(function(a, b) {
+                      return a.value.date - b.value.date;
+                    });
+                    window.db.delValue('project', projects[0].id)
+                  }
+                });
+                var proj =JSON.parse(JSON.stringify(obj.project));
+                proj.date = new Date().getTime();
+                window.db.setValue('project', Number.parseInt(obj.project.id), proj);
+              } else {
+
+              }
             } else {
 
             }
-          } else {
 
-          }
-
-        },
-        error: function( jqXHR, status, errorThrown ){
-          let project_link = window.location.href.split('/');
-          project_link = project_link[project_link.length - 1];
-          window.db.getAllValues('project', function (e) {
-            var projects = e;
-            for(var i = 0; i < projects.length; i++) {
-              var proj = projects[i].value;
-              if(proj.special_link == project_link) {
-                window.db.getValue('project', Number.parseInt(proj.id), function (e) {
-                  var project_template = e.value;
-                  project_template.markers.culture = [];
-                  project_template.markers.restaurant = [];
-                  project_template.markers.sport = [];
-                  project_template.markers.nature = [];
-                  for(var i = 0; i < project_template.floors.length; i++){
-                    for(var n = 0; n < project_template.floors[i].units.length; n++) {
-                      if(project_template.floors[i].units[n].unit_mark != null) {
-                        project_template.floors[i].units[n].show = true;
-                        project_template.floors[i].units[n].unit_mark.natural_width = 0;
-                        project_template.floors[i].units[n].unit_mark.natural_height = 0;
+          },
+          error: function( jqXHR, status, errorThrown ){
+            let project_link = window.location.href.split('/');
+            project_link = project_link[project_link.length - 1];
+            window.db.getAllValues('project', function (e) {
+              var projects = e;
+              for(var i = 0; i < projects.length; i++) {
+                var proj = projects[i].value;
+                if(proj.special_link == project_link) {
+                  window.db.getValue('project', Number.parseInt(proj.id), function (e) {
+                    var project_template = e.value;
+                    project_template.markers.culture = [];
+                    project_template.markers.restaurant = [];
+                    project_template.markers.sport = [];
+                    project_template.markers.nature = [];
+                    for(var i = 0; i < project_template.floors.length; i++){
+                      for(var n = 0; n < project_template.floors[i].units.length; n++) {
+                        if(project_template.floors[i].units[n].unit_mark != null) {
+                          project_template.floors[i].units[n].show = true;
+                          project_template.floors[i].units[n].unit_mark.natural_width = 0;
+                          project_template.floors[i].units[n].unit_mark.natural_height = 0;
+                        }
                       }
                     }
-                  }
-                  obj.project = project_template;
-                  obj.checkTabStatus();
-                })
+                    obj.project = project_template;
+                    obj.checkTabStatus();
+                  })
+                }
               }
-            }
-          });
-        }
-      });
-    },
-    methods: {
+            });
+          }
+        });
+      },
       closeMenu(e) {
         console.log(e);
-        e.target.parentNode.parentNode.style.left = '-33%';
+        $('#brown-hidden-menu').css('left', '-33%')
       },
       checkTabStatus(){
         this.tabs.home = true;
