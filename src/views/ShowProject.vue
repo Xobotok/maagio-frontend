@@ -23,7 +23,7 @@
             <div class="dots-icon" v-if="$store.getters.needUpdate == 0" @click="updateOpen = !updateOpen" style="width: 40px;"></div>
             <div class="update-icon" v-if="$store.getters.needUpdate == 1" @click="updateOpen = !updateOpen"></div>
             <div class="update-list" v-show="updateOpen" style="width: 150px; right: 10px;">
-              <div class="update-item" v-if="$store.getters.needUpdate == 1" @click="update">Update application</div>
+              <div class="update-item" v-if="$store.getters.needUpdate == 1"  @click="update">Update application</div>
               <div class="update-item" @click="updateContent">Update content</div>
             </div>
           </div>
