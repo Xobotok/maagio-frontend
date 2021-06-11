@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@googlemaps/markerclustererplus": "^1.0.3",
+    "@vue/cli": "^4.5.13",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.16.0",

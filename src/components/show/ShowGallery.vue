@@ -2,18 +2,12 @@
     <div class="gallery-show">
         <div class="gallery-list">
             <div class="gallery-tab" :class="{'multiple-galleries': $parent.project.galleries.length > 3}">
-                <div class="gallery-content" v-if="$parent.project.galleries.length <= 3" :style="{width: 100/$parent.project.galleries.length + '%'}" v-for="(tab, key) in $parent.project.galleries">
-                    <div class="gallery-art" @click="openGallery(key)">
-                        <img :src="tab.photos[0]" alt="">
-                        <div class="gallery-name">{{tab.name}}</div>
-                    </div>
+              <div class="gallery-content" :style="{width: galleryStyles.width, height: galleryStyles.height}" v-for="(tab, key) in $parent.project.galleries">
+                <div class="gallery-art" @click="openGallery(key)">
+                  <img :src="tab.photos[0]" alt="">
+                  <div class="gallery-name">{{tab.name}}</div>
                 </div>
-                <div class="gallery-content" v-if="$parent.project.galleries.length > 3" :style="{width: '50%'}" v-for="(tab, key) in $parent.project.galleries">
-                    <div class="gallery-art" @click="openGallery(key)">
-                        <img :src="tab.photos[0]" alt="">
-                        <div class="gallery-name">{{tab.name}}</div>
-                    </div>
-                </div>
+              </div>
             </div>
         </div>
         <Gallery v-for="(gallery, index) in $parent.project.galleries" v-show="actualGallery !== false && actualGallery == index"
@@ -60,6 +54,20 @@
       },
     },
     computed: {
+      galleryStyles() {
+        var result = {};
+        if(this.$parent.project.galleries.length <= 4) {
+          result.width = 100/this.$parent.project.galleries.length + '%';
+          result.height = '100%';
+        } else if(this.$parent.project.galleries.length > 4 && this.$parent.project.galleries.length <= 8) {
+          result.width = 100/(Math.ceil(this.$parent.project.galleries.length / 2)) + '%';
+          result.height = '50%';
+        } else if(this.$parent.project.galleries.length > 8) {
+          result.width = '12.5%'
+          result.height = 100/(Math.ceil(this.$parent.project.galleries.length / 8)) + '%';
+        }
+        return result;
+      },
       diffX () {
         return this.cursorStartX - this.cursorCurrentX
       },

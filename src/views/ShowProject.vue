@@ -17,8 +17,16 @@
             <div class="app-head-tab" v-if="this.project.house_type == 2 && this.$parent.activeTab == 'Floor plates'">
                 Lot Info</div>
             <div class="app-head-tab" v-else>
-                {{this.$parent.activeTab}}</div>
-            <div></div>
+                {{this.$parent.activeTab}}
+            </div>
+          <div class="update-container" style="justify-content: flex-end" data-id="update-container">
+            <div class="dots-icon" v-if="$store.getters.needUpdate == 0" @click="updateOpen = !updateOpen" style="width: 40px;"></div>
+            <div class="update-icon" v-if="$store.getters.needUpdate == 1" @click="updateOpen = !updateOpen"></div>
+            <div class="update-list" v-show="updateOpen" style="width: 150px; right: 10px;">
+              <div class="update-item" v-if="$store.getters.needUpdate == 1"  @click="update">Update application</div>
+              <div class="update-item" @click="updateContent">Update content</div>
+            </div>
+          </div>
         </div>
             <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
             <Floors v-if="project.floors.length > 0" v-show="this.$parent.activeTab === 'Floor plates'"></Floors>
@@ -42,13 +50,31 @@
     name: 'show',
     data () {
       return {
+        forced_key: 0,
         project: this.$parent.project,
         tabsName:[],
+        updateOpen: false,
       }
     },
     methods: {
+      update() {
+       this.$store.dispatch('updateVersion');
+      },
+      updateContent() {
+        this.$parent.$parent.forced_key = !this.$parent.$parent.forced_key;
+      },
       openBrownMenu() {
         $('#brown-hidden-menu').css({'left': '0'})
+      },
+      openUpdateList(evt) {
+        var path = (evt.composedPath && evt.composedPath()) || evt.path;
+        for(var i = 0; i < path.length; i++) {
+          var dataId = $(path[i]).attr('data-id');
+          if(dataId === 'update-container') {
+            return;
+          }
+        }
+        this.updateOpen = false;
       },
       actualizeMarkers(){
         var obj = this;
@@ -121,7 +147,36 @@
       }
     },
     mounted(){
-
+      document.addEventListener('click', this.openUpdateList)
+      var obj = this;
+      console.log('Show project remount')
+      $(document).ready(()=> {
+        for(var i = 0; i < obj.project.floors.length; i++) {
+          var floor = obj.project.floors[i];
+          var container = $('#floor-image' + floor.id);
+          var height = container.parent().height();
+          container.height(height);
+          for(var n = 0; n < obj.project.floors[i].units.length; n++) {
+            var unit = obj.project.floors[i].units[n];
+            if(unit.mark == 1) {
+              unit.unit_mark.natural_width = container.width() / 100 * unit.unit_mark.width;
+              unit.unit_mark.natural_height = container.height() / 100 * unit.unit_mark.height;
+              let fontSize = unit.unit_mark.natural_height / 3 / 2;
+              let fontSize2 = unit.unit_mark.natural_width / 8;
+              if (fontSize < fontSize2) {
+                var min = fontSize;
+              } else {
+                var min = fontSize2;
+              }
+              if (min > 5) {
+                unit.unit_mark.font_size = Number.parseInt(min);
+              } else {
+                unit.unit_mark.font_size = 5;
+              }
+            }
+          }
+        }
+      })
     },
   }
 </script>

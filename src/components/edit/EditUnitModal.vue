@@ -62,7 +62,7 @@
                         </div>
                         <div class="unit-subcomponent">
                             <div class="subcomponent-label">HOA Fees</div>
-                            <div class=""><input type="number" min="1" v-model="templateUnit.HOA" class="project-input">
+                            <div class=""><input type="number" min="1" v-model="templateUnit.hoa" class="project-input">
                             </div>
                         </div>
                     </div>

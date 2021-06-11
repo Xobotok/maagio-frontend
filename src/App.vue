@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <component :is="layout">
+    <component :is="layout" :key="forced_key">
       <router-view/>
     </component>
   </div>
@@ -25,6 +25,11 @@ script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDEzKHEUbk3ocLvIg
   script.defer = true;
   document.head.appendChild(script);
   export default {
+    data: function () {
+      return {
+        forced_key: 0,
+      }
+    },
     computed: {
       layout() {
        return (this.$route.meta.layout || 'empty') + '-layout'
