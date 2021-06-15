@@ -1,6 +1,6 @@
 export default {
-  /*BACKEND_URL: 'https://backend.getmaggio.com/web/',*/
-  BACKEND_URL: 'http://web/',
+  BACKEND_URL: 'https://backend.getmaggio.com/web/',
+  /*BACKEND_URL: 'http://web/',*/
   STRIPE_PUBLIC: 'pk_test_51GuBOGC3fcSx3Qt94MdCbROyn2HJ83V4H6L6YGcsZ4BuKPsMhmLJOqQAS2txJu0cZpf334mcso3sp67YTcOndr6H00NTeXiodl',
   STATUS_OPTIONS: [{ name: 'Available' }, { name: 'Reserved' }, { name: 'Sold' }, { name: 'Unreleased' }],
   MARKER_TYPES: [{ val: '1', name: 'Culture' }, { val: '2', name: 'Restaurants' }, { val: '3', name: 'Sport' }, {
