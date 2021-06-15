@@ -1,11 +1,6 @@
 <template>
     <div class="">
         <div class="show-floors">
-            <OpenedUnitShow v-if="openUnitPage"
-                            :unit="openedUnit"
-                            :callback="closeUnitShow"
-                            :project="$parent.project">
-            </OpenedUnitShow>
             <div class="floor-image">
                 <div class="units-list" v-if="floorImage == '' && $parent.project.house_type == 1">
                     <div class="no-units" v-if="this.floor != '' && this.floor.units.length === 0">No units</div>
@@ -16,14 +11,21 @@
                 <div class="image-container" v-if="floorImage != ''">
                     <img :src="temp.image" v-show="temp.image == floor.image" v-for="temp in $parent.project.floors"
                          :id="'floor-image' + temp.id" alt="">
-                    <div v-for="unit in floor.units" @click="openUnit(unit)" class="unit-point"
+                  <OpenedUnitShow v-for="(unit, key) in floor.units"
+                                  v-show="openUnitPage === floor.number + '_'+key"
+                                  :floor="floor.number"
+                                  :unit="unit"
+                                  :callback="closeUnitShow"
+                                  :project="$parent.project">
+                  </OpenedUnitShow>
+                    <div v-for="(unit, key) in floor.units" @click="openUnitPage = floor.number + '_' + key" class="unit-point"
                          v-if="unit.unit_mark != null && unit.show != false"
                          :style="{left: unit.unit_mark.x + '%', top: unit.unit_mark.y + '%', width: unit.unit_mark.natural_width + 'px',
                          height: unit.unit_mark.natural_height + 'px', fontSize: unit.unit_mark.font_size + 'px'}">
                         <div class="unit-point-bedrooms"
                              v-if="unit.bad > 0 && unit.bad != '' && unit.bedShow !== false">{{unit.bad}} bedroom
                         </div>
-                        <div class="unit-point-bedrooms" v-if="unit.bad == 0 ">STUDIO</div>
+                        <div class="unit-point-bedrooms" v-if="unit.bad == 0 && unit.bedShow !== false">STUDIO</div>
                       <div class="unit-point-number">
                         {{unit.unit_number}}
                       </div>
@@ -167,7 +169,6 @@
         }
       },
       openFloor(index) {
-        console.log(index);
         this.activeFloor = index;
         this.floor = this.$parent.project.floors[index];
         this.reserveFloor = this.$parent.project.floors[index];
@@ -200,6 +201,7 @@
         }
       },
       makeBedFilter(e){
+        console.log(e);
         let bedNumber = $(e.target).attr('id').split('_')[0];
         if (e.target.checked === false) {
           this.filters.bed.push(bedNumber);

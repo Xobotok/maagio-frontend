@@ -7,7 +7,7 @@
         <div class="common-block">
           <div class="unit-header">{{ project.name }}</div>
           <!--                    <div class="unit-number">{{unit.unit_number}}</div>-->
-          <div class="unit-number">Floor {{ $parent.floor.number }}</div>
+          <div class="unit-number">Floor {{ floor }}</div>
         </div>
         <div class="unit-bad-bath">
           <div class="unit-extra-info right-delimiter" v-if="unit.bad != 0">{{ unit.bad }} Bed</div>
@@ -77,8 +77,9 @@ export default {
       activePhoto: 0,
     }
   },
-  props: ['unit', 'callback', 'project'],
+  props: ['unit', 'callback', 'project', 'floor'],
   mounted() {
+    console.log(this.$parent)
     console.log(this.unit)
   },
   beforeMount() {

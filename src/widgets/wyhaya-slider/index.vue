@@ -12,8 +12,11 @@
       @transitionend="transitionEnd"
     >
       <div><img :src="prevItem"/></div>
+      <div v-for="(photo, key) in data" class="slider-item" v-show="key === cur"><img :src="data[cur]"/></div>
+      <div><img :src="nextItem" alt=""></div>
+      <!--
       <div><img :src="data[cur]" @click="$emit('click', cur)"/></div>
-      <div><img :src="nextItem"/></div>
+      -->
     </div>
     <div v-if="spot" class="spot">
       <div

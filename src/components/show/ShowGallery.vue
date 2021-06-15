@@ -48,7 +48,6 @@
         this.actualGallery = false
       },
       openGallery(gallery){
-        console.log(this.$parent.project.galleries[gallery].photos)
         this.actualGallery = gallery
         this.currentImageIndex = 0;
       },

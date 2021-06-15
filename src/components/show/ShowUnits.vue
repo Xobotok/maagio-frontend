@@ -14,7 +14,7 @@
             <div class="units-list-header"></div>
         </div>
         <div class="" v-for="(floor, index) in this.$parent.project.floors" v-if="$parent.project.house_type == 1">
-            <div class="units-list-blocks" v-for="unit in floor.units">
+            <div class="units-list-blocks" v-for="(unit, index2) in floor.units">
                 <div class="units-list-value">{{unit.unit_number}}</div>
                 <div class="units-list-value">{{statusNames[unit.status].name}}</div>
                 <div class="units-list-value">{{unit.price}} $</div>
@@ -26,14 +26,15 @@
                 <div class="units-list-value" v-if="unit.bmr == 1">Yes</div>
                 <div class="units-list-value" v-if="unit.bmr == 0">No</div>
                 <div class="units-list-value units-icons">
-                    <div class="show-button" @click="openUnit(unit, index)">Show</div>
+                    <div class="show-button" @click="openUnitPage = index + '_' + index2">Show</div>
                 </div>
+              <OpenedUnitShow v-show="openUnitPage === index + '_' +index2"
+                              :unit="unit"
+                              :floor="index"
+                              :callback="closeUnitShow"
+                              :project="$parent.project"></OpenedUnitShow>
             </div>
         </div>
-        <OpenedUnitShow v-if="openUnitPage"
-        :unit="openedUnit"
-        :callback="closeUnitShow"
-        :project="$parent.project"></OpenedUnitShow>
     </div>
 </template>
 
@@ -46,7 +47,7 @@
     data: ()=>({
       statusNames: constants.STATUS_OPTIONS,
       openedUnit: {},
-      openUnitPage: false,
+      openUnitPage: '',
     }),
     mounted(){
 

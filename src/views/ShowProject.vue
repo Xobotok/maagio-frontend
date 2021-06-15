@@ -28,10 +28,10 @@
             </div>
           </div>
         </div>
-            <ShowHome v-if="this.$parent.activeTab === 'home'"></ShowHome>
-            <Floors v-if="project.floors.length > 0" v-show="this.$parent.activeTab === 'Floor plates'"></Floors>
-            <ShowUnits v-show="this.$parent.activeTab === 'Units' && project.house_type == 1"></ShowUnits>
-            <Gallery v-if="project.galleries.length > 0" v-show="this.$parent.activeTab === 'Gallery'"></Gallery>
+            <ShowHome :class="{'hidden': this.$parent.activeTab !== 'home'}"></ShowHome>
+            <Floors :class="{'hidden': this.$parent.activeTab !== 'Floor plates'}" v-if="project.floors.length > 0"></Floors>
+            <ShowUnits :class="{'hidden': this.$parent.activeTab !== 'Units' || project.house_type != 1}"></ShowUnits>
+            <Gallery v-if="project.galleries.length > 0" :class="{'hidden': this.$parent.activeTab !== 'Gallery'}" ></Gallery>
             <ShowMap v-if="this.$parent.activeTab === 'Contact'"></ShowMap>
     </div>
 </template>
