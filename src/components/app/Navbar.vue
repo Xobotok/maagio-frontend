@@ -40,11 +40,11 @@
                   </div>
                 </div>
               </div>
-              <div class="update-container" v-if="$store.getters.needUpdate == 1" data-id="update-container">
-                <div class="dots-icon" v-if="$store.getters.needUpdate == 0"></div>
-                <div class="update-icon" v-if="$store.getters.needUpdate == 1" @click="updateOpen = !updateOpen"></div>
+              <div class="update-container" v-if="needUpdate == 1" data-id="update-container">
+                <div class="dots-icon" v-if="needUpdate == 0"></div>
+                <div class="update-icon" v-if="needUpdate == 1" @click="updateOpen = !updateOpen"></div>
                 <div class="update-list" v-show="updateOpen">
-                    <div class="update-item" v-if="$store.getters.needUpdate == 1" @click="update">Update application</div>
+                    <div class="update-item" v-if="needUpdate == 1" @click="update">Update application</div>
                 </div>
               </div>
             </div>
@@ -59,7 +59,10 @@
     export default {
       'name': 'Navbar',
       computed : {
-        isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+        isLoggedIn : function(){ return this.$store.getters.isLoggedIn},
+        needUpdate() {
+          return this.$store.getters.needUpdate;
+        }
       },
       components: {
         cardObject, dropdown
@@ -77,7 +80,7 @@
         }),
       methods: {
         update() {
-          this.$store.dispatch('updateVersion');
+          this.$store.dispatch('updateVersionOnline');
         },
         openUpdateContainer(evt) {
           var path = (evt.composedPath && evt.composedPath()) || evt.path;

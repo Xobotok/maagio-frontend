@@ -104,7 +104,7 @@ export default new Vuex.Store({
       })
     },
     setNeedUpdate({commit}) {
-
+      commit('set_need_update')
     },
     checkUpdate({commit}) {
       var currentVersion = localStorage.getItem('last_version');
@@ -125,6 +125,13 @@ export default new Vuex.Store({
       })
     },
     updateVersion({commit}, version) {
+      localStorage.setItem('last_version', version)
+      commit('set_version', version);
+    },
+    removeNeedUpdate({commit}) {
+      commit('remove_need_update');
+    },
+    updateVersionOnline({commit}, version) {
       return new Promise((resolve, reject) => {
         axios({url: constants.BACKEND_URL + 'app/get-last-version', method: 'GET'})
           .then(resp => {

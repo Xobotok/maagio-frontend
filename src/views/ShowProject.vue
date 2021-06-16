@@ -58,7 +58,7 @@
     },
     methods: {
       update() {
-       this.$store.dispatch('updateVersion');
+       this.$store.dispatch('updateVersionOnline');
       },
       updateContent() {
         this.$parent.$parent.forced_key = !this.$parent.$parent.forced_key;
