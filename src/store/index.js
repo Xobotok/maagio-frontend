@@ -106,24 +106,6 @@ export default new Vuex.Store({
     setNeedUpdate({commit}) {
       commit('set_need_update')
     },
-    checkUpdate({commit}) {
-      var currentVersion = localStorage.getItem('last_version');
-      return new Promise((resolve, reject) => {
-        axios({url: constants.BACKEND_URL + 'app/get-last-version', method: 'GET'})
-          .then(resp => {
-            if (resp.data.ok == 1) {
-              if (resp.data.last_version != currentVersion) {
-                commit('set_need_update');
-              } else {
-                commit('remove_need_update');
-              }
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
-      })
-    },
     updateVersion({commit}, version) {
       localStorage.setItem('last_version', version)
       commit('set_version', version);
@@ -133,18 +115,23 @@ export default new Vuex.Store({
     },
     updateVersionOnline({commit}, version) {
       return new Promise((resolve, reject) => {
-        axios({url: constants.BACKEND_URL + 'app/get-last-version', method: 'GET'})
-          .then(resp => {
-            if (resp.data.ok == 1) {
-              localStorage.setItem('last_version', resp.data.last_version)
-              commit('set_version', resp.data.last_version);
+        $.ajax({
+          url: constants.BACKEND_URL + 'app/get-last-version',
+          type: 'GET', // важно!
+          dataType: 'json',
+          success: function (resp, status, jqXHR) {
+            if (resp.ok === 1) {
+              localStorage.setItem('last_version', resp.last_version)
+              commit('set_version', resp.last_version);
               commit('remove_need_update');
               window.location.reload();
             }
-          })
-          .catch(err => {
-            console.log(err);
-          })
+          },
+          // функция ошибки ответа сервера
+          error: function (jqXHR, status, errorThrown) {
+
+          }
+        });
       })
     }
   },
