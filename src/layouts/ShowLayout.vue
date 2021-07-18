@@ -9,7 +9,7 @@
                         <div class="app-head-update__button" @click="$parent.forced_key = !$parent.forced_key">
                           Update content
                         </div>
-                        <div class="app-head-update__button" v-if="$store.getters.needUpdate">
+                        <div class="app-head-update__button" v-if="needUpdate">
                           Update application
                         </div>
                       </div>
@@ -73,10 +73,16 @@
       },
       activeTab: 'home',
     }),
+    computed: {
+      needUpdate() {
+        console.log(this.$store.getters.needUpdate)
+        return this.$store.getters.needUpdate;
+      }
+    },
     mounted(){
       this.updateProject();
       this.heartBeat();
-      this.heartBeatInterval = setInterval(this.heartBeat, 360000)
+      this.heartBeatInterval = setInterval(this.heartBeat, 30000)
     },
     beforeDestroy() {
       clearInterval(this.heartBeatInterval);
@@ -94,12 +100,21 @@
           success: function (respond, status, jqXHR) {
             if(respond.ok == 1) {
               obj.checkVersion(respond.project_id, respond.version);
+              obj.checkAppVersion(respond.last_version)
             }
           },
           error: function (error) {
             console.log(error);
           }
         })
+      },
+      async checkAppVersion(version) {
+        var last_version = await localStorage.getItem('last_version');
+        console.log(last_version)
+        if(last_version !== version) {
+          this.$store.dispatch('setNeedUpdate');
+          this.$store.dispatch('updateVersion', version);
+        }
       },
       checkVersion(project_id, version) {
         var obj = this;

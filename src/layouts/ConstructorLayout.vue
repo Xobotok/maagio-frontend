@@ -65,7 +65,6 @@
           return setInterval(this.checkUpdate, 360000)
         },
         checkUpdate() {
-          this.$store.dispatch('checkUpdate')
           this.takeEndTariff();
         },
         takeEndTariff() {
